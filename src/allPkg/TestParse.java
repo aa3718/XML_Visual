@@ -28,9 +28,9 @@ public class TestParse {
 
             // Check to make sure it is part of ODRL allPkg.Policy
             if (checkPolicy(doc)) {
-                System.out.println("It is indeed a allPkg.Policy!");
+                System.out.println("It is indeed a Policy!");
             } else {
-                System.out.println("Error: Not an ODRL allPkg.Policy.");
+                System.out.println("Error: Not an ODRL Policy.");
             }
 
             // Create allPkg.Policy Builder instance
@@ -47,7 +47,7 @@ public class TestParse {
 
                     //Adding permission to panel
                     Icon permissionII = new ImageIcon("/Users/Chapman/Downloads/permissionI.png");
-                    JButton permissionI = new JButton("allPkg.Permission",permissionII);
+                    JButton permissionI = new JButton("Permission",permissionII);
                     permissionI.setBounds((180*allEl+80),100,100,100);
                     permissionI.setVerticalTextPosition(SwingConstants.BOTTOM);
                     permissionI.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -113,7 +113,7 @@ public class TestParse {
     }
 
     public boolean checkPolicy(Document doc) {
-        if (doc.getDocumentElement().getNodeName() == "o:allPkg.Policy") {
+        if (doc.getDocumentElement().getNodeName() == "o:Policy") {
             System.out.println("Root element: " + doc.getDocumentElement().getNodeName());
             return true;
         } else {
