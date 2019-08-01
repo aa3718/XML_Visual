@@ -1,12 +1,18 @@
 package allPkg;
 
-public class Permission {
-    /*
+public class Permission implements elements {
+
     private Asset asset;
     private Action act;
     private Constraint constraint;
     private Party party;
     private Duty duty;
+    public String name;
+
+    Permission(String name) {
+        this.name = name;
+        System.out.println(name);
+    }
 
     @Override
     public void getAsset(Asset ass) {
@@ -32,5 +38,5 @@ public class Permission {
     public void getDuty(Duty duty) {
         this.duty = duty;
     }
-*/
+
 }

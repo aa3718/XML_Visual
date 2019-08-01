@@ -1,7 +1,5 @@
 package allPkg;
 
-import allPkg.Policy;
-import static allPkg.PolicyBuilder.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,7 +11,7 @@ import java.io.File;
 
 
 public class TestParse {
-    public Policy policy;
+    Policy policy = null;
 
     public void setXmlFunction(String filename, JPanel visuall) {
 
@@ -33,12 +31,11 @@ public class TestParse {
                 System.out.println("Error: Not an ODRL Policy.");
             }
 
-            // Create allPkg.Policy Builder instance
-            //PolicyBuilder builder = aPolicy();
+            // Create Policy Builder instance
+            PolicyBuilder builder = new PolicyBuilder();
 
             // Go through the Policies Permissions
             NodeList nList = doc.getElementsByTagName("o:permission");
-            System.out.println();
             for (int allEl = 0; allEl < nList.getLength(); allEl++) {
                 Node nNode = nList.item(allEl);
                 System.out.println("\nCurrent Element :" + nNode.getNodeName());
@@ -48,14 +45,14 @@ public class TestParse {
                     //Adding permission to panel
                     Icon permissionII = new ImageIcon("/Users/Chapman/Downloads/permissionI.png");
                     JButton permissionI = new JButton("Permission",permissionII);
-                    permissionI.setBounds((180*allEl+80),100,100,100);
+                    permissionI.setBounds((180*allEl+80),50,100,100);
                     permissionI.setVerticalTextPosition(SwingConstants.BOTTOM);
                     permissionI.setHorizontalTextPosition(SwingConstants.CENTER);
                     visuall.add(permissionI);
 
-                    // allPkg.Policy building  // Need to add all attributes
-                    //allPkg.Permission permission = new allPkg.Permission();
-                    //builder = builder.withPermission(permission);
+                    // Policy building  // Need to add all attributes
+                    Permission permission = new Permission("Pancake");
+                    builder.withPermission(permission);
 
                     // Testing and Tag name elements for Permissions
                     eElement.getElementsByTagName("o:asset");
@@ -83,12 +80,12 @@ public class TestParse {
                     JButton prohibitionI = new JButton("Prohibition",prohibitionII);
                     prohibitionI.setVerticalTextPosition(SwingConstants.BOTTOM);
                     prohibitionI.setHorizontalTextPosition(SwingConstants.CENTER);
-                    prohibitionI.setBounds((180*allEl+80+exisitingElementX),100,100,100);
+                    prohibitionI.setBounds((180*allEl+80+exisitingElementX),50,100,100);
                     visuall.add(prohibitionI);
 
-                    // allPkg.Policy building  // Need to add all attributes
-                    //Prohibition pProhibition = new Prohibition();
-                    //builder = builder.withProhibition(pProhibition);
+                    // Policy building  // Need to add all attributes
+                    Prohibition pProhibition = new Prohibition();
+                    builder.withProhibition(pProhibition);
 
                     // Testing and Tag name elements for Prohibitions
                     eElement.getElementsByTagName("o:asset");
@@ -105,10 +102,11 @@ public class TestParse {
             }
             */
 
-            //this.policy = builder.build();
+            this.policy = builder.build();
 
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
     }
 

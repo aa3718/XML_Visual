@@ -1,17 +1,18 @@
 package allPkg;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PolicyBuilder {
-    /*
-    public List<Permission> permissions;
-    public List<Prohibition> prohibitions;
 
-    private PolicyBuilder() {};
+    public List<Permission> permissions = new ArrayList<Permission>();
+    public List<Prohibition> prohibitions = new ArrayList<Prohibition>();
 
-    public static PolicyBuilder aPolicy() {
-        return new PolicyBuilder();
-    }
+    //private PolicyBuilder() {};
+
+    //public static PolicyBuilder aPolicy() {
+       // return new PolicyBuilder();
+    //}
 
     public Policy build() {
         Policy policy = new Policy(permissions);
@@ -28,6 +29,5 @@ public class PolicyBuilder {
         prohibitions.add(prohibition);
         return this;
     }
-*/
 
 }
