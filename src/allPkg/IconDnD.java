@@ -134,6 +134,7 @@ public class IconDnD {
     public void callODRL(String nameFile, JPanel visual) {
         TestParse parser = new TestParse();
         parser.setXmlFunction(nameFile, visual);
+        System.out.println("test");
     }
 
     public void addImportMenu(JPanel panelBoxV, JPanel visual, JPanel panel) {
