@@ -1,11 +1,14 @@
 package allPkg;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.String;
 import java.awt.dnd.*;
+import java.util.ArrayList;
 
 public class IconDnD {
 
@@ -37,65 +40,76 @@ public class IconDnD {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 700);
 
+        TitledBorder menu = new TitledBorder("MENU");
+        menu.setTitlePosition(TitledBorder.CENTER);
+        menu.setTitlePosition(TitledBorder.TOP);
+
         JPanel panel = new JPanel();
-        JPanel panelBox = new JPanel(new GridLayout(2,1,0,0));
+        JPanel panelBox = new JPanel(new GridLayout(4,1,0,0));
         JPanel panelBoxV = new JPanel();
         JPanel visual1 = new JPanel();
         JPanel visual2 = new JPanel();
         JPanel visual3 = new JPanel();
+        JPanel visual = new JPanel();
 
-        panelBox.setBounds(0, 0, 200, 100);
+        panelBox.setBounds(0, 0, 200, 150);
         panelBox.setBackground(Color.lightGray);
         panelBox.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.gray));
+        panelBox.setBorder(menu);
 
-        panelBoxV.setBounds(0, 100, 200, 500);
+        panelBoxV.setBounds(0, 150, 200, 450);
         panelBoxV.setBackground(Color.lightGray);
-        panelBoxV.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.gray));
+        panelBoxV.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
 
         visual1.setBounds(200, 0, 700, 200);
         visual1.setBackground(Color.white);
+        visual1.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
 
         visual2.setBounds(200, 200, 700, 200);
-        visual2.setBackground(Color.pink);
+        visual2.setBackground(Color.white);
 
         visual3.setBounds(200, 400, 700, 200);
-        visual3.setBackground(Color.green);
+        visual3.setBackground(Color.white);
+        visual3.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.gray));
+
+        visual.setBounds(200, 0, 700, 500);
+        visual.setBackground(Color.white);
+        visual.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
+
 
         panel.setBounds(0, 600, 900, 100);
-        panel.setBackground(Color.blue);
+        panel.setBackground(Color.gray);
 
         frame.add(panelBoxV);
         frame.add(panelBox);
         frame.add(visual1);
         frame.add(visual2);
         frame.add(visual3);
+        frame.add(visual);
         frame.add(panel);
 
-        // Dimension for menu buttons
-        /*
-        Dimension buttonDimension = new Dimension();
-        buttonDimension.height = 40;
-        buttonDimension.width = 200;
-        */
-
+        // Menu Buttons
+        ArrayList<JButton> myMenuList = new ArrayList<JButton>();
         Icon importBI = new ImageIcon("/Users/Chapman/Downloads/import.png");
         JButton importB = new JButton(importBI);
         importB.setText("Import");
-        //importB.setPreferredSize(buttonDimension);
-        importB.setMargin(new Insets(0,0,0,0));
-        importB.setOpaque(true);
-        importB.setBorderPainted(false);
-        importB.setBackground(Color.gray);
-        importB.setFocusPainted(false);
 
         Icon buildBI = new ImageIcon("/Users/Chapman/Downloads/tools.png");
         JButton buildB = new JButton(buildBI);
         buildB.setText("Build");
-        //buildB.setPreferredSize(buttonDimension);
-        buildB.setMargin(new Insets(0,0,0,0));
-        buildB.setOpaque(true);
-        buildB.setBorderPainted(false);
-        buildB.setBackground(Color.gray);
+
+        Icon exportBI = new ImageIcon("/Users/Chapman/Downloads/share.png");
+        JButton exportB = new JButton(exportBI);
+        exportB.setText("Export");
+
+        Icon helpBI = new ImageIcon("/Users/Chapman/Downloads/info.png");
+        JButton helpB = new JButton(helpBI);
+        helpB.setText("Help");
+
+        myMenuList.add(importB);
+        myMenuList.add(buildB);
+        myMenuList.add(exportB);
+        myMenuList.add(helpB);
 
         // Action Listeners
         importB.addActionListener(new ActionListener() {
@@ -106,12 +120,11 @@ public class IconDnD {
                 panelBoxV.removeAll();
                 panelBoxV.revalidate();
                 panelBoxV.repaint();
-                addImportMenu(panelBoxV,visual1,panel);
+                addImportMenu(panelBoxV,visual1,panel,visual, frame);
                 frame.setVisible(true);
 
             }
         });
-        panelBox.add(importB);
 
         buildB.addActionListener(new ActionListener() {
             @Override
@@ -126,31 +139,27 @@ public class IconDnD {
             }
         });
 
-        panelBox.add(buildB);
-        frame.setVisible(true);
+        for (JButton button : myMenuList) {
+            button.setMargin(new Insets(0,0,0,0));
+            button.setOpaque(true);
+            button.setBorderPainted(false);
+            button.setBackground(Color.gray);
+            button.setFocusPainted(false);
+            panelBox.add(button);
+            button.setHorizontalAlignment(SwingConstants.LEFT);
+            button.setIconTextGap(20);
+        }
 
+        frame.setVisible(true);
     }
 
-    public void callODRL(String nameFile, JPanel visual) {
+    public void callODRL(String nameFile, JPanel visual1, JPanel visual, JFrame frame) {
         TestParse parser = new TestParse();
-        parser.setXmlFunction(nameFile, visual);
+        parser.setXmlFunction(nameFile, visual1, visual, frame);
         System.out.println("test");
     }
 
-    public void addImportMenu(JPanel panelBoxV, JPanel visual, JPanel panel) {
-        // Manual copy paste xml text box
-        JTextField inputXML = new JTextField();
-        inputXML.setText("Input ODRL xml here.");
-        inputXML.setForeground(Color.gray.brighter());
-        inputXML.setPreferredSize(new Dimension(150, 150));
-        panelBoxV.add(inputXML);
-
-        // User attaches XML .txt file
-        JButton addFile = new JButton("Attach XML .txt file");
-        panelBoxV.add(addFile);
-        addFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+    public void addImportMenu(JPanel panelBoxV, JPanel visual1, JPanel panel, JPanel visual, JFrame frame) {
                 JFileChooser fileChoose = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
                 int res = fileChoose.showSaveDialog(null);
 
@@ -160,17 +169,15 @@ public class IconDnD {
                         String filePath = fileChoose.getSelectedFile().getAbsolutePath();
                         System.out.println(filePath);
                         // Creates the parser and the ODRL policy constructor
-                        callODRL(filePath, visual);
+                        callODRL(filePath, visual1,visual, frame);
                     } else {
                         JOptionPane errorWarning = new JOptionPane();
                         errorWarning.showMessageDialog(panel, "Could not open file", "Error", res);
                     }
                 }
-            }
-        });
     }
 
-    public void addBuildMenu(JPanel panelBoxV, JPanel visual, JPanel panel) {
+    public void addBuildMenu(JPanel panelBoxV, JPanel visual1, JPanel panel) {
         // Preparing drag and drop elements
         Icon permissionI = new ImageIcon("/Users/Chapman/Downloads/permissionI.png");
         JButton permission = new JButton(permissionI);
@@ -180,7 +187,7 @@ public class IconDnD {
         permission.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                visual.add(permission);
+                visual1.add(permission);
             }
         });
 
@@ -192,7 +199,7 @@ public class IconDnD {
         prohibition.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                visual.add(prohibition);
+                visual1.add(prohibition);
             }
         });
     }

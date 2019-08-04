@@ -13,7 +13,7 @@ import java.io.File;
 public class TestParse {
     Policy policy = null;
 
-    public void setXmlFunction(String filename, JPanel visuall) {
+    public void setXmlFunction(String filename, JPanel visuall, JPanel visual, JFrame frame) {
 
         try {
             // Read from an xml file using a parser
@@ -34,6 +34,11 @@ public class TestParse {
             // Create Policy Builder instance
             PolicyBuilder builder = new PolicyBuilder();
 
+            // Create frame for drawing graph
+            JFrame frameNew = new JFrame();
+            frameNew.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frameNew.setSize(500, 500);
+
             // Go through the Policies Permissions
             NodeList nList = doc.getElementsByTagName("o:permission");
             for (int allEl = 0; allEl < nList.getLength(); allEl++) {
@@ -45,20 +50,25 @@ public class TestParse {
                     //Adding permission to panel
                     Icon permissionII = new ImageIcon("/Users/Chapman/Downloads/permissionI.png");
                     JButton permissionI = new JButton("Permission",permissionII);
-                    permissionI.setBounds((180*allEl+80),50,100,100);
+                    permissionI.setBounds((180*allEl+80),100,100,100);
                     permissionI.setVerticalTextPosition(SwingConstants.BOTTOM);
                     permissionI.setHorizontalTextPosition(SwingConstants.CENTER);
+                    permissionI.setFocusPainted(false);
                     visuall.add(permissionI);
 
                     // Policy building  // Need to add all attributes
                     Permission permission = new Permission("Pancake");
                     builder.withPermission(permission);
 
+                    frameNew.getContentPane().add(new geometry());
+                    frameNew.setVisible(true);
+
                     // Testing and Tag name elements for Permissions
                     eElement.getElementsByTagName("o:asset");
                     System.out.println("PermissionAsset");
 
                     eElement.getElementsByTagName("o:action");
+                    eElement.getAttribute("name");
                     System.out.println("PermissionAction");
 
                 }
@@ -80,7 +90,8 @@ public class TestParse {
                     JButton prohibitionI = new JButton("Prohibition",prohibitionII);
                     prohibitionI.setVerticalTextPosition(SwingConstants.BOTTOM);
                     prohibitionI.setHorizontalTextPosition(SwingConstants.CENTER);
-                    prohibitionI.setBounds((180*allEl+80+exisitingElementX),50,100,100);
+                    prohibitionI.setBounds((180*allEl+80+exisitingElementX),100,100,100);
+                    prohibitionI.setFocusPainted(false);
                     visuall.add(prohibitionI);
 
                     // Policy building  // Need to add all attributes
