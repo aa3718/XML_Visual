@@ -1,42 +1,43 @@
 package allPkg;
 
-public class Permission implements elements {
+public class Permission {
 
     private Asset asset;
-    private Action act;
+    private Action action;
     private Constraint constraint;
     private Party party;
     private Duty duty;
-    public String name;
 
-    Permission(String name) {
-        this.name = name;
-        System.out.println(name);
+    public void setAsset(Asset asset) {
+        this.asset = asset;
     }
 
-    @Override
-    public void getAsset(Asset ass) {
-        this.asset = ass;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
-    @Override
-    public void getAction(Action act) {
-        this.act = act;
-    }
-
-    @Override
-    public void getContraint(Constraint constraint) {
+    public void setContraint(Constraint constraint) {
         this.constraint = constraint;
     }
 
-    @Override
-    public void getParty(Party party) {
+    public void setParty(Party party) {
         this.party = party;
     }
 
-    @Override
-    public void getDuty(Duty duty) {
+    public void setDuty(Duty duty) {
         this.duty = duty;
+    }
+
+    public Asset getAsset() {
+        return asset;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public Constraint getConstraint() {
+        return constraint;
     }
 
 }

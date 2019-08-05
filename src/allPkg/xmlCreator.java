@@ -21,6 +21,8 @@ public class xmlCreator {
     public static int numberForPP = 4;
     public static int dictionaryNumberAssetType = 6;
 
+
+
     public static void main(String argv[]) {
 
         try {
@@ -119,6 +121,8 @@ public class xmlCreator {
 
                 for(int i = 0; i < randomAssetActionNumber; i++) {
                     Element asset = document.createElement("o:asset");
+                    Element refinement = document.createElement("o:refinement");
+                    asset.appendChild(refinement);
                     Element action = document.createElement("o:action");
                     element.appendChild(asset);
                     element.appendChild(action);

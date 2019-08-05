@@ -1,10 +1,10 @@
 package allPkg;
 
-public interface elements {
+public interface setsAndGets {
 
     void getAsset(Asset ass);
 
-    void getAction(Action act);
+    void getAction(Action action);
 
     void getContraint(Constraint constraint);
 

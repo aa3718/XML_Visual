@@ -1,9 +1,7 @@
 package allPkg;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
+
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,6 +39,15 @@ public class TestParse {
 
             // Go through the Policies Permissions
             NodeList nList = doc.getElementsByTagName("o:permission");
+
+
+
+
+
+
+
+
+
             for (int allEl = 0; allEl < nList.getLength(); allEl++) {
                 Node nNode = nList.item(allEl);
                 System.out.println("\nCurrent Element :" + nNode.getNodeName());
@@ -49,28 +56,49 @@ public class TestParse {
 
                     //Adding permission to panel
                     Icon permissionII = new ImageIcon("/Users/Chapman/Downloads/permissionI.png");
-                    JButton permissionI = new JButton("Permission",permissionII);
-                    permissionI.setBounds((180*allEl+80),100,100,100);
+                    JButton permissionI = new JButton("Permission", permissionII);
+                    permissionI.setBounds((180 * allEl + 80), 100, 100, 100);
                     permissionI.setVerticalTextPosition(SwingConstants.BOTTOM);
                     permissionI.setHorizontalTextPosition(SwingConstants.CENTER);
                     permissionI.setFocusPainted(false);
                     visuall.add(permissionI);
 
                     // Policy building  // Need to add all attributes
-                    Permission permission = new Permission("Pancake");
+                    Permission permission = new Permission();
                     builder.withPermission(permission);
 
-                    frameNew.getContentPane().add(new geometry());
-                    frameNew.setVisible(true);
-
                     // Testing and Tag name elements for Permissions
-                    eElement.getElementsByTagName("o:asset");
-                    System.out.println("PermissionAsset");
+                    //eElement.getElementsByTagName("o:asset");
 
-                    eElement.getElementsByTagName("o:action");
-                    eElement.getAttribute("name");
-                    System.out.println("PermissionAction");
+                    NodeList nListP = eElement.getChildNodes();
 
+                    for (int allElP = 0; allElP < nListP.getLength(); allElP++) {
+                        Node nNodeP = nListP.item(allElP);
+                        System.out.println("\nCurrent Element :" + nNodeP.getNodeName());
+                        if (nNodeP.getNodeType() == Node.ELEMENT_NODE) {
+                            Element eElementP = (Element) nNodeP;
+
+                            NamedNodeMap map = nNodeP.getAttributes();
+                            int numberAttr = map.getLength();
+                            System.out.println("heyi " + numberAttr);
+                            for (int i = 0; i < numberAttr; i++) {
+                                Attr attribute = (Attr) map.item(i);
+                                int index = attribute.getValue().lastIndexOf("/");
+                                if (index > 0) {
+                                    System.out.println("Not sure " + attribute.getValue().substring(index+1));
+                                } else {
+                                    System.out.println("Not sure " + attribute.getValue());
+                                }
+                            }
+                        }
+
+
+                        System.out.println("PermissionAsset");
+
+                        eElement.getElementsByTagName("o:action");
+                        eElement.getAttribute("name");
+
+                    }
                 }
             }
 
