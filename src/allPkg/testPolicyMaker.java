@@ -44,36 +44,7 @@ public class testPolicyMaker {
                     Permission permission = new Permission();
                     builder.withPermission(permission);
                     Node nodeP = nodePermissionList.item(i);
-                    if (nodeP.getNodeType() == Node.ELEMENT_NODE) {
-                        Element eElement = (Element) nodeP;
-                        NodeList nodeListForEachElement = eElement.getChildNodes();
-                        for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
-                            Node nodePP = nodeListForEachElement.item(k);
-
-                            if (nodePP.getNodeName() == "o:action") {
-                                Action action = new Action();
-                                setAttributes(nodePP, action);
-                                permission.setAction(action);
-                                builder.withAction(action);
-                            }
-
-                            if (nodePP.getNodeName() == "o:asset") {
-                                Asset asset = new Asset();
-                                setAttributes(nodePP, asset);
-                                permission.setAsset(asset);
-                                builder.withAsset(asset);
-                            }
-
-                            if (nodePP.getNodeName() == "o:constraint") {
-                                Constraint constraint = new Constraint();
-                                setAttributes(nodePP, constraint);
-                                permission.setContraint(constraint);
-                                builder.withConstraint(constraint);
-                            }
-
-                        }
-                    }
-
+                    forAll(nodeP, permission, builder);
                 }
             }
 
@@ -84,36 +55,7 @@ public class testPolicyMaker {
                     Prohibition prohibition = new Prohibition();
                     builder.withProhibition(prohibition);
                     Node nodeP = nodeProhibitionList.item(i);
-                    if (nodeP.getNodeType() == Node.ELEMENT_NODE) {
-                        Element eElement = (Element) nodeP;
-                        NodeList nodeListForEachElement = eElement.getChildNodes();
-                        for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
-                            Node nodePP = nodeListForEachElement.item(k);
-
-                            if (nodePP.getNodeName() == "o:action") {
-                                Action action = new Action();
-                                setAttributes(nodePP, action);
-                                prohibition.setAction(action);
-                                builder.withAction(action);
-                            }
-
-                            if (nodePP.getNodeName() == "o:asset") {
-                                Asset asset = new Asset();
-                                setAttributes(nodePP, asset);
-                                prohibition.setAsset(asset);
-                                builder.withAsset(asset);
-                            }
-
-                            if (nodePP.getNodeName() == "o:constraint") {
-                                Constraint constraint = new Constraint();
-                                setAttributes(nodePP, constraint);
-                                prohibition.setContraint(constraint);
-                                builder.withConstraint(constraint);
-                            }
-
-                        }
-                    }
-
+                    forAll(nodeP, prohibition, builder);
                 }
             }
 
@@ -125,6 +67,45 @@ public class testPolicyMaker {
             return;
         }
     }
+
+    public void forAll(Node ruleNode, Rules rules, PolicyBuilder builder) {
+        if (ruleNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element eElement = (Element) ruleNode;
+            NodeList nodeListForEachElement = eElement.getChildNodes();
+            for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
+                Node nodePP = nodeListForEachElement.item(k);
+
+                if (nodePP.getNodeName() == "o:action") {
+                    Action action = new Action();
+                    setAttributes(nodePP, action);
+                    rules.setAction(action);
+                    builder.withAction(action);
+                }
+
+                if (nodePP.getNodeName() == "o:asset") {
+                    Asset asset = new Asset();
+                    setAttributes(nodePP, asset);
+                    rules.setAsset(asset);
+                    builder.withAsset(asset);
+                }
+
+                if (nodePP.getNodeName() == "o:constraint") {
+                    Constraint constraint = new Constraint();
+                    setAttributes(nodePP, constraint);
+                    rules.setContraint(constraint);
+                    builder.withConstraint(constraint);
+                }
+
+                if (nodePP.getNodeName() == "o:duty") {
+                    Duty duty = new Duty();
+                    rules.setDuty(duty);
+                    forAll(nodePP, duty, builder);
+                }
+
+            }
+        }
+    }
+
 
     // Takes in one node and set attribute to the model
     public void setAttributes(Node node, attributeHolders element) {
@@ -177,7 +158,7 @@ public class testPolicyMaker {
     public void print() {
         System.out.println(this.policy.getAction().name);
         System.out.println(this.policy.permissions.get(0).getAsset().id);
-        System.out.println(this.policy.prohibitions.get(0).getConstraint().name);
+        System.out.println(this.policy.permissions.get(0).getDuty(0).getConstraint().name);
     }
 
     /*

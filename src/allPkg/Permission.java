@@ -1,11 +1,15 @@
 package allPkg;
 
-public class Permission {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Permission extends Rules {
 
     private Asset asset;
     private Action action;
     private Constraint constraint;
     private Party party;
+    private List<Duty> duties = new ArrayList<Duty>();
     private Duty duty;
 
     public void setAsset(Asset asset) {
@@ -25,7 +29,7 @@ public class Permission {
     }
 
     public void setDuty(Duty duty) {
-        this.duty = duty;
+        duties.add(duty);
     }
 
     public Asset getAsset() {
@@ -38,6 +42,10 @@ public class Permission {
 
     public Constraint getConstraint() {
         return constraint;
+    }
+
+    public Duty getDuty(int index) {
+        return duties.get(index);
     }
 
 }

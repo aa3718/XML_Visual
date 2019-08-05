@@ -1,11 +1,14 @@
 package allPkg;
 
-public class Prohibition {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Prohibition extends Rules {
     private Asset asset;
     private Action action;
     private Constraint constraint;
     private Party party;
-    private Duty duty;
+    private List<Duty> duties = new ArrayList<Duty>();;
 
     public void setAsset(Asset asset) {
         this.asset = asset;
@@ -24,7 +27,7 @@ public class Prohibition {
     }
 
     public void setDuty(Duty duty) {
-        this.duty = duty;
+        duties.add(duty);
     }
 
     public Asset getAsset() {
