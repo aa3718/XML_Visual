@@ -2,7 +2,7 @@ package allPkg;
 
 import java.util.ArrayList;
 
-public class Constraint extends attributeHolders{
+public class Constraint extends attributeHolders {
     public ArrayList<String> attributeNameList = new ArrayList<String>();
     public static ArrayList<String> nameLeftOperand = new ArrayList<String>();
     public static ArrayList<String> nameOperators = new ArrayList<String>();
@@ -13,6 +13,43 @@ public class Constraint extends attributeHolders{
     public String dataType;
     public String unit;
     public String status;
+    public String leftOperand;
+
+    public void setID(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOperator(String operator) { this.operator = operator; }
+
+    public void setRightOperand(String rightOperand) {
+        this.rightOperand = rightOperand;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    public void setLeftOperand(String leftOperand) { this.leftOperand = leftOperand; }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getName() { return this.name; }
+
+    public String getOperator() { return this.operator; }
+
+    public String getRightOperand() { return this.rightOperand; }
+
+    public  String getLeftOperand() { return this.leftOperand;}
 
     public static void buildOperators() {
         nameOperators.add("eq");
@@ -78,6 +115,7 @@ public class Constraint extends attributeHolders{
         attributeNameList.add("unit");
         attributeNameList.add("status");
         attributeNameList.add("rightOperand");
+        attributeNameList.add("leftOperand");
         return this.attributeNameList;
     }
 
@@ -117,6 +155,22 @@ public class Constraint extends attributeHolders{
             this.rightOperand = value;
             return;
         }
+
+        if(attribute == "leftOperand") {
+            this.leftOperand = value;
+            return;
+        }
+    }
+
+    public void copyInstance(Constraint constraint) {
+        constraint.setOperator(this.operator);
+        constraint.setName(this.name);
+        constraint.setID(this.id);
+        constraint.setDataType(this.dataType);
+        constraint.setRightOperand(this.rightOperand);
+        constraint.setStatus(this.status);
+        constraint.setUnit(this.unit);
+        constraint.setLeftOperand(this.leftOperand);
     }
 
 }

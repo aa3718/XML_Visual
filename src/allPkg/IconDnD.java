@@ -11,6 +11,8 @@ import java.awt.dnd.*;
 import java.util.ArrayList;
 
 public class IconDnD {
+    private Boolean importedPolicy = false;
+    private ArrayList<Policy> policies = new ArrayList<Policy>();
 
     private void display() {
 
@@ -45,19 +47,19 @@ public class IconDnD {
         menu.setTitlePosition(TitledBorder.TOP);
 
         JPanel panel = new JPanel();
-        JPanel panelBox = new JPanel(new GridLayout(4,1,0,0));
+        JPanel panelBox = new JPanel(new GridLayout(5,1,0,0));
         JPanel panelBoxV = new JPanel();
         JPanel visual1 = new JPanel();
         JPanel visual2 = new JPanel();
         JPanel visual3 = new JPanel();
         JPanel visual = new JPanel();
 
-        panelBox.setBounds(0, 0, 200, 150);
+        panelBox.setBounds(0, 0, 200, 200);
         panelBox.setBackground(Color.lightGray);
         panelBox.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.gray));
         panelBox.setBorder(menu);
 
-        panelBoxV.setBounds(0, 150, 200, 450);
+        panelBoxV.setBounds(0, 200, 200, 400);
         panelBoxV.setBackground(Color.lightGray);
         panelBoxV.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
 
@@ -102,6 +104,10 @@ public class IconDnD {
         JButton exportB = new JButton(exportBI);
         exportB.setText("Export");
 
+        Icon visualBI = new ImageIcon("/Users/Chapman/Desktop/icons/visual.png");
+        JButton visualB = new JButton(visualBI);
+        visualB.setText("Visual");
+
         Icon helpBI = new ImageIcon("/Users/Chapman/Downloads/info.png");
         JButton helpB = new JButton(helpBI);
         helpB.setText("Help");
@@ -109,26 +115,29 @@ public class IconDnD {
         myMenuList.add(importB);
         myMenuList.add(buildB);
         myMenuList.add(exportB);
+        myMenuList.add(visualB);
         myMenuList.add(helpB);
 
         // Action Listeners
         importB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                visualB.setBackground(Color.gray);
                 buildB.setBackground(Color.gray);
                 importB.setBackground(Color.gray.darker());
                 panelBoxV.removeAll();
                 panelBoxV.revalidate();
                 panelBoxV.repaint();
-                addImportMenu(panelBoxV,visual1,panel,visual, frame);
+                addImportMenu(panelBoxV,visual1,panel,visual,frame);
                 frame.setVisible(true);
-
+                importedPolicy = true;
             }
         });
 
         buildB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                visualB.setBackground(Color.gray);
                 importB.setBackground(Color.gray);
                 buildB.setBackground(Color.gray.darker());
                 panelBoxV.removeAll();
@@ -136,6 +145,23 @@ public class IconDnD {
                 panelBoxV.repaint();
                 addBuildMenu(panelBoxV,visual1,panel);
                 frame.setVisible(true);
+            }
+        });
+
+        visualB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buildB.setBackground(Color.gray);
+                importB.setBackground(Color.gray);
+                visualB.setBackground(Color.gray.darker());
+                if (importedPolicy = true) {
+                    JFrame frameNew = new JFrame();
+                    frameNew.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frameNew.setSize(900, 900);
+                    geometry2 visualization = new geometry2(policies.get(policies.size()-1));
+                    frameNew.getContentPane().add(visualization);
+                    frameNew.setVisible(true);
+                }
             }
         });
 
@@ -153,9 +179,10 @@ public class IconDnD {
         frame.setVisible(true);
     }
 
-    public void callODRL(String nameFile, JPanel visual1, JPanel visual, JFrame frame) {
+    public void callXMLPolicyBuilder(String nameFile, JPanel visual1, JPanel visual, JFrame frame) {
         testPolicyMaker parser = new testPolicyMaker();
         parser.setXmlFunction(nameFile);
+        policies.add(parser.getPolicy());
     }
 
     public void addImportMenu(JPanel panelBoxV, JPanel visual1, JPanel panel, JPanel visual, JFrame frame) {
@@ -168,7 +195,7 @@ public class IconDnD {
                         String filePath = fileChoose.getSelectedFile().getAbsolutePath();
                         System.out.println(filePath);
                         // Creates the parser and the ODRL policy constructor
-                        callODRL(filePath, visual1,visual, frame);
+                        callXMLPolicyBuilder(filePath, visual1,visual, frame);
                     } else {
                         JOptionPane errorWarning = new JOptionPane();
                         errorWarning.showMessageDialog(panel, "Could not open file", "Error", res);

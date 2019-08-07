@@ -9,7 +9,6 @@ public class Action extends attributeHolders {
     public String name;
     public String id;
 
-
     public void setName(String name) {
         this.name = name;
     }
@@ -112,5 +111,12 @@ public class Action extends attributeHolders {
             return;
         }
     }
+
+    public void copyInstance(Action action) {
+        action.setName(this.name);
+        action.setID(this.id);
+    }
+
+    public String getName() { return this.name; }
 
 }

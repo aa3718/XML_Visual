@@ -3,11 +3,11 @@ package allPkg;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Prohibition extends Rules {
+public class Prohibition implements Rules {
     private Asset asset;
     private Action action;
-    private Constraint constraint;
-    private Party party;
+    private List<Constraint> constraints = new ArrayList<Constraint>();
+    private List<Party> parties = new ArrayList<Party>();
     private List<Duty> duties = new ArrayList<Duty>();;
 
     public void setAsset(Asset asset) {
@@ -18,17 +18,21 @@ public class Prohibition extends Rules {
         this.action = action;
     }
 
-    public void setContraint(Constraint constraint) {
-        this.constraint = constraint;
-    }
+    public void setConstraint(Constraint constraint) { constraints.add(constraint); }
 
     public void setParty(Party party) {
-        this.party = party;
+        parties.add(party);
     }
 
     public void setDuty(Duty duty) {
         duties.add(duty);
     }
+
+    public void setEntireConstraint(List<Constraint> constraints) { this.constraints = constraints; }
+
+    public void setEntireParty(List<Party> parties) { this.parties = parties; }
+
+    public void setEntireDuty(List<Duty> duties) { this.duties = duties; }
 
     public Asset getAsset() {
         return asset;
@@ -38,7 +42,13 @@ public class Prohibition extends Rules {
         return action;
     }
 
-    public Constraint getConstraint() {
-        return constraint;
+    public List<Constraint> getConstraint() {
+        return constraints;
     }
+
+    public List<Duty> getDuty() {
+        return duties;
+    }
+
+    public List<Party> getParty() { return parties; }
 }

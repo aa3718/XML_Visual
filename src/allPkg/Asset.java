@@ -2,7 +2,7 @@ package allPkg;
 
 import java.util.ArrayList;
 
-public class Asset extends attributeHolders{
+public class Asset extends attributeHolders {
     public ArrayList<String> attributeNameList = new ArrayList<String>();
     public String relation;
     public String uid;
@@ -19,6 +19,8 @@ public class Asset extends attributeHolders{
     public void setID(String id) {
         this.id = id;
     }
+
+    public String getUID() { return this.uid; }
 
     @Override
     public ArrayList<String> getAttributeList() {
@@ -46,4 +48,11 @@ public class Asset extends attributeHolders{
         }
 
     }
+
+    public void copyInstance(Asset asset) {
+        asset.setRelation(this.relation);
+        asset.setUID(this.uid);
+        asset.setID(this.id);
+    }
+
 }

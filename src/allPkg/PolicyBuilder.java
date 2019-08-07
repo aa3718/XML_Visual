@@ -5,11 +5,13 @@ import java.util.List;
 
 public class PolicyBuilder {
 
-    public List<Permission> permissions = new ArrayList<Permission>();
-    public List<Prohibition> prohibitions = new ArrayList<Prohibition>();
-    public List<Action> actions = new ArrayList<Action>();
-    public List<Asset> assets = new ArrayList<Asset>();
-    public List<Constraint> constraints = new ArrayList<Constraint>();
+    public ArrayList<Permission> permissions = new ArrayList<Permission>();
+    public ArrayList<Prohibition> prohibitions = new ArrayList<Prohibition>();
+    public ArrayList<Action> actions = new ArrayList<Action>();
+    public ArrayList<Asset> assets = new ArrayList<Asset>();
+    public ArrayList<Constraint> constraints = new ArrayList<Constraint>();
+    public ArrayList<Duty> duties = new ArrayList<Duty>();
+    public ArrayList<Party> parties = new ArrayList<Party>();
 
     public Policy build() {
         Policy policy = new Policy(permissions);
@@ -17,6 +19,8 @@ public class PolicyBuilder {
         policy.addAction(actions);
         policy.addAsset(assets);
         policy.addConstraint(constraints);
+        policy.addDuty(duties);
+        policy.addParty(parties);
         return policy;
     }
 
@@ -40,9 +44,63 @@ public class PolicyBuilder {
         return this;
     }
 
+    public PolicyBuilder withParty(Party party) {
+        parties.add(party);
+        return this;
+    }
+
     public PolicyBuilder withConstraint(Constraint constraint) {
         constraints.add(constraint);
         return this;
     }
 
+    public PolicyBuilder withDuty(Duty duty) {
+        duties.add(duty);
+        return this;
+    }
+
+    public Action findAction(String id) {
+        for (int i = 0; i < actions.size(); i++) {
+            if (actions.get(i).id.equals(id)) {
+                return actions.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Asset findAsset(String id) {
+        for (int i = 0; i < assets.size(); i++) {
+            if (assets.get(i).id.equals(id)) {
+                return assets.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Constraint findConstraint(String id) {
+        for (int i = 0; i < constraints.size(); i++) {
+            if (constraints.get(i).id.equals(id)) {
+                return constraints.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Duty findDuty(String id) {
+        for (int i = 0; i < duties.size(); i++) {
+            if (duties.get(i).id.equals(id)) {
+                return duties.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Party findParty(String id) {
+        for (int i = 0; i < parties.size(); i++) {
+            if (parties.get(i).id.equals(id)) {
+                return parties.get(i);
+            }
+        }
+        return null;
+    }
 }

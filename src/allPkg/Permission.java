@@ -3,14 +3,13 @@ package allPkg;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Permission extends Rules {
+public class Permission implements Rules {
 
     private Asset asset;
     private Action action;
-    private Constraint constraint;
-    private Party party;
+    private List<Constraint> constraints = new ArrayList<Constraint>();
     private List<Duty> duties = new ArrayList<Duty>();
-    private Duty duty;
+    private List<Party> parties = new ArrayList<Party>();
 
     public void setAsset(Asset asset) {
         this.asset = asset;
@@ -20,32 +19,36 @@ public class Permission extends Rules {
         this.action = action;
     }
 
-    public void setContraint(Constraint constraint) {
-        this.constraint = constraint;
-    }
+    public void setConstraint(Constraint constraint) { constraints.add(constraint); }
 
     public void setParty(Party party) {
-        this.party = party;
+        parties.add(party);
     }
 
     public void setDuty(Duty duty) {
         duties.add(duty);
     }
 
+    public void setEntireConstraint(List<Constraint> constraints) { this.constraints = constraints; }
+
+    public void setEntireParty(List<Party> parties) { this.parties = parties; }
+
+    public void setEntireDuty(List<Duty> duties) { this.duties = duties; }
+
     public Asset getAsset() {
         return asset;
     }
 
-    public Action getAction() {
-        return action;
+    public Action getAction() { return action; }
+
+    public List<Constraint> getConstraint() {
+        return constraints;
     }
 
-    public Constraint getConstraint() {
-        return constraint;
+    public List<Duty> getDuty() {
+        return duties;
     }
 
-    public Duty getDuty(int index) {
-        return duties.get(index);
-    }
+    public List<Party> getParty() { return parties; }
 
 }

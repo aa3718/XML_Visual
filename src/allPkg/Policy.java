@@ -9,6 +9,8 @@ public class Policy {
     public List<Action> actions;
     public List<Asset> assets;
     public List<Constraint> constraints;
+    public List<Duty> duties;
+    public List<Party> parties;
     public String uid;
     public String type;
     public String conflict;
@@ -18,17 +20,17 @@ public class Policy {
     public String inheritRelation;
     public String profile;
 
-
     public Policy(List<Permission> permissions) {
         this.permissions = permissions;
     }
-
     public void addProhibition(List<Prohibition> prohibitions) {
         this.prohibitions = prohibitions;
     }
     public void addAction(List<Action> actions) { this.actions = actions; }
     public void addAsset(List<Asset> assets) { this.assets = assets; }
     public void addConstraint(List<Constraint> constraints) { this.constraints = constraints; }
+    public void addDuty(List<Duty> duties) { this.duties = duties; }
+    public void addParty(List<Party> parties) { this.parties = parties; }
 
     public void setType(String type) {
         int indexLast = type.lastIndexOf("/");
@@ -53,21 +55,45 @@ public class Policy {
         this.profile = profile.substring(indexLast);;
     }
 
-    public Action getAction() {
-        return actions.get(0);
+    public Permission getPermission(int index) {return permissions.get(index); }
+
+    public Prohibition getProhibition(int index) { return prohibitions.get(index); }
+
+    public Action getAction(int index) {
+        return actions.get(index);
     }
 
-    public Asset getAsset() {
-        return assets.get(0);
+    public Asset getAsset(int index) {
+        return assets.get(index);
     }
 
-    public Constraint getConstraint() {
-        return constraints.get(0);
+    public Constraint getConstraint(int index) {
+        return constraints.get(index);
     }
 
     public String getProfile() {
         return this.profile;
     }
 
+    // Statistics for Policy
+    public int getNumberOfPermissions() {
+        return permissions.size();
+    }
+
+    public int getNumberOfProhibitions() {
+        return prohibitions.size();
+    }
+
+    public int getNumberOfConstraints() {
+        return constraints.size();
+    }
+
+    public int getNumberOfParties() {
+        return parties.size();
+    }
+
+    public int getNumberOfDuties() {
+        return duties.size();
+    }
 
 }
