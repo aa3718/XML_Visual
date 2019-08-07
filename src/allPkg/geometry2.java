@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.text.AttributedCharacterIterator;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 
 public class geometry2 extends JPanel {
@@ -25,7 +26,8 @@ public class geometry2 extends JPanel {
     private int ruleLengthSize;
     private int numberElementPerLine = 4;
     private String name;
-
+    private int startBoxX;
+    private int startBoxY;
 
     geometry2(Policy policy) {
         this.policy = policy;
@@ -40,110 +42,68 @@ public class geometry2 extends JPanel {
 
         for (int i = 0; i < numberOfTotalElementsPolicy; i++) {
 
+            // Enables switch from Permission to Prohibition
             if (policy.getNumberOfPermissions() == i) {
                 name = "Prohibition";
                 isPermission = false;
             }
 
-            if ((i % numberElementPerLine == 0) && (i!=0)) {
+            // Signals to go to the line
+            if ((i % numberElementPerLine == 0) && (i != 0)) {
                 lineNumber++;
             }
 
-            System.out.println((5 + (lineNumber * ruleLengthSize)) + "y");
-            System.out.println((5 + (5 * i) + (200 * (i % numberElementPerLine))) + "x");
-
             // Draws main box
-            g.drawRect((5 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine))), (5 + (lineNumber * ruleLengthSize+(lineNumber*5))), prefferedRuleBoxSizeW, ruleLengthSize);
+            g.drawRect((5 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine))), (5 + (lineNumber * ruleLengthSize + (lineNumber * 5))), prefferedRuleBoxSizeW, ruleLengthSize);
             latestX = 5 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine));
             latestY = (5 + (lineNumber * ruleLengthSize));
 
             // Writes main Rule Name
-            g.drawString(name, 20+(205*(i % numberElementPerLine)), 25 + (lineNumber * ruleLengthSize));
-            latestX = 20+(205*(i % numberElementPerLine));
+            g.drawString(name, 20 + (205 * (i % numberElementPerLine)), 25 + (lineNumber * ruleLengthSize));
+            latestX = 20 + (205 * (i % numberElementPerLine));
             latestY = 25 + (lineNumber * ruleLengthSize);
 
-            int startBoxX = latestX;
-            int startBoxY = latestY;
+            startBoxX = latestX;
+            startBoxY = latestY;
+
+            // Transform from Title P or P
+            latestX += 15;
+            latestY += 10;
 
             try {
 
-                // Transform from Title P or P
-                latestX += 15;
-                latestY += 10;
-
-
+                // Get the Element (Permission or Prohibition) depending on Boolean
                 Rules rule;
                 if (isPermission) {
                     rule = policy.getPermission(i);
                 } else {
-                    rule = policy.getProhibition(i-policy.getNumberOfPermissions());
+                    rule = policy.getProhibition(i - policy.getNumberOfPermissions());
                 }
 
-                System.out.println(rule.getParty().get(0).getUID());
-                for (int j = 0; j < rule.getParty().size(); j++) {
-                    System.out.println("Here in party search probrlem");
-                    //String nameAttribute = policy.getPermission(i).getParty().get(j).getFunction();
-                    String nameAttribute = "profile";
-                    BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + nameAttribute + ".png"));
-                    g.drawImage(image, latestX, latestY, null);
-                    System.out.println("Here in party search probrlem2");
-                    g.drawString(rule.getParty().get(j).getFunction() + ": " + rule.getParty().get(j).getUID(), latestX + 35, latestY + 15);
-                    latestY += 40;
-                }
+                drawInnerAAP(rule,g);
 
+                // Draw Constraints
+                drawConstraints(rule,g,false);
 
-                // Draw Action
-                g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + rule.getAction().getName() + ".png")), latestX, latestY, null);
-                g.drawString(rule.getAction().getName(), latestX + 35, latestY + 15);
-                latestY += 40;
-
-                // Draw Asset
-                g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/asset.png")), latestX, latestY, null);
-                g.drawString(rule.getAsset().getUID(), latestX + 35, latestY + 15);
-                latestY += 30;
-
-                // Draw Rule box after depending on last points
-                g.drawRect(startBoxX+5,startBoxY+5,prefferedRuleBoxSizeW-25,latestY-(startBoxY+5));
-
-                startBoxX = startBoxX+5;
-                startBoxY = startBoxY+5 + latestY-(startBoxY+5);
-
-                // Draw box before Constraint
-                for (int j = 0; j < rule.getConstraint().size(); j++) {
-                    latestX -= 10;
-                    g.drawRect(latestX, latestY, (prefferedRuleBoxSizeW-25),2);
-                    latestY += 2;
-                    g.drawString("Constraint",latestX+5,latestY+13);
-                    latestX +=5;
-                    latestY += 13;
-                    String nameAttribute = rule.getConstraint().get(j).getName();
-                    BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/name/" + nameAttribute + ".png"));
-                    g.drawImage(image,latestX+5,latestY+5,null);
-                    latestX += 5;
+                // Draw Duties
+                for (int j = 0; j < rule.getDuty().size(); j++) {
+                    g.drawString("Duty",latestX-5, latestY+5);
+                    latestX -= 5;
                     latestY += 5;
-                    g.drawString(nameAttribute,latestX+35,latestY+20);
-                    latestY += 30;
+                    startBoxY = latestY+5;
 
-                    if (rule.getConstraint().get(j).getLeftOperand() != null) {
-                        String nameAttributeLO = rule.getConstraint().get(j).getLeftOperand();
-                        g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + nameAttributeLO + ".png")),latestX, latestY,null);
-                        g.drawString(nameAttributeLO,latestX+35, latestY+20);
-                        latestY += 40;
-                    }
+                    // Transform from Title P or P
+                    latestX += 15;
+                    latestY += 10;
 
-                    // Draw Operator
-                    String nameAttributeO = rule.getConstraint().get(j).getOperator();
-                    g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/operator/" + nameAttributeO + ".png")),latestX, latestY,null);
-                   // g.drawString(rule.getConstraint().get(j).getOperator(),latestX,latestY);
-                    latestY += 40;
 
-                    // Draw Value
-                    g.drawString(rule.getConstraint().get(j).getRightOperand(),latestX,latestY);
-                    latestY += 30;
 
-                    g.drawRect(startBoxX,startBoxY,prefferedRuleBoxSizeW-25,latestY-(startBoxY));
+
+                    // startBoxX don't change, startBoxY
+
+                    drawConstraints(rule.getDuty().get(j),g, true);
+
                 }
-
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -152,7 +112,93 @@ public class geometry2 extends JPanel {
         }
 
     }
+
+
+    public void drawInnerAAP(Rules rule, Graphics g) {
+        try {
+            for (int j = 0; j < rule.getParty().size(); j++) {
+
+                //String nameAttribute = policy.getPermission(i).getParty().get(j).getFunction();
+                String nameAttribute = "profile";
+                BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + nameAttribute + ".png"));
+                g.drawImage(image, latestX, latestY, null);
+
+                g.drawString(rule.getParty().get(j).getFunction() + ": " + rule.getParty().get(j).getUID(), latestX + 35, latestY + 15);
+                latestY += 40;
+            }
+
+            // Draw Action
+            g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + rule.getAction().getName() + ".png")), latestX, latestY, null);
+            g.drawString(rule.getAction().getName(), latestX + 35, latestY + 15);
+            latestY += 40;
+
+            // Draw Asset
+            g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/asset.png")), latestX, latestY, null);
+            g.drawString(rule.getAsset().getUID(), latestX + 35, latestY + 15);
+            latestY += 30;
+
+            // Draw Rule box after depending on last points
+            g.drawRect(startBoxX + 5, startBoxY + 5, prefferedRuleBoxSizeW - 25, latestY - (startBoxY + 5));
+
+            startBoxX = startBoxX + 5;
+            startBoxY = startBoxY + 5 + latestY - (startBoxY + 5);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+
+    public void drawConstraints(Rules rule, Graphics g, Boolean isDuty) {
+        try {
+            for (int j = 0; j < rule.getConstraint().size(); j++) {
+                latestX -= 10;
+                g.drawRect(latestX, latestY, (prefferedRuleBoxSizeW - 25), 2);
+                latestY += 2;
+                if (j == 0) {
+                    g.drawString("Constraint", latestX + 5, latestY + 13);
+                    latestX += 5;
+                    latestY += 13;
+                }
+                String nameAttribute = rule.getConstraint().get(j).getName();
+                BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/name/" + nameAttribute + ".png"));
+                g.drawImage(image, latestX + 5, latestY + 5, null);
+                latestX += 5;
+                latestY += 5;
+                g.drawString(nameAttribute, latestX + 35, latestY + 20);
+                latestY += 30;
+
+                if (rule.getConstraint().get(j).getLeftOperand() != null) {
+                    String nameAttributeLO = rule.getConstraint().get(j).getLeftOperand();
+                    g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + nameAttributeLO + ".png")), latestX, latestY, null);
+                    g.drawString(nameAttributeLO, latestX + 35, latestY + 20);
+                    latestY += 40;
+                }
+
+                // Draw Operator
+                String nameAttributeO = rule.getConstraint().get(j).getOperator();
+                g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/operator/" + nameAttributeO + ".png")), latestX, latestY, null);
+                // g.drawString(rule.getConstraint().get(j).getOperator(),latestX,latestY);
+                latestY += 40;
+
+                // Draw Value
+                g.drawString(rule.getConstraint().get(j).getRightOperand(), latestX, latestY);
+                latestY += 30;
+
+                if (!isDuty) {
+                    g.drawRect(startBoxX, startBoxY, prefferedRuleBoxSizeW - 25, latestY - (startBoxY));
+                } else {
+                    g.drawRoundRect(startBoxX, startBoxY, prefferedRuleBoxSizeW - 25, latestY - (startBoxY),30,30);
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 }
+
+
+
 /*
             try {
                 for (policy.)

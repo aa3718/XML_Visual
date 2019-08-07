@@ -15,6 +15,13 @@ import java.io.File;
 public class geometry extends JPanel{
 
     public void paint(Graphics g) {
+
+        int value = 10;
+
+        System.out.println(value);
+        change(value);
+        System.out.println(value);
+
         g.drawOval(200, 200, 200, 200);
         g.drawOval(100, 170, 400, 600);
         g.drawString("Permission",265,240);
@@ -72,6 +79,10 @@ public class geometry extends JPanel{
             } catch (Exception e) {
                 System.out.println("Error");
             }
+    }
+
+    public void change(int value) {
+        value += 10;
     }
 
     public static void main(String[] args) {
