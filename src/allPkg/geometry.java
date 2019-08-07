@@ -22,6 +22,8 @@ public class geometry extends JPanel{
         change(value);
         System.out.println(value);
 
+        g.drawRoundRect(200,200,150,150,-200,40);
+
         g.drawOval(200, 200, 200, 200);
         g.drawOval(100, 170, 400, 600);
         g.drawString("Permission",265,240);

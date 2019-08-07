@@ -72,6 +72,7 @@ public class testPolicyMaker {
         if (ruleNode.getNodeType() == Node.ELEMENT_NODE) {
             Element eElement = (Element) ruleNode;
             NodeList nodeListForEachElement = eElement.getChildNodes();
+
             for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
                 Node nodePP = nodeListForEachElement.item(k);
 
@@ -105,6 +106,7 @@ public class testPolicyMaker {
 
                 if (nodePP.getNodeName() == "o:duty") {
                     Duty duty = new Duty();
+                    setAttributes(nodePP, duty, builder);
                     rules.setDuty(duty);
                     builder.withDuty(duty);
                     forAll(nodePP, duty, builder);
@@ -155,6 +157,7 @@ public class testPolicyMaker {
                         System.out.println("Error Cloning");
                     }
                 }
+                /*
                 if (element instanceof Duty) {
                     try {
                         (builder.findDuty(reference)).copyInstance((Duty)element);
@@ -162,6 +165,7 @@ public class testPolicyMaker {
                         System.out.println("Error Cloning");
                     }
                 }
+                */
                 if (element instanceof Party) {
                     try {
                         (builder.findParty(reference)).copyInstance((Party)element);
@@ -170,6 +174,20 @@ public class testPolicyMaker {
                     }
                 }
                 return;
+            }
+
+            System.out.println("nope outside");
+            System.out.println(attribute.getName());
+            System.out.println(element instanceof Duty);
+            if (attribute.getName() == "uid" && element instanceof Duty) {
+                System.out.println("okay in at least");
+                String reference = attribute.getValue().substring(attribute.getValue().lastIndexOf("#")+1);
+                System.out.println(reference);
+                try {
+                    (builder.findDuty(reference)).copyInstance((Duty)element);
+                } catch (Exception e) {
+                    System.out.println("Error Cloning");
+                }
             }
 
             ArrayList<String> theList = element.getAttributeList();
@@ -190,11 +208,6 @@ public class testPolicyMaker {
             }
 
         }
-    }
-
-
-    public void trying(Asset asset) {
-
     }
 
 

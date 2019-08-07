@@ -159,7 +159,8 @@ public class IconDnD {
                     frameNew.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frameNew.setSize(900, 900);
                     geometry2 visualization = new geometry2(policies.get(policies.size()-1));
-                    frameNew.getContentPane().add(visualization);
+                    JScrollPane scroll = new JScrollPane(visualization,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                    frameNew.getContentPane().add(scroll);
                     frameNew.setVisible(true);
                 }
             }

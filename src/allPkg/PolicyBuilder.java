@@ -86,9 +86,18 @@ public class PolicyBuilder {
         return null;
     }
 
-    public Duty findDuty(String id) {
+    public Duty findDuty(String uid) {
+        System.out.println("gets here!! ");
+        /*
         for (int i = 0; i < duties.size(); i++) {
-            if (duties.get(i).id.equals(id)) {
+            if (duties.get(i).id.equals(uid)) {
+                return duties.get(i);
+            }
+        }
+        */
+        for (int i = 0; i < duties.size(); i++) {
+            if (duties.get(i).uid.equals(uid)) {
+                System.out.println("Found in duty!! L)");
                 return duties.get(i);
             }
         }
