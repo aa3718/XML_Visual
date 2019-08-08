@@ -1,24 +1,66 @@
 package allPkg;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 
-public class Action extends attributeHolders {
+public class bubbleGraphPolicy extends JPanel {
+    private Policy policy;
+    private boolean useIcon;
+    private ArrayList<String> nameAction;
 
-    public ArrayList<String> nameAction = new ArrayList<String>();
-    public ArrayList<String> attributeNameList = new ArrayList<String>();
-    public String name;
-    public String id;
-
-    public void setName(String name) {
-        this.name = name;
+    bubbleGraphPolicy(Policy policy,boolean useIcon) {
+        this.useIcon = useIcon;
+        this.policy = policy;
+        buildAction();
+        System.out.println("BUILT ONCE");
     }
 
-    public void setID(String id) {
-        this.id = id;
+
+    public void paint(Graphics g) {
+
+        int numberPerLine = 8;
+        int lineNumber = 0;
+
+
+        // Get any Action and build list
+        for (int i = 0; i < nameAction.size(); i++) {
+
+            if (i % numberPerLine == 0) {
+                lineNumber++;
+            }
+
+            String pictureName = nameAction.get(i);
+
+            if(useIcon) {
+                try {
+                    g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + pictureName + ".png")), 5 + (5 * (i % numberPerLine)) + (150 * (i % numberPerLine)), 5 + (150 * lineNumber), null);
+                } catch (Exception e) {
+                    System.out.println("Error uploading");
+                    e.printStackTrace();
+                }
+            } else {
+                g.drawString(pictureName,15 + (15 * (i % numberPerLine)) + (120 * (i % numberPerLine)),15 + (50 * lineNumber));
+            }
+
+            for (int j = 0; j < policy.permissions.size(); j++) {
+                if (policy.permissions.get(j).getAction().getName().equals(pictureName)) {
+                    g.setColor(Color.getHSBColor(200,150+(j*250),50));
+                    g.drawRect(15 + (15 * (i % numberPerLine)) + (120 * (i % numberPerLine)),15 + (50 * lineNumber),25,25);
+                }
+            }
+            g.setColor(Color.black);
+        }
+
+
     }
 
-    /*
+
     public void buildAction() {
+        nameAction = new ArrayList<String>();
         nameAction.add("Attribute");
         nameAction.add("CommercialUse"); //
         nameAction.add("DerivativeWorks");
@@ -92,33 +134,6 @@ public class Action extends attributeHolders {
         nameAction.add("write");
         nameAction.add("writeTo");
     }
-    */
 
-    @Override
-    public ArrayList<String> getAttributeList() {
-        attributeNameList.add("id");
-        attributeNameList.add("name");
-        return this.attributeNameList;
-    }
-
-    @Override
-    void setAttribute(String attribute, String value) {
-        if (attribute == "id"){
-            this.id = value;
-            return;
-        }
-
-        if (attribute == "name"){
-            this.name = value;
-            return;
-        }
-    }
-
-    public void copyInstance(Action action) {
-        action.setName(this.name);
-        action.setID(this.id);
-    }
-
-    public String getName() { return this.name; }
 
 }

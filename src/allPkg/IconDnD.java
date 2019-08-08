@@ -295,7 +295,7 @@ public class IconDnD implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e) {
-        System.out.println(e.getActionCommand() + " <-name button & if true that same as in list->" + menuName.contains(e.getActionCommand()));
+
         if (menuName.contains(e.getActionCommand())) {
             for (int i = 0; i < myMenuList.size(); i++) {
                 if (e.getActionCommand().equals(myMenuList.get(i).getText())) {
@@ -323,10 +323,19 @@ public class IconDnD implements ActionListener{
                     JFrame frameNew = new JFrame();
                     frameNew.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frameNew.setSize(900, 900);
-                    geometry2 visualization = new geometry2(policies.get(policies.size() - 1));
-                    JScrollPane scroll = new JScrollPane(visualization, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                    frameNew.getContentPane().add(scroll);
+                    geometry2Builder geometry2Builder = new geometry2Builder();
+                    geometry2Builder.setColorPermission(Color.blue);
+                    geometry2Builder.setPolicy(policies.get(policies.size() - 1));
+                    geometry2 visualization = geometry2Builder.build();
+                    frameNew.getContentPane().add(visualization);
                     frameNew.setVisible(true);
+
+                    bubbleGraphPolicy graph = new bubbleGraphPolicy(policies.get(policies.size() - 1),false);
+                    JFrame frameNewN = new JFrame();
+                    frameNewN.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frameNewN.setSize(800, 900);
+                    frameNewN.getContentPane().add(graph);
+                    frameNewN.setVisible(true);
                 }
             }
 

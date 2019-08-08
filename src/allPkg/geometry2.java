@@ -17,20 +17,21 @@ import java.util.ArrayList;
 public class geometry2 extends JPanel {
 
     private Policy policy;
-    private int prefferedRuleBoxSizeW = 200;
     private int latestX = 0;
     private int latestY = 0;
     private boolean isPermission;
     private int numberOfTotalElementsPolicy;
     private int lineNumber;
     private int ruleLengthSize;
-    private int numberElementPerLine = 4;
     private String name;
     private int startBoxX;
     private int startBoxY;
     private int maxYBoxOnLine;
     private int baseYForLine;
+    private int theYforDutyWithConstraint;
 
+    private int prefferedRuleBoxSizeW;
+    private int numberElementPerLine;
     private int spaceBetweenAttributes;
     private int spaceBetweenAttrIconAndAttrStringsX;
     private int spaceAtBottomOfBoxes;
@@ -41,10 +42,16 @@ public class geometry2 extends JPanel {
     private int arcHDuty;
     private int spaceBetweenRulesAndDuty;
     private int spaceBetweenDutyAndDuty;
-    private int theYforDutyWithConstraint;
     private int bottomPadding;
-    private int paddingBetweenBoxexB;
 
+    private Color mainBoxColor;
+    private Color colorPermission;
+    private Color colorProhibition;
+    private Color colorConstraint;
+    private Color colorDuty;
+
+    private boolean makeDutyRounded;
+    private boolean makeDutyHex;
 
     geometry2(Policy policy) {
         this.policy = policy;
@@ -57,6 +64,7 @@ public class geometry2 extends JPanel {
         name = "Permission";
         isPermission = true;
 
+        /*
         spaceBetweenAttributes = 40;
         spaceBetweenAttrIconAndAttrStringsX = 35;
         spaceAtBottomOfBoxes = 15;
@@ -68,8 +76,9 @@ public class geometry2 extends JPanel {
         spaceBetweenRulesAndDuty = 15;
         spaceBetweenDutyAndDuty = 25;
         bottomPadding = 15;
+        */
+
         maxYBoxOnLine = 0;
-        paddingBetweenBoxexB = 5;
         lineNumber = 0;
 
         for (int i = 0; i < numberOfTotalElementsPolicy; i++) {
@@ -148,12 +157,18 @@ public class geometry2 extends JPanel {
                 System.out.println("Error");
             }
 
+            g.setColor(mainBoxColor);
             g.drawRect((5 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
+            g.setColor(Color.black);
 
             if(((latestY - baseYForLine) + bottomPadding) > maxYBoxOnLine) {
                 maxYBoxOnLine = ((latestY - baseYForLine) + bottomPadding);
             }
         }
+
+    }
+
+    public void setDefaultValues() {
 
     }
 
@@ -188,13 +203,16 @@ public class geometry2 extends JPanel {
             // Draw Rule box after depending on last points
 
             if (isDuty == false) {
+                g.setColor(colorPermission);
                 g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
             } else {
                 if (rule.getConstraint().isEmpty()) {
+                    g.setColor(colorDuty);
                     g.drawRoundRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY,arcWDuty,arcHDuty);
                 }
                 theYforDutyWithConstraint = startBoxY;
             }
+            g.setColor(Color.black);
             startBoxY = latestY;
 
         } catch (Exception exception) {
@@ -207,7 +225,9 @@ public class geometry2 extends JPanel {
         try {
             for (int j = 0; j < rule.getConstraint().size(); j++) {
 
+                g.setColor(colorConstraint);
                 g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, widenessOfConstraintLines);
+                g.setColor(Color.black);
                 latestY += widenessOfConstraintLines;
                 startBoxY += widenessOfConstraintLines;
 
@@ -241,11 +261,13 @@ public class geometry2 extends JPanel {
                 g.drawString(rule.getConstraint().get(j).getRightOperand(), latestX, latestY);
                 latestY += spaceAtBottomOfBoxes;
 
+                g.setColor(colorConstraint);
                 if (isDuty == false) {
                     g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
                 } else {
                     g.drawRoundRect(startBoxX, theYforDutyWithConstraint, sizeOfInnerBoxesW, latestY - theYforDutyWithConstraint, arcWDuty, arcHDuty);
                 }
+                g.setColor(Color.black);
                 startBoxY = latestY;
 
             }
@@ -253,6 +275,86 @@ public class geometry2 extends JPanel {
             exception.printStackTrace();
         }
     }
+
+    public void addNumberElementPerLine(int number) {
+        this.numberElementPerLine = number;
+    }
+
+    public void addThePrefferedRuleBoxSizeW(int number) {
+        this.prefferedRuleBoxSizeW = number;
+    }
+
+    public void addSpaceBetweenAttributes(int number) {
+        this.spaceBetweenAttributes = number;
+    }
+
+    public void addSpaceBetweenAttrIconAndAttrStringsX(int number) {
+        this.spaceBetweenAttrIconAndAttrStringsX = number;
+    }
+
+    public void addSpaceAtBottomOfBoxes(int number) {
+        this.spaceAtBottomOfBoxes = number;
+    }
+
+    public void addSizeOfInnerBoxesW(int number) {
+        this.sizeOfInnerBoxesW = number;
+    }
+
+    public void addWidenessOfConstraintLines(int number) {
+        this.widenessOfConstraintLines = number;
+    }
+
+    public void addOperatorSpaceFromLeft(int number) {
+        this.operatorSpaceFromLeft = number;
+    }
+
+    public void addArcWDuty(int number) {
+        this.arcWDuty = number;
+    }
+
+    public void addArcHDuty(int number) {
+        this.arcHDuty = number;
+    }
+
+    public void addSpaceBetweenRulesAndDuty(int number) {
+        this.spaceBetweenRulesAndDuty = number;
+    }
+
+    public void addSpaceBetweenDutyAndDuty(int number) {
+        this.spaceBetweenDutyAndDuty = number;
+    }
+
+    public void addBottomPadding(int number) {
+        this.bottomPadding = number;
+    }
+
+    public void addColorMainBox(Color color) {
+        this.mainBoxColor = color;
+    }
+
+    public void addColorPermission(Color color) {
+        this.colorPermission = color;
+    }
+
+    public void addColorProhibition(Color color) {
+        this.colorProhibition = color;
+    }
+
+    public void addColorDuty(Color color) {
+        this.colorDuty = color;
+    }
+
+    public void addColorConstraint(Color color) {
+        this.colorConstraint = color;
+    }
+
+    public void addDutyRounded(boolean bool) {
+        this.makeDutyRounded = bool;
+    }
+
+
+
+
 }
 
 
