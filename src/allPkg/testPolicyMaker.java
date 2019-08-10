@@ -32,11 +32,6 @@ public class testPolicyMaker {
             // Create Policy Builder instance
             PolicyBuilder builder = new PolicyBuilder();
 
-            // Create frame for drawing graph
-            JFrame frameNew = new JFrame();
-            frameNew.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frameNew.setSize(500, 500);
-
             // Making permissions
             NodeList nodePermissionList = doc.getElementsByTagName("o:permission");
             if (nodePermissionList.getLength() != 0) {
@@ -179,6 +174,7 @@ public class testPolicyMaker {
             System.out.println("nope outside");
             System.out.println(attribute.getName());
             System.out.println(element instanceof Duty);
+
             if (attribute.getName() == "uid" && element instanceof Duty) {
                 System.out.println("okay in at least");
                 String reference = attribute.getValue().substring(attribute.getValue().lastIndexOf("#")+1);

@@ -1,10 +1,11 @@
 package allPkg;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class geometry2Builder {
     private Policy policy;
-    private int numberElementPerLine = 4;
+    private int numberElementPerLine = 5;
     private int prefferedRuleBoxSizeW = 200;
     private int spaceBetweenAttributes = 40;
     private int spaceBetweenAttrIconAndAttrStringsX = 35;
@@ -18,7 +19,6 @@ public class geometry2Builder {
     private int spaceBetweenDutyAndDuty = 25;
     private int bottomPadding = 15;
 
-    private Color mainBoxColor = Color.black;
     private Color colorPermission = Color.black;
     private Color colorProhibition = Color.black;
     private Color colorConstraint = Color.black;
@@ -26,6 +26,12 @@ public class geometry2Builder {
 
     private boolean makeDutyRounded;
     private boolean makeDutyHex;
+
+    private volatile int screenX = 0;
+    private volatile int screenY = 0;
+    private volatile int myX = 0;
+    private volatile int myY = 0;
+
 
     public geometry2 build() {
         geometry2 geometry2 = new geometry2(policy);
@@ -47,7 +53,6 @@ public class geometry2Builder {
         geometry2.addColorDuty(colorDuty);
         geometry2.addColorConstraint(colorConstraint);
         geometry2.addDutyRounded(makeDutyRounded);
-        geometry2.addColorMainBox(mainBoxColor);
         return geometry2;
     }
 
@@ -113,11 +118,6 @@ public class geometry2Builder {
 
     public geometry2Builder setBottomPadding(int number) {
         this.bottomPadding = number;
-        return this;
-    }
-
-    public geometry2Builder setColorMainBox(Color color) {
-        this.mainBoxColor = color;
         return this;
     }
 

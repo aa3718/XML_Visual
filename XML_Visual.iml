@@ -8,5 +8,9 @@
     <orderEntry type="jdk" jdkName="11" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="jgraphx" level="project" />
+    <orderEntry type="library" name="lib-src" level="project" />
+    <orderEntry type="library" name="json1.4.2" level="project" />
+    <orderEntry type="library" name="json1.4.21" level="project" />
+    <orderEntry type="library" name="javax.json-1.0" level="project" />
   </component>
 </module>

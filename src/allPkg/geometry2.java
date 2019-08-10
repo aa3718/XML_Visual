@@ -2,6 +2,7 @@ package allPkg;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
@@ -14,7 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class geometry2 extends JPanel {
+public class geometry2 extends JComponent {
 
     private Policy policy;
     private int latestX = 0;
@@ -55,29 +56,19 @@ public class geometry2 extends JPanel {
 
     geometry2(Policy policy) {
         this.policy = policy;
+        //setBackground(Color.blue);
     }
 
+    @Override
     public void paint(Graphics g) {
+        g.setColor(Color.white);
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.black);
 
         numberOfTotalElementsPolicy = policy.getNumberOfProhibitions() + policy.getNumberOfPermissions();
         ruleLengthSize = 400;
         name = "Permission";
         isPermission = true;
-
-        /*
-        spaceBetweenAttributes = 40;
-        spaceBetweenAttrIconAndAttrStringsX = 35;
-        spaceAtBottomOfBoxes = 15;
-        sizeOfInnerBoxesW = prefferedRuleBoxSizeW - 25;
-        widenessOfConstraintLines = 2;
-        operatorSpaceFromLeft = 80;
-        arcWDuty = 40;
-        arcHDuty = 40;
-        spaceBetweenRulesAndDuty = 15;
-        spaceBetweenDutyAndDuty = 25;
-        bottomPadding = 15;
-        */
-
         maxYBoxOnLine = 0;
         lineNumber = 0;
 
@@ -91,7 +82,7 @@ public class geometry2 extends JPanel {
 
             // Draws main box
             //g.drawRect((5 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine))), (5 + (lineNumber * ruleLengthSize + (lineNumber * 5))), prefferedRuleBoxSizeW, ruleLengthSize);
-            latestX = 5 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine));
+            //latestX = 250 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine));
 
             if (lineNumber == 0) {
                 baseYForLine = 5;
@@ -107,8 +98,8 @@ public class geometry2 extends JPanel {
             latestY = baseYForLine;
 
             // Writes main Rule Name
-            g.drawString(name, 20 + (205 * (i % numberElementPerLine)), latestY+25);
-            latestX = 20 + (205 * (i % numberElementPerLine));
+            g.drawString(name, 290 + (205 * (i % numberElementPerLine)), latestY+25);
+            latestX = 290 + (205 * (i % numberElementPerLine));
             latestY += 25;
 
             startBoxX = latestX + 5;
@@ -129,8 +120,6 @@ public class geometry2 extends JPanel {
                 }
 
                 drawInnerAAP(rule,g,false);
-
-
                 drawConstraints(rule,g,false);
 
                 startBoxY += spaceBetweenRulesAndDuty;
@@ -157,18 +146,18 @@ public class geometry2 extends JPanel {
                 System.out.println("Error");
             }
 
-            g.setColor(mainBoxColor);
-            g.drawRect((5 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
+            if (isPermission) {
+                g.setColor(colorPermission);
+            } else {
+                g.setColor(colorProhibition);
+            }
+            g.drawRect((285 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
             g.setColor(Color.black);
 
             if(((latestY - baseYForLine) + bottomPadding) > maxYBoxOnLine) {
                 maxYBoxOnLine = ((latestY - baseYForLine) + bottomPadding);
             }
         }
-
-    }
-
-    public void setDefaultValues() {
 
     }
 
@@ -326,10 +315,6 @@ public class geometry2 extends JPanel {
 
     public void addBottomPadding(int number) {
         this.bottomPadding = number;
-    }
-
-    public void addColorMainBox(Color color) {
-        this.mainBoxColor = color;
     }
 
     public void addColorPermission(Color color) {

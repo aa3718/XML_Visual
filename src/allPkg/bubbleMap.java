@@ -7,22 +7,27 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
-public class bubbleGraphPolicy extends JPanel {
+public class bubbleMap extends JComponent {
     private Policy policy;
     private boolean useIcon;
     private ArrayList<String> nameAction;
+    private int xCord;
+    private int yCord;
 
-    bubbleGraphPolicy(Policy policy,boolean useIcon) {
+    bubbleMap(Policy policy,boolean useIcon) {
         this.useIcon = useIcon;
         this.policy = policy;
         buildAction();
-        System.out.println("BUILT ONCE");
     }
 
 
     public void paint(Graphics g) {
 
-        int numberPerLine = 8;
+        g.setColor(Color.white);
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.black);
+
+        int numberPerLine = 5;
         int lineNumber = 0;
 
 
@@ -34,22 +39,25 @@ public class bubbleGraphPolicy extends JPanel {
             }
 
             String pictureName = nameAction.get(i);
+            xCord = 5 + (15 * (i % numberPerLine)) + (120 * (i % numberPerLine));
+            yCord = 5 + (50 * lineNumber);
 
             if(useIcon) {
                 try {
-                    g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + pictureName + ".png")), 5 + (5 * (i % numberPerLine)) + (150 * (i % numberPerLine)), 5 + (150 * lineNumber), null);
+                    g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + pictureName + ".png")), xCord, yCord, null);
                 } catch (Exception e) {
                     System.out.println("Error uploading");
                     e.printStackTrace();
                 }
             } else {
-                g.drawString(pictureName,15 + (15 * (i % numberPerLine)) + (120 * (i % numberPerLine)),15 + (50 * lineNumber));
+                g.drawString(pictureName,xCord,yCord);
             }
 
             for (int j = 0; j < policy.permissions.size(); j++) {
                 if (policy.permissions.get(j).getAction().getName().equals(pictureName)) {
-                    g.setColor(Color.getHSBColor(200,150+(j*250),50));
-                    g.drawRect(15 + (15 * (i % numberPerLine)) + (120 * (i % numberPerLine)),15 + (50 * lineNumber),25,25);
+                    g.setColor(Color.pink);
+                    g.drawRect(xCord-25,yCord-5,50,25);
+                    g.setColor(Color.black);
                 }
             }
             g.setColor(Color.black);
