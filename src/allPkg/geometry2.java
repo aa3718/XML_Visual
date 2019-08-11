@@ -45,7 +45,6 @@ public class geometry2 extends JComponent {
     private int spaceBetweenDutyAndDuty;
     private int bottomPadding;
 
-    private Color mainBoxColor;
     private Color colorPermission;
     private Color colorProhibition;
     private Color colorConstraint;

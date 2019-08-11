@@ -20,6 +20,7 @@ public class IconDnD implements ActionListener {
     private JPanel panelBoxV;
     private JPanel panel;
     private JPanel panelBox;
+    private JPanel panelVisualMenu;
     private ArrayList<JButton> myMenuList;
     private ArrayList<JComboBox> colorComBox;
     private ArrayList<String> menuName = new ArrayList<>() {};
@@ -28,10 +29,16 @@ public class IconDnD implements ActionListener {
     private String[] nameParty= {"assigner","assignee","attributedParty","consentingParting","informedParty","compensatedParty","trackingParty"};
     private int widthOfPage = 1400;
     private int heightOfPage = 800;
+    private boolean inBubble = false;
+    private boolean inGranular = false;
+    private boolean inSituation = false;
+
     private geometry2Builder geometry2Builder;
-    private geometry2 visualization;
+    private situationalBuilder situationalBuilder;
     private bubbleMapBuilder bubbleBuilder;
+    private geometry2 visualization;
     private bubbleMap bubble;
+    private situational situational;
 
 
 
@@ -39,7 +46,6 @@ public class IconDnD implements ActionListener {
         stringToColor();
         menuItems();
     }
-
 
 
     private void display() {
@@ -74,7 +80,7 @@ public class IconDnD implements ActionListener {
         menu.setTitlePosition(TitledBorder.TOP);
 
         panelBox = new JPanel();
-        panelBox.setLayout(new GridLayout(5,1,0,0));
+        panelBox.setLayout(new GridLayout(6,1,0,0));
         panel = new JPanel();
         panelBoxV = new JPanel();
         visual = new JPanel();
@@ -215,14 +221,12 @@ public class IconDnD implements ActionListener {
     }
 
     public void addVisualMenu() {
-        JPanel panelVisualMenu = new JPanel();
+        panelVisualMenu = new JPanel();
         GroupLayout layoutNewPermission = new GroupLayout(panelVisualMenu);
         panelVisualMenu.setLayout(layoutNewPermission);
         panelVisualMenu.setBackground(Color.lightGray);
         layoutNewPermission.setAutoCreateGaps(true);
         panelVisualMenu.setLayout(layoutNewPermission);
-
-        geometry2Builder = new geometry2Builder();
 
         TitledBorder buildMenu = new TitledBorder("Parameters");
         buildMenu.setTitlePosition(TitledBorder.ABOVE_TOP);
@@ -284,10 +288,7 @@ public class IconDnD implements ActionListener {
                         .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(done).addComponent(reset))
         );
-
-
         panelBoxV.add(panelVisualMenu);
-
     }
 
 
@@ -310,6 +311,7 @@ public class IconDnD implements ActionListener {
         menuName.add("Export");
         menuName.add("Granular");
         menuName.add("Map");
+        menuName.add("Scene");
     }
 
 
@@ -323,9 +325,11 @@ public class IconDnD implements ActionListener {
                 }
             }
 
+            /*
             panelBoxV.removeAll();
             panelBoxV.revalidate();
             panelBoxV.repaint();
+            */
 
             if (e.getActionCommand().equals("Build")) {
                 addBuildMenu();
@@ -337,69 +341,117 @@ public class IconDnD implements ActionListener {
             }
 
             if (e.getActionCommand().equals("Granular")) {
-                addVisualMenu();
+                inGranular = true;
+                inBubble = false;
+                inSituation = false;
+                geometry2Builder = new geometry2Builder();
+                if (panelVisualMenu == null) { addVisualMenu(); }
+                if (bubble != null) { frame.remove(bubble); }
+                if (situational != null) {frame.remove(situational); }
             }
-
-        }
 
             if (e.getActionCommand().equals("Map")) {
-                visual.setVisible(false);
-                frame.remove(visualization);
-                if (importedPolicy = true) {
-                    bubbleBuilder.setPolicy(policies.get(policies.size() - 1));
-                    JFrame frameNewN = new JFrame();
-                    frameNewN.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    frameNewN.setSize(widthOfPage, heightOfPage);
-                    frameNewN.getContentPane().add(bubble);
-                    frameNewN.setVisible(true);
-                }
+                inBubble = true;
+                inSituation = false;
+                inGranular = false;
+                bubbleBuilder = new bubbleMapBuilder();
+                if (panelVisualMenu == null) { addVisualMenu(); }
+                if (visualization != null) { frame.remove(visualization); }
+                if (situational != null) {frame.remove(situational); }
             }
 
+            if (e.getActionCommand().equals("Scene")) {
+                inSituation = true;
+                inBubble = false;
+                inGranular = false;
+                situationalBuilder = new situationalBuilder();
+                if (visualization != null) { frame.remove(visualization); }
+                if (bubble != null) { frame.remove(bubble); }
+                if (panelVisualMenu == null) { addVisualMenu(); }
+                situationalBuilder = new situationalBuilder();
 
-            if (e.getActionCommand().equals("Done")) {
-                if (importedPolicy = true) {
-                    geometry2Builder.setPolicy(policies.get(policies.size() - 1));
-                    visualization = geometry2Builder.build();
-                    //visualization.setLocation(visualization.getX()+250,0);
-                    visual.setVisible(false);
-                    frame.add(visualization);
-                    //visualization.setLocation(visualization.getX()+250,0);
-                    frame.setVisible(true);
-                }
-
-                frame.setVisible(true);
             }
-
-        if (e.getActionCommand().equals("Reset")) {
-            frame.remove(visualization);
-            visual.setVisible(true);
-            geometry2Builder = new geometry2Builder();
-            geometry2Builder.setPolicy(policies.get(policies.size() - 1));
+            frame.setVisible(true);
         }
 
+        if (e.getActionCommand().equals("Done")) {
+            if (importedPolicy && inGranular) {
+                geometry2Builder.setPolicy(policies.get(policies.size() - 1));
+                visualization = geometry2Builder.build();
+                visual.setVisible(false);
+                frame.add(visualization);
+            }
 
-            if (e.getActionCommand().contains("boxColor")) {
+            if (importedPolicy && inSituation) {
+                situationalBuilder.setPolicy(policies.get(policies.size() - 1));
+                situational = situationalBuilder.build();
+                visual.setVisible(false);
+                frame.add(situational);
+            }
+
+            if (importedPolicy && inBubble) {
+                bubbleBuilder.setPolicy(policies.get(policies.size() - 1));
+                bubble = bubbleBuilder.build();
+                visual.setVisible(false);
+                frame.add(bubble);
+            }
+            frame.setVisible(true);
+        }
+
+        if (e.getActionCommand().equals("Reset")) {
+            if (inBubble) {
+                frame.remove(bubble);
+                bubbleBuilder = new bubbleMapBuilder();
+                System.out.println("InBubbleReset");
+            }
+            if (inGranular) {
+                frame.remove(visualization);
+                geometry2Builder = new geometry2Builder();
+                System.out.println("InGranularReset");
+            }
+            if (inSituation) {
+                frame.remove(situational);
+                situationalBuilder = new situationalBuilder();
+                System.out.println("InSituationReset");
+            }
+
+            for (int i = 0; i < colorComBox.size(); i++) {
+                colorComBox.get(i).setSelectedIndex(0);
+            }
+
+            visual.setVisible(true);
+        }
+
+        if (e.getActionCommand().contains("boxColor")) {
                 String lastNumber = e.getActionCommand().substring((e.getActionCommand().length())-1);
                 System.out.println(lastNumber);
                 switch (lastNumber) {
                     case "0":
                         String choice0 = (String) colorComBox.get(0).getSelectedItem();
-                        geometry2Builder.setColorPermission(stringToColor.remove(choice0));
+                        if (inGranular) { geometry2Builder.setColorPermission(stringToColor.remove(choice0)); }
+                        if (inBubble) { bubbleBuilder.setColorPermission(stringToColor.remove(choice0)); }
+                        if (inSituation) { situationalBuilder.setColorPermission(stringToColor.remove(choice0)); }
                         break;
 
                     case "1":
                         String choice1 = (String) colorComBox.get(1).getSelectedItem();
-                        geometry2Builder.setColorProhibition(stringToColor.remove(choice1));
+                        if (inGranular) { geometry2Builder.setColorProhibition(stringToColor.remove(choice1)); }
+                        if (inBubble) { bubbleBuilder.setColorProhibition(stringToColor.remove(choice1)); }
+                        if (inSituation) { situationalBuilder.setColorProhibition(stringToColor.remove(choice1)); }
                         break;
 
                     case "2":
                         String choice2 = (String) colorComBox.get(2).getSelectedItem();
-                        geometry2Builder.setColorConstraint(stringToColor.remove(choice2));
+                        if (inGranular) { geometry2Builder.setColorConstraint(stringToColor.remove(choice2)); }
+                        if (inBubble) { bubbleBuilder.setColorConstraint(stringToColor.remove(choice2)); }
+                        if (inSituation) { situationalBuilder.setColorConstraint(stringToColor.remove(choice2)); }
                         break;
 
                     case "3":
                         String choice3 = (String) colorComBox.get(3).getSelectedItem();
-                        geometry2Builder.setColorDuty(stringToColor.remove(choice3));
+                        if (inGranular) { geometry2Builder.setColorDuty(stringToColor.remove(choice3)); }
+                        if (inBubble) { bubbleBuilder.setColorDuty(stringToColor.remove(choice3)); }
+                        if (inSituation) { situationalBuilder.setColorDuty(stringToColor.remove(choice3)); }
                         break;
                 }
             }

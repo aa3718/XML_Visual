@@ -13,13 +13,15 @@ public class bubbleMap extends JComponent {
     private ArrayList<String> nameAction;
     private int xCord;
     private int yCord;
+    private Color colorPermission;
+    private Color colorProhibition;
+    private Color colorConstraint;
+    private Color colorDuty;
 
-    bubbleMap(Policy policy,boolean useIcon) {
-        this.useIcon = useIcon;
+    bubbleMap(Policy policy) {
         this.policy = policy;
         buildAction();
     }
-
 
     public void paint(Graphics g) {
 
@@ -39,7 +41,7 @@ public class bubbleMap extends JComponent {
             }
 
             String pictureName = nameAction.get(i);
-            xCord = 5 + (15 * (i % numberPerLine)) + (120 * (i % numberPerLine));
+            xCord = 260 + (15 * (i % numberPerLine)) + (120 * (i % numberPerLine));
             yCord = 5 + (50 * lineNumber);
 
             if(useIcon) {
@@ -143,5 +145,22 @@ public class bubbleMap extends JComponent {
         nameAction.add("writeTo");
     }
 
+    public void addColorPermission(Color color) {
+        this.colorPermission = color;
+    }
+
+    public void addColorProhibition(Color color) {
+        this.colorProhibition = color;
+    }
+
+    public void addColorDuty(Color color) {
+        this.colorDuty = color;
+    }
+
+    public void addColorConstraint(Color color) {
+        this.colorConstraint = color;
+    }
+
+    public void addUseIcon(boolean useIcon) { this.useIcon = useIcon; }
 
 }
