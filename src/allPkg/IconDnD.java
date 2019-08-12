@@ -1,13 +1,13 @@
 package allPkg;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.*;
+import javax.swing.filechooser.FileSystemView;
+import javax.swing.plaf.basic.BasicArrowButton;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
-import java.awt.event.*;
-import java.lang.String;
-import java.awt.dnd.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -242,6 +242,13 @@ public class IconDnD implements ActionListener {
         for (int i = 0 ; i < 4; i++) {
             JLabel labelColor = new JLabel(listColorLabel[i]+ ": ");
             JComboBox boxColor = new JComboBox(colors);
+            boxColor.setUI(new BasicComboBoxUI(){
+                protected JButton createArrowButton()
+                {
+                    BasicArrowButton arrowButton = new BasicArrowButton(BasicArrowButton.SOUTH, null, null, Color.GRAY, null);
+                    return arrowButton;
+                }
+            });
             boxColor.setActionCommand("boxColor"+i);
             boxColor.addActionListener(this);
             panelVisualMenu.add(labelColor);

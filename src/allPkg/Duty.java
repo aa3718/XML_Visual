@@ -4,27 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Duty extends attributeHolders implements Rules {
+
     public String uid;
     public String id;
-    private Asset asset;
-    private Action action;
+
+    private List<Asset> assets = new ArrayList<Asset>();
+    private List<Action> actions = new ArrayList<Action>();
     private List<Constraint> constraints = new ArrayList<Constraint>();
     private List<Party> parties = new ArrayList<Party>();
+    private List<Duty> consequences = new ArrayList<Duty>();
     public ArrayList<String> attributeNameList = new ArrayList<String>();
 
-    public void setAsset(Asset asset) {
-        this.asset = asset;
+    public void setAction(Action action) {
+        actions.add(action);
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setAsset(Asset asset) {
+        assets.add(asset);
     }
 
     public void setConstraint(Constraint constraint) { constraints.add(constraint); }
 
     public void setParty(Party party) { parties.add(party); }
 
-    public void setDuty(Duty duty) {}
+    public void setDuty(Duty consequence) { consequences.add(consequence); }
 
     public void setEntireConstraint(List<Constraint> constraints) { this.constraints = constraints; }
 
@@ -32,12 +35,20 @@ public class Duty extends attributeHolders implements Rules {
 
     public void setEntireDuty(List<Duty> duties) {}
 
-    public Asset getAsset() {
-        return asset;
+    public void setEntireAsset(List<Asset> assets) { this.assets = assets; }
+
+    public void setEntireAction(List<Action> actions) { this.actions = actions; }
+
+    public String getID() { return this.id; }
+
+    public String getUID() { return this.uid; }
+
+    public List<Asset> getAsset() {
+        return assets;
     }
 
-    public Action getAction() {
-        return action;
+    public List<Action> getAction() {
+        return actions;
     }
 
     public List<Constraint> getConstraint() {
@@ -45,7 +56,7 @@ public class Duty extends attributeHolders implements Rules {
     }
 
     public List<Duty> getDuty() {
-        return null;
+        return consequences;
     }
 
     public List<Party> getParty() { return parties; }
@@ -77,8 +88,8 @@ public class Duty extends attributeHolders implements Rules {
     }
 
     public void copyInstance(Duty duty) {
-        duty.setAction(this.getAction());
-        duty.setAsset(this.getAsset());
+        duty.setEntireAction(this.getAction());
+        duty.setEntireAsset(this.getAsset());
         duty.setEntireConstraint(this.getConstraint());
         duty.setEntireDuty(this.getDuty());
         duty.setEntireParty(this.getParty());

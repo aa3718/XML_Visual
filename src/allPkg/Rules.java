@@ -20,9 +20,13 @@ interface Rules {
 
      void setEntireDuty(List<Duty> duties);
 
-     Asset getAsset();
+     void setEntireAsset(List<Asset> assets);
 
-     Action getAction();
+     void setEntireAction(List<Action> actions);
+
+     List<Asset> getAsset();
+
+     List<Action> getAction();
 
      List<Constraint> getConstraint();
 

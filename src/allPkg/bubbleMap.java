@@ -3,7 +3,6 @@ package allPkg;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -56,7 +55,7 @@ public class bubbleMap extends JComponent {
             }
 
             for (int j = 0; j < policy.permissions.size(); j++) {
-                if (policy.permissions.get(j).getAction().getName().equals(pictureName)) {
+                if (policy.getPermission(j).getAction().get(j).getName().equals(pictureName)) {
                     g.setColor(Color.pink);
                     g.drawRect(xCord-25,yCord-5,50,25);
                     g.setColor(Color.black);

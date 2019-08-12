@@ -5,18 +5,18 @@ import java.util.List;
 
 public class Permission implements Rules {
 
-    private Asset asset;
-    private Action action;
+    private List<Asset> assets = new ArrayList<Asset>();
+    private List<Action> actions = new ArrayList<Action>();
     private List<Constraint> constraints = new ArrayList<Constraint>();
     private List<Duty> duties = new ArrayList<Duty>();
     private List<Party> parties = new ArrayList<Party>();
 
-    public void setAsset(Asset asset) {
-        this.asset = asset;
+    public void setAction(Action action) {
+        actions.add(action);
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setAsset(Asset asset) {
+        assets.add(asset);
     }
 
     public void setConstraint(Constraint constraint) { constraints.add(constraint); }
@@ -35,11 +35,15 @@ public class Permission implements Rules {
 
     public void setEntireDuty(List<Duty> duties) { this.duties = duties; }
 
-    public Asset getAsset() {
-        return asset;
+    public void setEntireAsset(List<Asset> assets) { this.assets = assets; }
+
+    public void setEntireAction(List<Action> actions) { this.actions = actions; }
+
+    public List<Asset> getAsset() {
+        return assets;
     }
 
-    public Action getAction() { return action; }
+    public List<Action> getAction() { return actions; }
 
     public List<Constraint> getConstraint() {
         return constraints;
@@ -52,3 +56,11 @@ public class Permission implements Rules {
     public List<Party> getParty() { return parties; }
 
 }
+
+//public void setAsset(Asset asset) { this.asset = asset;}
+
+//public void setAction(Action action) {this.action = action;}
+
+//public void setAsset(Asset asset) {
+// this.asset = asset;
+//}

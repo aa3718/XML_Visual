@@ -2,17 +2,9 @@ package allPkg;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
-import java.io.BufferedReader;
-import java.text.AttributedCharacterIterator;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
 
 
 public class geometry2 extends JComponent {
@@ -21,6 +13,8 @@ public class geometry2 extends JComponent {
     private int latestX = 0;
     private int latestY = 0;
     private boolean isPermission;
+    private boolean isObligation;
+    private boolean isProhibition;
     private int numberOfTotalElementsPolicy;
     private int lineNumber;
     private int ruleLengthSize;
@@ -55,7 +49,6 @@ public class geometry2 extends JComponent {
 
     geometry2(Policy policy) {
         this.policy = policy;
-        //setBackground(Color.blue);
     }
 
     @Override
@@ -64,10 +57,12 @@ public class geometry2 extends JComponent {
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.black);
 
-        numberOfTotalElementsPolicy = policy.getNumberOfProhibitions() + policy.getNumberOfPermissions();
+        numberOfTotalElementsPolicy = policy.getNumberOfProhibitions() + policy.getNumberOfPermissions() + policy.getNumberOfObligations();
         ruleLengthSize = 400;
         name = "Permission";
         isPermission = true;
+        isObligation = false;
+        isProhibition = false;
         maxYBoxOnLine = 0;
         lineNumber = 0;
 
@@ -77,6 +72,15 @@ public class geometry2 extends JComponent {
             if (policy.getNumberOfPermissions() == i) {
                 name = "Prohibition";
                 isPermission = false;
+                isProhibition = true;
+            }
+
+            // Enables switch from Permission to Prohibition
+            if (policy.getNumberOfProhibitions()+policy.getNumberOfPermissions() == i) {
+                name = "Obligation";
+                isPermission = false;
+                isProhibition = false;
+                isObligation = true;
             }
 
             // Draws main box
@@ -114,8 +118,11 @@ public class geometry2 extends JComponent {
                 Rules rule;
                 if (isPermission) {
                     rule = policy.getPermission(i);
-                } else {
+                } else if (isProhibition) {
                     rule = policy.getProhibition(i - policy.getNumberOfPermissions());
+                } else {
+                    System.out.println(i - (policy.getNumberOfPermissions()+policy.getNumberOfProhibitions()) + "index for obli");
+                    rule = policy.getObligation(i - (policy.getNumberOfPermissions()+policy.getNumberOfProhibitions()));
                 }
 
                 drawInnerAAP(rule,g,false);
@@ -124,21 +131,17 @@ public class geometry2 extends JComponent {
                 startBoxY += spaceBetweenRulesAndDuty;
                 latestY += spaceBetweenRulesAndDuty;
 
-                // Draw Duties
-                for (int j = 0; j < rule.getDuty().size(); j++) {
-
-                    g.drawString("Duty",startBoxX+10, startBoxY+18);
-
-                    // Transform from Title P or P
-                    latestY += 28;
-
-                    drawInnerAAP(rule.getDuty().get(j),g,true);
-                    drawConstraints(rule.getDuty().get(j),g, true);
-
-                    latestY += spaceBetweenDutyAndDuty;
-                    startBoxY += spaceBetweenDutyAndDuty;
-
+                String nameN;
+                if (isPermission) {
+                    nameN = "Duty";
+                } else if (isObligation) {
+                    nameN = "Consequence";
+                } else {
+                    nameN = "Remedy";
                 }
+
+                // Draw Duties
+                drawDutyRecursive(rule,g,false, nameN);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -150,7 +153,7 @@ public class geometry2 extends JComponent {
             } else {
                 g.setColor(colorProhibition);
             }
-            g.drawRect((285 + (5 * (i % numberElementPerLine)) + (200 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
+            g.drawRect((285 + (205 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
             g.setColor(Color.black);
 
             if(((latestY - baseYForLine) + bottomPadding) > maxYBoxOnLine) {
@@ -161,10 +164,31 @@ public class geometry2 extends JComponent {
     }
 
 
+    public void drawDutyRecursive(Rules rule, Graphics g, boolean inside, String nameN) {
+        for (int j = 0; j < rule.getDuty().size(); j++) {
+            if (inside) {
+                nameN = "Consequence";
+            }
+            g.drawString(nameN,startBoxX+10, startBoxY+18);
+
+            // Transform from Title P or P
+            latestY += 28;
+
+            drawInnerAAP(rule.getDuty().get(j),g,true);
+            drawConstraints(rule.getDuty().get(j),g, true);
+
+            latestY += spaceBetweenDutyAndDuty;
+            startBoxY += spaceBetweenDutyAndDuty;
+
+            drawDutyRecursive(rule.getDuty().get(j),g, true, nameN);
+
+        }
+
+    }
+
     public void drawInnerAAP(Rules rule, Graphics g,Boolean isDuty) {
         try {
             for (int j = 0; j < rule.getParty().size(); j++) {
-
                 //String nameAttribute = policy.getPermission(i).getParty().get(j).getFunction();
                 String nameAttribute = "profile";
                 BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + nameAttribute + ".png"));
@@ -174,22 +198,23 @@ public class geometry2 extends JComponent {
             }
 
             // Draw Action
-            if (rule.getAction() != null) {
-                g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + rule.getAction().getName() + ".png")), latestX, latestY, null);
-                g.drawString(rule.getAction().getName(), latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
+            for (int j = 0; j < rule.getAction().size(); j++) {
+                System.out.println(rule.getAction().get(j).getName() + " the name apccpet tracking");
+                g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + rule.getAction().get(j).getName() + ".png")), latestX, latestY, null);
+                g.drawString(rule.getAction().get(j).getName(), latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
                 latestY += spaceBetweenAttributes;
             }
 
             // Draw Asset
-            if (rule.getAsset() != null) {
+            for (int j = 0; j < rule.getAsset().size(); j++) {
                 g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/asset.png")), latestX, latestY, null);
-                g.drawString(rule.getAsset().getUID(), latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
+                g.drawString(rule.getAsset().get(j).getUID(), latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
                 latestY += spaceBetweenAttributes/2;
             }
+
             latestY += spaceAtBottomOfBoxes;
 
             // Draw Rule box after depending on last points
-
             if (isDuty == false) {
                 g.setColor(colorPermission);
                 g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
@@ -219,7 +244,12 @@ public class geometry2 extends JComponent {
                 latestY += widenessOfConstraintLines;
                 startBoxY += widenessOfConstraintLines;
 
-                if (j == 0) {
+                System.out.println(rule.getConstraint().get(j).getOn());
+
+                if (j == 0 && rule.getConstraint().get(j).getOn() != null) {
+                    g.drawString("Constraint: "+ rule.getConstraint().get(j).getOn(), latestX + 7, latestY + 15);
+                    latestY += 30;
+                } else if (j == 0 && rule.getConstraint().get(j).getOn() == null) {
                     g.drawString("Constraint", latestX + 7, latestY + 15);
                     latestY += 30;
                 }
@@ -276,9 +306,7 @@ public class geometry2 extends JComponent {
         this.spaceBetweenAttributes = number;
     }
 
-    public void addSpaceBetweenAttrIconAndAttrStringsX(int number) {
-        this.spaceBetweenAttrIconAndAttrStringsX = number;
-    }
+    public void addSpaceBetweenAttrIconAndAttrStringsX(int number) { this.spaceBetweenAttrIconAndAttrStringsX = number; }
 
     public void addSpaceAtBottomOfBoxes(int number) {
         this.spaceAtBottomOfBoxes = number;

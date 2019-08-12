@@ -1,12 +1,14 @@
 package allPkg;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Asset extends attributeHolders {
     public ArrayList<String> attributeNameList = new ArrayList<String>();
     public String relation;
     public String uid;
     public String id;
+    private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
 
     public void setUID(String uid) {
         this.uid = uid;
@@ -21,6 +23,14 @@ public class Asset extends attributeHolders {
     }
 
     public String getUID() { return this.uid; }
+
+    public String getID() { return this.id; }
+
+    public void setConstraint(Constraint refinement) { this.refinements.add(refinement); }
+
+    public List<Constraint> getConstraint() {
+        return refinements;
+    }
 
     @Override
     public ArrayList<String> getAttributeList() {

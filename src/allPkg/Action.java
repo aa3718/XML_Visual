@@ -1,13 +1,15 @@
 package allPkg;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Action extends attributeHolders {
 
-    public ArrayList<String> nameAction = new ArrayList<String>();
-    public ArrayList<String> attributeNameList = new ArrayList<String>();
-    public String name;
-    public String id;
+    private ArrayList<String> nameAction = new ArrayList<String>();
+    private ArrayList<String> attributeNameList = new ArrayList<String>();
+    private String name;
+    private String id;
+    private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
 
     public void setName(String name) {
         this.name = name;
@@ -16,6 +18,14 @@ public class Action extends attributeHolders {
     public void setID(String id) {
         this.id = id;
     }
+
+    public void setConstraint(Constraint refinement) { this.refinements.add(refinement); }
+
+    public List<Constraint> getConstraint() {
+        return refinements;
+    }
+
+    public String getID() { return this.id; }
 
     /*
     public void buildAction() {

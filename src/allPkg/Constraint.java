@@ -1,23 +1,29 @@
 package allPkg;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Constraint extends attributeHolders {
-    public ArrayList<String> attributeNameList = new ArrayList<String>();
-    public static ArrayList<String> nameLeftOperand = new ArrayList<String>();
-    public static ArrayList<String> nameOperators = new ArrayList<String>();
-    public String id;
-    public String name;
-    public String operator;
-    public String rightOperand;
-    public String dataType;
-    public String unit;
-    public String status;
-    public String leftOperand;
+    private ArrayList<String> attributeNameList = new ArrayList<String>();
+    private static ArrayList<String> nameLeftOperand = new ArrayList<String>();
+    private static ArrayList<String> nameOperators = new ArrayList<String>();
+    private String id;
+    private String name;
+    private String operator;
+    private String rightOperand;
+    private String dataType;
+    private String unit;
+    private String status;
+    private String leftOperand;
+    private String on;
+
+    public void setConstraintOn(String on) { this.on = on; }
 
     public void setID(String id) {
         this.id = id;
     }
+
+    public String getOn() { return this.on;}
 
     public void setName(String name) {
         this.name = name;
@@ -45,11 +51,17 @@ public class Constraint extends attributeHolders {
 
     public String getName() { return this.name; }
 
+    public String getID() { return this.id; }
+
     public String getOperator() { return this.operator; }
 
     public String getRightOperand() { return this.rightOperand; }
 
-    public  String getLeftOperand() { return this.leftOperand;}
+    public  String getLeftOperand() { return this.leftOperand; }
+
+    public void setConstraint(Constraint refinement) {}
+
+    public List<Constraint> getConstraint() { return null; }
 
     public static void buildOperators() {
         nameOperators.add("eq");

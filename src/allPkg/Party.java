@@ -1,6 +1,7 @@
 package allPkg;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Party extends attributeHolders{
 
@@ -10,6 +11,7 @@ public class Party extends attributeHolders{
     public String uid;
     public String scope;
     public String id;
+    private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
 
     public void setUID(String uid) {
         this.uid = uid;
@@ -30,6 +32,14 @@ public class Party extends attributeHolders{
     public String getFunction() { return this.function; }
 
     public String getUID() { return this.uid; }
+
+    public String getID() { return this.id; }
+
+    public void setConstraint(Constraint refinement) { this.refinements.add(refinement); }
+
+    public List<Constraint> getConstraint() {
+        return refinements;
+    }
 
     public static void buildParty() {
         nameParty.add("assigner");

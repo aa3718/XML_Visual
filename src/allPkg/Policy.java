@@ -5,32 +5,50 @@ import java.util.List;
 public class Policy {
 
     public List<Permission> permissions;
-    public List<Prohibition> prohibitions;
-    public List<Action> actions;
-    public List<Asset> assets;
-    public List<Constraint> constraints;
-    public List<Duty> duties;
-    public List<Party> parties;
-    public String uid;
-    public String type;
-    public String conflict;
-    public String undefined;
-    public Boolean inheritAllowed;
-    public String inheritFrom;
-    public String inheritRelation;
-    public String profile;
+    private List<Prohibition> prohibitions;
+    private List<Action> actions;
+    private List<Asset> assets;
+    private List<Constraint> constraints;
+    private List<Duty> duties;
+    private List<Party> parties;
+    private List<Duty> obligations;
+
+    private String uid;
+    private String type;
+    private String conflict;
+    private String inheritFrom;
+    private String profile;
 
     public Policy(List<Permission> permissions) {
         this.permissions = permissions;
     }
+
     public void addProhibition(List<Prohibition> prohibitions) {
         this.prohibitions = prohibitions;
     }
-    public void addAction(List<Action> actions) { this.actions = actions; }
-    public void addAsset(List<Asset> assets) { this.assets = assets; }
-    public void addConstraint(List<Constraint> constraints) { this.constraints = constraints; }
-    public void addDuty(List<Duty> duties) { this.duties = duties; }
-    public void addParty(List<Party> parties) { this.parties = parties; }
+
+    public void addAction(List<Action> actions) {
+        this.actions = actions;
+    }
+
+    public void addObligation(List<Duty> obligations) { this.obligations = obligations; }
+
+    public void addAsset(List<Asset> assets) {
+        this.assets = assets;
+    }
+
+    public void addConstraint(List<Constraint> constraints) {
+        this.constraints = constraints;
+    }
+
+    public void addDuty(List<Duty> duties) {
+        this.duties = duties;
+    }
+
+    public void addParty(List<Party> parties) {
+        this.parties = parties;
+    }
+
 
     public void setType(String type) {
         int indexLast = type.lastIndexOf("/");
@@ -55,9 +73,15 @@ public class Policy {
         this.profile = profile.substring(indexLast);;
     }
 
-    public Permission getPermission(int index) {return permissions.get(index); }
+    public Permission getPermission(int index) {
+        return permissions.get(index);
+    }
 
-    public Prohibition getProhibition(int index) { return prohibitions.get(index); }
+    public Prohibition getProhibition(int index) {
+        return prohibitions.get(index);
+    }
+
+    public Duty getObligation(int index) { return obligations.get(index); }
 
     public Action getAction(int index) {
         return actions.get(index);
@@ -84,6 +108,10 @@ public class Policy {
         return prohibitions.size();
     }
 
+    public int getNumberOfObligations() {
+        return obligations.size();
+    }
+
     public int getNumberOfConstraints() {
         return constraints.size();
     }
@@ -95,5 +123,7 @@ public class Policy {
     public int getNumberOfDuties() {
         return duties.size();
     }
+
+
 
 }

@@ -1,15 +1,18 @@
 package allPkg;
 
 import org.w3c.dom.*;
-
-import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class testPolicyMaker {
+
+    public List<Action> globalActions = new ArrayList<Action>();
+    public List<Asset> globalAssets = new ArrayList<Asset>();
+    public List<Party> globalParties = new ArrayList<Party>();
     Policy policy = null;
 
     public void setXmlFunction(String filename) {
@@ -31,6 +34,15 @@ public class testPolicyMaker {
 
             // Create Policy Builder instance
             PolicyBuilder builder = new PolicyBuilder();
+
+            // Making policy global elements
+            NodeList nodePolicyList = doc.getElementsByTagName("o:Policy");
+            if (nodePolicyList.getLength() != 0) {
+                for (int i = 0; i < nodePolicyList.getLength(); i++) {
+                    Node nodeP = nodePolicyList.item(i);
+                    forPolicy(nodeP, builder);
+                }
+            }
 
             // Making permissions
             NodeList nodePermissionList = doc.getElementsByTagName("o:permission");
@@ -54,6 +66,18 @@ public class testPolicyMaker {
                 }
             }
 
+            // Making obligations
+            NodeList nodeObligationList = doc.getElementsByTagName("o:obligation");
+            System.out.println("Came in Obligation");
+            if (nodeObligationList.getLength() != 0) {
+                for (int i = 0; i < nodeObligationList.getLength(); i++) {
+                    Duty duty = new Duty();
+                    builder.withObligation(duty);
+                    Node nodeP = nodeObligationList.item(i);
+                    forAll(nodeP, duty, builder);
+                }
+            }
+
             this.policy = builder.build();
             print();
 
@@ -74,6 +98,7 @@ public class testPolicyMaker {
                 if (nodePP.getNodeName() == "o:action") {
                     Action action = new Action();
                     setAttributes(nodePP, action, builder);
+                    forRefinement(nodePP,rules,action,builder,action.getName());
                     rules.setAction(action);
                     builder.withAction(action);
                 }
@@ -81,6 +106,7 @@ public class testPolicyMaker {
                 if (nodePP.getNodeName() == "o:asset") {
                     Asset asset = new Asset();
                     setAttributes(nodePP, asset, builder);
+                    forRefinement(nodePP,rules,asset,builder,asset.getUID());
                     rules.setAsset(asset);
                     builder.withAsset(asset);
                 }
@@ -95,11 +121,13 @@ public class testPolicyMaker {
                 if (nodePP.getNodeName() == "o:party") {
                     Party party = new Party();
                     setAttributes(nodePP, party, builder);
+                    forRefinement(nodePP,rules,party,builder,party.getFunction());
                     rules.setParty(party);
                     builder.withParty(party);
                 }
 
-                if (nodePP.getNodeName() == "o:duty") {
+                if (nodePP.getNodeName() == "o:duty" || nodePP.getNodeName() == "o:remedy" || nodePP.getNodeName() == "o:consequence") {
+                    System.out.println("In consequence and remedy area");
                     Duty duty = new Duty();
                     setAttributes(nodePP, duty, builder);
                     rules.setDuty(duty);
@@ -107,6 +135,70 @@ public class testPolicyMaker {
                     forAll(nodePP, duty, builder);
                 }
 
+            }
+        }
+
+        // Adding global to the Permission, Prohibition or Obligation
+            for (int i = 0; i < globalAssets.size(); i++) {
+                rules.setAsset(globalAssets.get(i));
+            }
+            for (int i = 0; i < globalActions.size(); i++) {
+                rules.setAction(globalActions.get(i));
+            }
+            for (int i = 0; i < globalParties.size(); i++) {
+                rules.setParty(globalParties.get(i));
+        }
+    }
+
+
+    public void forRefinement(Node ruleNode, Rules rule,attributeHolders attributeHolders, PolicyBuilder builder, String on) {
+        if (ruleNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element eElement = (Element) ruleNode;
+            NodeList nodeListForEachElement = eElement.getChildNodes();
+
+            for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
+                Node nodePP = nodeListForEachElement.item(k);
+                if (nodePP.getNodeName() == "o:refinement") {
+                    Constraint constraint = new Constraint();
+                    constraint.setConstraintOn(on);
+                    setAttributes(nodePP, constraint, builder);
+                    attributeHolders.setConstraint(constraint);
+                    rule.setConstraint(constraint);
+                    builder.withConstraint(constraint);
+                }
+            }
+        }
+    }
+
+
+    public void forPolicy(Node ruleNode, PolicyBuilder builder) {
+        if (ruleNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element eElement = (Element) ruleNode;
+            NodeList nodeListForEachElement = eElement.getChildNodes();
+
+            for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
+                Node nodePP = nodeListForEachElement.item(k);
+
+                if (nodePP.getNodeName() == "o:action") {
+                    Action action = new Action();
+                    setAttributes(nodePP, action, builder);
+                    globalActions.add(action);
+                    builder.withAction(action);
+                }
+
+                if (nodePP.getNodeName() == "o:asset") {
+                    Asset asset = new Asset();
+                    setAttributes(nodePP, asset, builder);
+                    globalAssets.add(asset);
+                    builder.withAsset(asset);
+                }
+
+                if (nodePP.getNodeName() == "o:party") {
+                    Party party = new Party();
+                    setAttributes(nodePP, party, builder);
+                    globalParties.add(party);
+                    builder.withParty(party);
+                }
             }
         }
     }
@@ -126,8 +218,6 @@ public class testPolicyMaker {
             Attr attribute = (Attr) map.item(i);
 
             if (attribute.getName() == "idref") {
-
-                System.out.println(map.item(i) + " " + attribute.getValue());
 
                 String reference = attribute.getValue();
                 if (element instanceof Asset) {
@@ -171,12 +261,10 @@ public class testPolicyMaker {
                 return;
             }
 
-            System.out.println("nope outside");
             System.out.println(attribute.getName());
-            System.out.println(element instanceof Duty);
 
             if (attribute.getName() == "uid" && element instanceof Duty) {
-                System.out.println("okay in at least");
+
                 String reference = attribute.getValue().substring(attribute.getValue().lastIndexOf("#")+1);
                 System.out.println(reference);
                 try {
@@ -224,42 +312,8 @@ public class testPolicyMaker {
 
 
     public void print() {
-        //System.out.println(this.policy.getAction(0).name);
-        //System.out.println(this.policy.permissions.get(0).getAsset().uid);
-        //System.out.println(this.policy.prohibitions.get(0).getAsset().uid);
-        //System.out.println(this.policy.prohibitions.get(0).getAsset().relation);
-        //System.out.println(this.policy.prohibitions.get(0).getParty().get(0).uid);
+       System.out.println(policy.getPermission(0).getAsset().get(0));
     }
 
-    /*
-    public static void main(String argv[]) {
-        String name = "/Users/Chapman/file.txt";
-        testPolicyMaker test = new testPolicyMaker();
-        test.setXmlFunction(name);
-
-        System.out.println(test.policy.getAction().name);
-        System.out.println(test.policy.permissions.get(0).getAsset().id);
-        System.out.println(test.policy.prohibitions.get(0).getConstraint().name);
-
-    }
-
-    //Adding permission to panel
-                    Icon permissionII = new ImageIcon("/Users/Chapman/Downloads/permissionI.png");
-                    JButton permissionI = new JButton("Permission", permissionII);
-                    permissionI.setBounds((180 * allEl + 80), 100, 100, 100);
-                    permissionI.setVerticalTextPosition(SwingConstants.BOTTOM);
-                    permissionI.setHorizontalTextPosition(SwingConstants.CENTER);
-                    permissionI.setFocusPainted(false);
-                    visuall.add(permissionI);
-// Adding prohibition to panel
-                    Icon prohibitionII = new ImageIcon("/Users/Chapman/Downloads/prohibition-symbol.png");
-                    JButton prohibitionI = new JButton("Prohibition",prohibitionII);
-                    prohibitionI.setVerticalTextPosition(SwingConstants.BOTTOM);
-                    prohibitionI.setHorizontalTextPosition(SwingConstants.CENTER);
-                    prohibitionI.setBounds((180*allEl+80+exisitingElementX),100,100,100);
-                    prohibitionI.setFocusPainted(false);
-                    visuall.add(prohibitionI);
-
-    */
 
 }

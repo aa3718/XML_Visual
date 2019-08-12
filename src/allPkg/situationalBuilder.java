@@ -9,6 +9,8 @@ public class situationalBuilder {
     private Color colorConstraint = Color.black;
     private Color colorDuty = Color.black;
 
+    private int numberElementPerLine = 3;
+
 
     public situational build() {
         situational situational = new situational(policy);
@@ -16,6 +18,7 @@ public class situationalBuilder {
         situational.addColorProhibition(colorProhibition);
         situational.addColorDuty(colorDuty);
         situational.addColorConstraint(colorConstraint);
+        situational.addNumberElementPerLine(numberElementPerLine);
         return situational;
     }
 
@@ -41,6 +44,11 @@ public class situationalBuilder {
 
     public situationalBuilder setColorConstraint(Color color) {
         this.colorConstraint = color;
+        return this;
+    }
+
+    public situationalBuilder setNumberElementPerLine(int numberElementPerLine) {
+        this.numberElementPerLine = numberElementPerLine;
         return this;
     }
 
