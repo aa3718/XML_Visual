@@ -23,7 +23,7 @@ public class IconDnD implements ActionListener {
     private JPanel panelVisualMenu;
     private ArrayList<JButton> myMenuList;
     private ArrayList<JComboBox> colorComBox;
-    private ArrayList<String> menuName = new ArrayList<>() {};
+    private ArrayList<String> menuName;
     private Hashtable<String, Color> stringToColor = new Hashtable<>() {};
     private String[] colors = {"black","blue","cyan","gray","green","magenta","orange","red", "pink","yellow"};
     private String[] nameParty= {"assigner","assignee","attributedParty","consentingParting","informedParty","compensatedParty","trackingParty"};
@@ -141,7 +141,7 @@ public class IconDnD implements ActionListener {
 
                 if (res == fileChoose.APPROVE_OPTION) {
                     // Accepted if the file is .txt otherwise error message
-                    if (fileChoose.getSelectedFile().getAbsolutePath().endsWith("txt") || fileChoose.getSelectedFile().getAbsolutePath().endsWith("xml")) {
+                    if (fileChoose.getSelectedFile().getAbsolutePath().endsWith("xml")) {
                         String filePath = fileChoose.getSelectedFile().getAbsolutePath();
                         System.out.println(filePath);
                         // Creates the parser and the ODRL policy constructor
@@ -313,6 +313,7 @@ public class IconDnD implements ActionListener {
     }
 
     public void menuItems() {
+        menuName = new ArrayList<String>();
         menuName.add("Import");
         menuName.add("Build");
         menuName.add("Export");
@@ -398,6 +399,7 @@ public class IconDnD implements ActionListener {
 
             if (importedPolicy && inBubble) {
                 bubbleBuilder.setPolicy(policies.get(policies.size() - 1));
+                bubbleBuilder.setUseIcon(true);
                 bubble = bubbleBuilder.build();
                 visual.setVisible(false);
                 frame.add(bubble);

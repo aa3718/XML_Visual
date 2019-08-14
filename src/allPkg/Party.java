@@ -5,13 +5,17 @@ import java.util.List;
 
 public class Party extends attributeHolders{
 
-    public static ArrayList<String> nameParty = new ArrayList<String>();
-    public ArrayList<String> attributeNameList = new ArrayList<String>();
-    public String function;
-    public String uid;
-    public String scope;
-    public String id;
+    private static ArrayList<String> nameParty = new ArrayList<String>();
+    private ArrayList<String> attributeNameList = new ArrayList<String>();
+    private String function;
+    private String uid;
+    private String scope;
+    private String id;
     private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
+
+    Party() {
+        buildAttributeList();
+    }
 
     public void setUID(String uid) {
         this.uid = uid;
@@ -52,33 +56,36 @@ public class Party extends attributeHolders{
     }
 
     public void setAttribute(String attribute, String value) {
-        if (attribute == "function"){
+        if (attribute.equals("function")){
             this.setFunction(value);
             return;
         }
 
-        if (attribute == "uid"){
+        if (attribute.equals("uid")){
             this.setUID(value);
             return;
         }
 
-        if (attribute == "id"){
+        if (attribute.equals("id")){
             this.setID(value);
             return;
         }
 
-        if (attribute == "scope"){
+        if (attribute.equals("scope")){
             this.setScope(value);
             return;
         }
     }
 
-    public ArrayList<String> getAttributeList() {
+    public void buildAttributeList() {
         attributeNameList.add("function");
         attributeNameList.add("relation");
         attributeNameList.add("scope");
         attributeNameList.add("uid");
         attributeNameList.add("id");
+    }
+
+    public ArrayList<String> getAttributeList() {
         return this.attributeNameList;
     }
 

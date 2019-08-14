@@ -10,6 +10,10 @@ public class Asset extends attributeHolders {
     public String id;
     private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
 
+    Asset() {
+        buildAttributeList();
+    }
+
     public void setUID(String uid) {
         this.uid = uid;
     }
@@ -32,27 +36,30 @@ public class Asset extends attributeHolders {
         return refinements;
     }
 
-    @Override
-    public ArrayList<String> getAttributeList() {
+    public void buildAttributeList() {
         attributeNameList.add("relation");
         attributeNameList.add("uid");
         attributeNameList.add("id");
+    }
+
+    @Override
+    public ArrayList<String> getAttributeList() {
         return this.attributeNameList;
     }
 
     @Override
     void setAttribute(String attribute, String value) {
-        if (attribute == "relation"){
+        if (attribute.equals("relation")){
             this.relation = value;
             return;
         }
 
-        if (attribute == "uid"){
+        if (attribute.equals("uid")){
             this.uid = value;
             return;
         }
 
-        if (attribute == "id"){
+        if (attribute.equals("id")){
             this.id = value;
             return;
         }

@@ -15,5 +15,7 @@ abstract List<Constraint> getConstraint();
 
 abstract String getID();
 
+abstract void buildAttributeList();
+
 
 }

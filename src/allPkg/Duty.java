@@ -5,15 +5,18 @@ import java.util.List;
 
 public class Duty extends attributeHolders implements Rules {
 
-    public String uid;
-    public String id;
-
+    private String uid;
+    private String id;
     private List<Asset> assets = new ArrayList<Asset>();
     private List<Action> actions = new ArrayList<Action>();
     private List<Constraint> constraints = new ArrayList<Constraint>();
     private List<Party> parties = new ArrayList<Party>();
     private List<Duty> consequences = new ArrayList<Duty>();
-    public ArrayList<String> attributeNameList = new ArrayList<String>();
+    private ArrayList<String> attributeNameList = new ArrayList<String>();
+
+    Duty() {
+        buildAttributeList();
+    }
 
     public void setAction(Action action) {
         actions.add(action);
@@ -62,18 +65,21 @@ public class Duty extends attributeHolders implements Rules {
     public List<Party> getParty() { return parties; }
 
     public ArrayList<String> getAttributeList() {
-        attributeNameList.add("id");
-        attributeNameList.add("uid");
         return this.attributeNameList;
     }
 
+    public void buildAttributeList() {
+        attributeNameList.add("id");
+        attributeNameList.add("uid");
+    }
+
     public void setAttribute(String attribute, String value) {
-        if (attribute == "id"){
+        if (attribute.equals("id")){
             this.id = value;
             return;
         }
 
-        if (attribute == "uid"){
+        if (attribute.equals("uid")){
             this.uid = value;
             return;
         }

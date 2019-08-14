@@ -13,6 +13,8 @@ public class testPolicyMaker {
     public List<Action> globalActions = new ArrayList<Action>();
     public List<Asset> globalAssets = new ArrayList<Asset>();
     public List<Party> globalParties = new ArrayList<Party>();
+    public List<Constraint> globalConstraints = new ArrayList<Constraint>();
+    public ArrayList<String> logicalConstraint = new ArrayList<String>();
     Policy policy = null;
 
     public void setXmlFunction(String filename) {
@@ -34,6 +36,7 @@ public class testPolicyMaker {
 
             // Create Policy Builder instance
             PolicyBuilder builder = new PolicyBuilder();
+            buildLogicalConstraint();
 
             // Making policy global elements
             NodeList nodePolicyList = doc.getElementsByTagName("o:Policy");
@@ -68,7 +71,6 @@ public class testPolicyMaker {
 
             // Making obligations
             NodeList nodeObligationList = doc.getElementsByTagName("o:obligation");
-            System.out.println("Came in Obligation");
             if (nodeObligationList.getLength() != 0) {
                 for (int i = 0; i < nodeObligationList.getLength(); i++) {
                     Duty duty = new Duty();
@@ -95,46 +97,45 @@ public class testPolicyMaker {
             for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
                 Node nodePP = nodeListForEachElement.item(k);
 
-                if (nodePP.getNodeName() == "o:action") {
+                if (nodePP.getNodeName().equals("o:action")) {
                     Action action = new Action();
-                    setAttributes(nodePP, action, builder);
+                    setAttributes(nodePP, action, builder,false);
                     forRefinement(nodePP,rules,action,builder,action.getName());
                     rules.setAction(action);
                     builder.withAction(action);
                 }
 
-                if (nodePP.getNodeName() == "o:asset") {
+                if (nodePP.getNodeName().equals("o:asset")) {
                     Asset asset = new Asset();
-                    setAttributes(nodePP, asset, builder);
+                    setAttributes(nodePP, asset, builder,false);
                     forRefinement(nodePP,rules,asset,builder,asset.getUID());
                     rules.setAsset(asset);
                     builder.withAsset(asset);
                 }
 
-                if (nodePP.getNodeName() == "o:constraint") {
+                if (nodePP.getNodeName().equals("o:constraint")) {
                     Constraint constraint = new Constraint();
-                    setAttributes(nodePP, constraint, builder);
+                    setAttributes(nodePP, constraint, builder,false);
                     rules.setConstraint(constraint);
                     builder.withConstraint(constraint);
                 }
 
-                if (nodePP.getNodeName() == "o:party") {
+                if (nodePP.getNodeName().equals("o:party")) {
                     Party party = new Party();
-                    setAttributes(nodePP, party, builder);
+                    setAttributes(nodePP, party, builder,false);
                     forRefinement(nodePP,rules,party,builder,party.getFunction());
                     rules.setParty(party);
                     builder.withParty(party);
                 }
 
-                if (nodePP.getNodeName() == "o:duty" || nodePP.getNodeName() == "o:remedy" || nodePP.getNodeName() == "o:consequence") {
+                if (nodePP.getNodeName().equals("o:duty") || nodePP.getNodeName().equals("o:remedy") || nodePP.getNodeName().equals("o:consequence")) {
                     System.out.println("In consequence and remedy area");
                     Duty duty = new Duty();
-                    setAttributes(nodePP, duty, builder);
+                    setAttributes(nodePP, duty, builder,false);
                     rules.setDuty(duty);
                     builder.withDuty(duty);
                     forAll(nodePP, duty, builder);
                 }
-
             }
         }
 
@@ -158,10 +159,10 @@ public class testPolicyMaker {
 
             for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
                 Node nodePP = nodeListForEachElement.item(k);
-                if (nodePP.getNodeName() == "o:refinement") {
+                if (nodePP.getNodeName().equals("o:refinement")) {
                     Constraint constraint = new Constraint();
                     constraint.setConstraintOn(on);
-                    setAttributes(nodePP, constraint, builder);
+                    setAttributes(nodePP, constraint, builder,false);
                     attributeHolders.setConstraint(constraint);
                     rule.setConstraint(constraint);
                     builder.withConstraint(constraint);
@@ -179,33 +180,41 @@ public class testPolicyMaker {
             for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
                 Node nodePP = nodeListForEachElement.item(k);
 
-                if (nodePP.getNodeName() == "o:action") {
+                if (nodePP.getNodeName().equals("o:action")) {
                     Action action = new Action();
-                    setAttributes(nodePP, action, builder);
+                    setAttributes(nodePP, action, builder,false);
                     globalActions.add(action);
                     builder.withAction(action);
                 }
 
-                if (nodePP.getNodeName() == "o:asset") {
+                if (nodePP.getNodeName().equals("o:asset")) {
                     Asset asset = new Asset();
-                    setAttributes(nodePP, asset, builder);
+                    setAttributes(nodePP, asset, builder,false);
                     globalAssets.add(asset);
                     builder.withAsset(asset);
                 }
 
-                if (nodePP.getNodeName() == "o:party") {
+                if (nodePP.getNodeName().equals("o:party")) {
                     Party party = new Party();
-                    setAttributes(nodePP, party, builder);
+                    setAttributes(nodePP, party, builder,false);
                     globalParties.add(party);
                     builder.withParty(party);
                 }
+
+                if (nodePP.getNodeName().equals("o:constraint") || nodePP.getNodeName().equals("o:refinement")) {
+                    Constraint constraint = new Constraint();
+                    setAttributes(nodePP, constraint, builder,true);
+                    globalConstraints.add(constraint);
+                    //builder.withConstraint(constraint);
+                }
+
             }
         }
     }
 
 
     // Takes in one node and set attribute to the model
-    public void setAttributes(Node node, attributeHolders element, PolicyBuilder builder) {
+    public void setAttributes(Node node, attributeHolders element, PolicyBuilder builder, boolean fromGlobalConstraint) {
         NamedNodeMap map = node.getAttributes();
         int numberAttr = map.getLength();
 
@@ -217,7 +226,7 @@ public class testPolicyMaker {
         for (int i = 0; i < numberAttr; i++) {
             Attr attribute = (Attr) map.item(i);
 
-            if (attribute.getName() == "idref") {
+            if (attribute.getName().equals("idref")) {
 
                 String reference = attribute.getValue();
                 if (element instanceof Asset) {
@@ -261,9 +270,7 @@ public class testPolicyMaker {
                 return;
             }
 
-            System.out.println(attribute.getName());
-
-            if (attribute.getName() == "uid" && element instanceof Duty) {
+            if (attribute.getName().equals("uid") && element instanceof Duty) {
 
                 String reference = attribute.getValue().substring(attribute.getValue().lastIndexOf("#")+1);
                 System.out.println(reference);
@@ -276,24 +283,60 @@ public class testPolicyMaker {
 
             ArrayList<String> theList = element.getAttributeList();
 
-            for (int j = 0; j < theList.size(); j++) {
+            System.out.println(attribute.getName() + "<-Attribute name");
+            System.out.println(attribute.getValue() + "<-Attribute value");
 
-                if (attribute.getName() == theList.get(j)) {
-                    if (attribute.getValue().lastIndexOf("/") > 0) {
-                        String subString = attribute.getValue().substring(attribute.getValue().lastIndexOf("/") + 1);
-                        element.setAttribute(attribute.getName(), subString);
-                    } else {
-                        element.setAttribute(attribute.getName(), attribute.getValue());
-
+            if (theList.contains(attribute.getName())) {
+                System.out.println(attribute.getValue().lastIndexOf("/") + "<- Number / in value");
+                if (attribute.getValue().lastIndexOf("/") > 0) {
+                    String subString = attribute.getValue().substring(attribute.getValue().lastIndexOf("/") + 1);
+                    if (attribute.getValue().lastIndexOf("#")+1 > attribute.getValue().lastIndexOf("/") + 1) {
+                        subString = attribute.getValue().substring(attribute.getValue().lastIndexOf("#") + 1);
                     }
-
+                    element.setAttribute(attribute.getName(), subString);
+                } else {
+                    element.setAttribute(attribute.getName(), attribute.getValue());
                 }
-
             }
-
+        }
+        if (!fromGlobalConstraint) {
+            if (element instanceof Constraint) {
+                System.out.println("Constraint is logical!!!!");
+                if (logicalConstraint.contains(((Constraint)element).getName())) {
+                    System.out.println("Constraint is logical");
+                    searchForLogical((Constraint) element);
+                }
+            }
         }
     }
 
+
+    public void searchForLogical(Constraint constraint) {
+        if (logicalConstraint.contains(constraint.getName())) {
+            constraint.setLogicalConstraint(true);
+            System.out.println(constraint.getRightOperand() + " " + constraint.getName());
+            String idString = constraint.getRightOperand().replaceAll("#", "");
+            String[] ids = idString.split(" ");
+
+            for (int j = 0; j < ids.length; j++) {
+                for (int k = 0; k < globalConstraints.size(); k++) {
+                    if (globalConstraints.get(k).getID().equals(ids[j])) {
+                        constraint.setAttachedConstraint(globalConstraints.get(k));
+                        Constraint constraintTemp = globalConstraints.get(k);
+                        searchForLogical(constraintTemp);
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void buildLogicalConstraint() {
+        logicalConstraint.add("xone");
+        logicalConstraint.add("or");
+        logicalConstraint.add("and");
+        logicalConstraint.add("andSequence");
+    }
 
     // Check if the root element is a Policy
     public boolean checkPolicy(Document doc) {
@@ -312,8 +355,10 @@ public class testPolicyMaker {
 
 
     public void print() {
-       System.out.println(policy.getPermission(0).getAsset().get(0));
+//       System.out.println(policy.getConstraint(1).getRightOperand());
     }
+
+
 
 
 }

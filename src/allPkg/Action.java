@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Action extends attributeHolders {
-
     private ArrayList<String> nameAction = new ArrayList<String>();
     private ArrayList<String> attributeNameList = new ArrayList<String>();
     private String name;
     private String id;
     private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
+
+    Action() {
+        buildAttributeList();
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -104,21 +107,24 @@ public class Action extends attributeHolders {
     }
     */
 
-    @Override
-    public ArrayList<String> getAttributeList() {
+    public void buildAttributeList() {
         attributeNameList.add("id");
         attributeNameList.add("name");
+    }
+
+    @Override
+    public ArrayList<String> getAttributeList() {
         return this.attributeNameList;
     }
 
     @Override
     void setAttribute(String attribute, String value) {
-        if (attribute == "id"){
+        if (attribute.equals("id")){
             this.id = value;
             return;
         }
 
-        if (attribute == "name"){
+        if (attribute.equals("name")){
             this.name = value;
             return;
         }

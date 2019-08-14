@@ -59,6 +59,10 @@ public class Policy {
         return this.type;
     }
 
+    public String getProfile() {
+        return this.profile;
+    }
+
     public void setUID(String UID) {
         int indexLast = UID.lastIndexOf("/");
         this.uid = UID.substring(indexLast);;
@@ -95,8 +99,26 @@ public class Policy {
         return constraints.get(index);
     }
 
-    public String getProfile() {
-        return this.profile;
+    public List<Permission> getAllPermission() {
+        return permissions;
+    }
+
+    public List<Prohibition> getAllProhibition() {
+        return prohibitions;
+    }
+
+    public List<Duty> getAllObligation() { return obligations; }
+
+    public List<Action> getAllAction() {
+        return actions;
+    }
+
+    public List<Asset> getAllAsset() {
+        return assets;
+    }
+
+    public List<Constraint> getAllConstraint() {
+        return constraints;
     }
 
     // Statistics for Policy
@@ -124,6 +146,15 @@ public class Policy {
         return duties.size();
     }
 
+    /*
+    public void buildLogicalConstraint() {
+        logicalConstraint = new ArrayList<String>();
+        logicalConstraint.add("xone");
+        logicalConstraint.add("or");
+        logicalConstraint.add("and");
+        logicalConstraint.add("andSequence");
+    }
+  */
 
 
 }
