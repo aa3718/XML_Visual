@@ -18,6 +18,7 @@ public class Constraint extends attributeHolders {
     private String on;
     private boolean isLogicalConstraint;
     private ArrayList<Constraint> attachedConstraint = new ArrayList<Constraint>();
+    private String optionalLogicalOperand;
 
     public Constraint() {
         buildAttributeList();
@@ -28,6 +29,10 @@ public class Constraint extends attributeHolders {
     public void setID(String id) {
         this.id = id;
     }
+
+    public void setOptionalLogicalOperand(String optionalLogicalOperand) { this.optionalLogicalOperand = optionalLogicalOperand; }
+
+    public String getOptionalLogicalOperand() { return optionalLogicalOperand; }
 
     public String getOn() { return this.on;}
 

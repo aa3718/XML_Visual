@@ -38,6 +38,7 @@ public class geometry2 extends JComponent {
     private int spaceBetweenRulesAndDuty;
     private int spaceBetweenDutyAndDuty;
     private int bottomPadding;
+    private int track = 0;
 
     private Color colorPermission;
     private Color colorProhibition;
@@ -58,6 +59,7 @@ public class geometry2 extends JComponent {
         g.setColor(Color.black);
 
         numberOfTotalElementsPolicy = policy.getNumberOfProhibitions() + policy.getNumberOfPermissions() + policy.getNumberOfObligations();
+        System.out.println(policy.getConstraint(0).getAttachedConstraint().get(1).getOptionalLogicalOperand() + "WHATTTTTTTT222");
         ruleLengthSize = 400;
         name = "Permission";
         isPermission = true;
@@ -76,7 +78,7 @@ public class geometry2 extends JComponent {
             }
 
             // Enables switch from Permission to Prohibition
-            if (policy.getNumberOfProhibitions()+policy.getNumberOfPermissions() == i) {
+            if (policy.getNumberOfProhibitions() + policy.getNumberOfPermissions() == i) {
                 name = "Obligation";
                 isPermission = false;
                 isProhibition = false;
@@ -97,7 +99,7 @@ public class geometry2 extends JComponent {
             latestY = baseYForLine;
 
             // Writes main Rule Name
-            g.drawString(name, 290 + (205 * (i % numberElementPerLine)), latestY+25);
+            g.drawString(name, 290 + (205 * (i % numberElementPerLine)), latestY + 25);
             latestX = 290 + (205 * (i % numberElementPerLine));
             latestY += 25;
 
@@ -117,13 +119,13 @@ public class geometry2 extends JComponent {
                 } else if (isProhibition) {
                     rule = policy.getProhibition(i - policy.getNumberOfPermissions());
                 } else {
-                    System.out.println(i - (policy.getNumberOfPermissions()+policy.getNumberOfProhibitions()) + "index for obli");
-                    rule = policy.getObligation(i - (policy.getNumberOfPermissions()+policy.getNumberOfProhibitions()));
+                    System.out.println(i - (policy.getNumberOfPermissions() + policy.getNumberOfProhibitions()) + "index for obli");
+                    rule = policy.getObligation(i - (policy.getNumberOfPermissions() + policy.getNumberOfProhibitions()));
                 }
 
-                drawInnerAAP(rule,g,false);
+                drawInnerAAP(rule, g, false);
                 for (int k = 0; k < rule.getConstraint().size(); k++) {
-                    drawConstraintsRecusive(rule.getConstraint().get(k),g,false);
+                    drawConstraintsRecusive(rule.getConstraint().get(k), g, false);
                 }
 
                 startBoxY += spaceBetweenRulesAndDuty;
@@ -139,7 +141,7 @@ public class geometry2 extends JComponent {
                 }
 
                 // Draw Duties
-                drawDutyRecursive(rule,g,false, nameN);
+                drawDutyRecursive(rule, g, false, nameN);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -154,7 +156,7 @@ public class geometry2 extends JComponent {
             g.drawRect((285 + (205 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
             g.setColor(Color.black);
 
-            if(((latestY - baseYForLine) + bottomPadding) > maxYBoxOnLine) {
+            if (((latestY - baseYForLine) + bottomPadding) > maxYBoxOnLine) {
                 maxYBoxOnLine = ((latestY - baseYForLine) + bottomPadding);
             }
         }
@@ -167,27 +169,26 @@ public class geometry2 extends JComponent {
             if (inside) {
                 nameN = "Consequence";
             }
-            g.drawString(nameN,startBoxX+10, startBoxY+18);
+            g.drawString(nameN, startBoxX + 10, startBoxY + 18);
 
             // Transform from Title P or P
             latestY += 28;
 
-            drawInnerAAP(rule.getDuty().get(j),g,true);
+            drawInnerAAP(rule.getDuty().get(j), g, true);
             rule.getDuty().get(j).getConstraint();
             for (int i = 0; i < rule.getConstraint().size(); i++) {
-                drawConstraintsRecusive(rule.getConstraint().get(i),g,false);
+                drawConstraintsRecusive(rule.getConstraint().get(i), g, false);
             }
-            //drawConstraints(rule.getDuty().get(j), g, true);
             latestY += spaceBetweenDutyAndDuty;
             startBoxY += spaceBetweenDutyAndDuty;
 
-            drawDutyRecursive(rule.getDuty().get(j),g, true, nameN);
+            drawDutyRecursive(rule.getDuty().get(j), g, true, nameN);
 
         }
 
     }
 
-    public void drawInnerAAP(Rules rule, Graphics g,Boolean isDuty) {
+    public void drawInnerAAP(Rules rule, Graphics g, Boolean isDuty) {
         try {
             // Draw Parties
             for (int j = 0; j < rule.getParty().size(); j++) {
@@ -210,7 +211,7 @@ public class geometry2 extends JComponent {
             for (int j = 0; j < rule.getAsset().size(); j++) {
                 g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/asset.png")), latestX, latestY, null);
                 g.drawString(rule.getAsset().get(j).getUID(), latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
-                latestY += spaceBetweenAttributes/2;
+                latestY += spaceBetweenAttributes / 2;
             }
 
             latestY += spaceAtBottomOfBoxes;
@@ -222,7 +223,7 @@ public class geometry2 extends JComponent {
             } else {
                 if (rule.getConstraint().isEmpty()) {
                     g.setColor(colorDuty);
-                    g.drawRoundRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY,arcWDuty,arcHDuty);
+                    g.drawRoundRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY, arcWDuty, arcHDuty);
                 }
                 theYforDutyWithConstraint = startBoxY;
             }
@@ -232,16 +233,21 @@ public class geometry2 extends JComponent {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-    }   
+    }
 
     public void drawConstraintsRecusive(Constraint constraint, Graphics g, Boolean isDuty) {
         try {
-            if(constraint.getIsLogicalConstraint()) {
+            if (constraint.getIsLogicalConstraint()) {
                 for (int j = 0; j < constraint.getAttachedConstraint().size(); j++) {
                     if (constraint.getAttachedConstraint().get(j).getIsLogicalConstraint()) {
                         drawConstraintsRecusive(constraint.getAttachedConstraint().get(j), g, false);
                     } else {
                         g.setColor(colorConstraint);
+
+                        if(constraint.getAttachedConstraint().get(j).getOptionalLogicalOperand() != null && j!=0) {
+                            g.drawString(constraint.getAttachedConstraint().get(j).getOptionalLogicalOperand(), startBoxX + (sizeOfInnerBoxesW/2)+((sizeOfInnerBoxesW/2)/2), startBoxY + 9);
+                        }
+
                         g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, widenessOfConstraintLines);
                         g.setColor(Color.black);
                         latestY += widenessOfConstraintLines;
@@ -286,9 +292,12 @@ public class geometry2 extends JComponent {
                         }
                         g.setColor(Color.black);
                         startBoxY = latestY;
+
+                        track++;
                     }
 
                 }
+                track = 0;
             } else {
                 g.setColor(colorConstraint);
                 g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, widenessOfConstraintLines);
@@ -340,9 +349,9 @@ public class geometry2 extends JComponent {
                 }
                 g.setColor(Color.black);
                 startBoxY = latestY;
-
+                track++;
             }
-        }catch(Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
 
         }
@@ -360,7 +369,9 @@ public class geometry2 extends JComponent {
         this.spaceBetweenAttributes = number;
     }
 
-    public void addSpaceBetweenAttrIconAndAttrStringsX(int number) { this.spaceBetweenAttrIconAndAttrStringsX = number; }
+    public void addSpaceBetweenAttrIconAndAttrStringsX(int number) {
+        this.spaceBetweenAttrIconAndAttrStringsX = number;
+    }
 
     public void addSpaceAtBottomOfBoxes(int number) {
         this.spaceAtBottomOfBoxes = number;
@@ -418,108 +429,7 @@ public class geometry2 extends JComponent {
         this.makeDutyRounded = bool;
     }
 
-
-
-
 }
-
-
-
-
-/*
-            try {
-                for (policy.)
-                    if (policy.getNumberOfPermissions() == i) {
-                        name = "Prohibition";
-                    }
-                policy.getPermission(i).
-                BufferedImage image = ImageIO.read(new File("/Users/Chapman/Downloads/profile.png"));
-                g.drawImage(image, 35, 30, null);
-                g.drawString("Assignee", 60, 45);
-
-            } catch (Exception e) {
-
-            }
-
-*/
-
-        /*
-        g.drawRect(25,25,175,175);
-        g.drawRect(25,220,175,180);
-        g.drawString("Duty",20,215);
-
-        g.drawRect(210,5,200,400);
-        g.drawString("Prohibition",225,20);
-
-        g.drawRect(230,25,175,175);
-
-
-        try {
-            BufferedImage image = ImageIO.read(new File("/Users/Chapman/Downloads/profile.png"));
-            g.drawImage(image,35,30,null);
-            g.drawString("Assignee",60,45);
-
-            BufferedImage image2 = ImageIO.read(new File("/Users/Chapman/Downloads/play-button.png"));
-            g.drawImage(image2, 35, 70, null);
-            g.drawString("Play",60,85);
-
-            BufferedImage image3 = ImageIO.read(new File("/Users/Chapman/Downloads/umbrella.png"));
-            g.drawImage(image3, 35, 110, null);
-            g.drawString("Movie",60,125);
-
-            BufferedImage image10 = ImageIO.read(new File("/Users/Chapman/Downloads/profile.png"));
-            g.drawImage(image10, 35, 225, null);
-            g.drawString("Assignee",60,240);
-
-            BufferedImage image9 = ImageIO.read(new File("/Users/Chapman/Downloads/payment-method.png"));
-            g.drawImage(image9, 35, 265, null);
-            g.drawString("Pay",60,280);
-
-
-            g.drawLine(25,145,200,145);
-            g.drawLine(25,147,200,147);
-            g.drawString("Constraint",30,165);
-
-            BufferedImage image12 = ImageIO.read(new File("/Users/Chapman/Downloads/calendar-2.png"));
-            g.drawImage(image12, 35, 170, null);
-            g.drawString("2011-11-11",70,190);
-
-            BufferedImage image13 = ImageIO.read(new File("/Users/Chapman/Downloads/profile.png"));
-            g.drawImage(image13,240,30,null);
-            g.drawString("Assignee",275,45);
-
-            BufferedImage image14 = ImageIO.read(new File("/Users/Chapman/Downloads/play-button.png"));
-            g.drawImage(image14, 240, 70, null);
-            g.drawString("Play",275,85);
-
-            BufferedImage image15 = ImageIO.read(new File("/Users/Chapman/Downloads/umbrella.png"));
-            g.drawImage(image15, 240, 110, null);
-            g.drawString("Movie",275,125);
-
-            g.drawLine(230,145,405,145);
-            g.drawLine(230,147,405,147);
-            g.drawString("Constraint",235,165);
-
-            BufferedImage image16 = ImageIO.read(new File("/Users/Chapman/Downloads/placeholder-2.png"));
-            g.drawImage(image16, 240, 170, null);
-            g.drawString("tML-ISO-3166:fr",280,190);
-
-
-        } catch (Exception e) {
-            System.out.println("Error");
-        }
-
-    }
-
-
-        public static void main (String[]args){
-            JFrame frameNew = new JFrame();
-            frameNew.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frameNew.setSize(500, 900);
-            frameNew.getContentPane().add(new geometry2());
-            frameNew.setVisible(true);
-        }
-        */
 
 
 

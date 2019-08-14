@@ -1,6 +1,5 @@
 package allPkg;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class geometry2Builder {
@@ -11,7 +10,7 @@ public class geometry2Builder {
     private int spaceBetweenAttrIconAndAttrStringsX = 35;
     private int spaceAtBottomOfBoxes = 15;
     private int sizeOfInnerBoxesW = prefferedRuleBoxSizeW - 25;
-    private int widenessOfConstraintLines = 2;
+    private int widenessOfConstraintLines = 10;
     private int operatorSpaceFromLeft = 80;
     private int arcWDuty = 40;
     private int arcHDuty = 40;

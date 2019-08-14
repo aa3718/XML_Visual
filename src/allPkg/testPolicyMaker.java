@@ -321,9 +321,11 @@ public class testPolicyMaker {
             for (int j = 0; j < ids.length; j++) {
                 for (int k = 0; k < globalConstraints.size(); k++) {
                     if (globalConstraints.get(k).getID().equals(ids[j])) {
+                        globalConstraints.get(k).setOptionalLogicalOperand(constraint.getName());
+                        System.out.println(constraint.getName() + "<-SetName");
+                        System.out.println(globalConstraints.get(k).getOptionalLogicalOperand() + "<-Getting it");
                         constraint.setAttachedConstraint(globalConstraints.get(k));
-                        Constraint constraintTemp = globalConstraints.get(k);
-                        searchForLogical(constraintTemp);
+                        searchForLogical(globalConstraints.get(k));
                     }
                 }
             }
@@ -355,7 +357,7 @@ public class testPolicyMaker {
 
 
     public void print() {
-//       System.out.println(policy.getConstraint(1).getRightOperand());
+       System.out.println(policy.getConstraint(0).getAttachedConstraint().get(1).getOptionalLogicalOperand() + "WHATTTTTTTT");
     }
 
 
