@@ -232,7 +232,7 @@ public class geometry2 extends JComponent {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-    }
+    }   
 
     public void drawConstraintsRecusive(Constraint constraint, Graphics g, Boolean isDuty) {
         try {
