@@ -13,6 +13,7 @@ public class Duty extends attributeHolders implements Rules {
     private List<Party> parties = new ArrayList<Party>();
     private List<Duty> consequences = new ArrayList<Duty>();
     private ArrayList<String> attributeNameList = new ArrayList<String>();
+    private boolean isObligation = false;
 
     Duty() {
         buildAttributeList();
@@ -41,6 +42,10 @@ public class Duty extends attributeHolders implements Rules {
     public void setEntireAsset(List<Asset> assets) { this.assets = assets; }
 
     public void setEntireAction(List<Action> actions) { this.actions = actions; }
+
+    public void setIsObligation(boolean value) { this.isObligation = isObligation; }
+
+    public boolean getIsObligation() { return isObligation; }
 
     public String getID() { return this.id; }
 
@@ -94,6 +99,7 @@ public class Duty extends attributeHolders implements Rules {
     }
 
     public void copyInstance(Duty duty) {
+        System.out.println("Copies it - In duty");
         duty.setEntireAction(this.getAction());
         duty.setEntireAsset(this.getAsset());
         duty.setEntireConstraint(this.getConstraint());

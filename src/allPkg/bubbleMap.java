@@ -14,10 +14,19 @@ public class bubbleMap extends JComponent {
     private int xCord;
     private int yCord;
     private int xXCord;
+    private int movingXCord;
+    private int movingYCord;
     private Color colorPermission;
     private Color colorProhibition;
     private Color colorConstraint;
     private Color colorDuty;
+    private Color colorObligation;
+    private int sizeLines;
+    private ArrayList<Action> actionS;
+    private int width;
+    private int height;
+    int alpha;
+    int numberOnAction;
 
     bubbleMap(Policy policy) {
         this.policy = policy;
@@ -33,9 +42,14 @@ public class bubbleMap extends JComponent {
 
         int numberPerLine = 7;
         int lineNumber = 0;
+        //alpha = 70;
+        numberOnAction = 0;
 
+        for (int j = 0; j < policy.getAllAction().size(); j++) {
+            System.out.println(policy.getAllAction().get(j).getParentType());
+            System.out.println(policy.getAllAction().get(j).getParentType() instanceof Permission);
+        }
 
-        // Get any Action and build list
         for (int i = 0; i < nameAction.size(); i++) {
 
             if (i % numberPerLine == 0 && i!=0) {
@@ -45,21 +59,60 @@ public class bubbleMap extends JComponent {
             String pictureName = nameAction.get(i);
             xCord = 280 + (65 * (i % numberPerLine));
             yCord = 5 + (70 * lineNumber);
+            //movingXCord = xCord;
+            //movingXCord = yCord;
 
-            for (int j = 0; j < policy.getAllPermission().size(); j++) {
-                for (int k = 0; k < policy.getPermission(j).getAction().size(); k++) {
-                    if (policy.getPermission(j).getAction().get(k).getName().equals(pictureName)) {
-                        Graphics2D g2 = (Graphics2D) g;
-                        g2.setStroke(new BasicStroke(2));
-                        g.setColor(Color.pink);
-                        g.fillOval(xCord - 5, yCord - 5, 35, 35);
-                        g.setColor(Color.black);
-                        g2.setStroke(new BasicStroke(1));
+
+
+            for (int j = 0; j < policy.getAllAction().size(); j++) {
+                if(policy.getAllAction().get(j).getName().equals(pictureName)) {
+                    if (policy.getAllAction().get(j).getParentType() instanceof Permission) {
+                        draw(colorPermission,g,xCord,yCord);
+                    } else if (policy.getAllAction().get(j).getParentType() instanceof Prohibition) {
+                        draw(colorProhibition,g,xCord,yCord);
+                    } else if (policy.getAllAction().get(j).getParentType() instanceof Obligation) {
+                        draw(colorObligation,g,xCord,yCord);
+                    } if (policy.getAllAction().get(j).getParentType() instanceof Duty) {
+                        draw(colorDuty,g,xCord,yCord);
                     }
                 }
             }
-            g.setColor(Color.black);
 
+            /*
+            for (int j = 0; j < policy.getAllPermission().size(); j++) {
+                for (int k = 0; k < policy.getPermission(j).getAction().size(); k++) {
+                    if (policy.getPermission(j).getAction().get(k).getName().equals(pictureName)) {
+                        System.out.println(policy.getPermission(j).getAction().get(k).getName());
+                        draw(colorPermission,g,xCord,yCord);
+                    }
+                }
+            }
+
+            for (int j = 0; j < policy.getAllProhibition().size(); j++) {
+                for (int k = 0; k < policy.getProhibition(j).getAction().size(); k++) {
+                    if (policy.getPermission(j).getAction().get(k).getName().equals(pictureName)) {
+                        draw(colorProhibition,g,xCord,yCord);
+                    }
+                }
+            }
+
+            for (int j = 0; j < policy.getAllObligation().size(); j++) {
+                for (int k = 0; k < policy.getObligation(j).getAction().size(); k++) {
+                    if (policy.getObligation(j).getAction().get(k).getName().equals(pictureName)) {
+                        draw(colorObligation,g,xCord,yCord);
+                    }
+                }
+            }
+
+            for (int j = 0; j < policy.getAllDuties().size(); j++) {
+                for (int k = 0; k < policy.getAllDuties().get(j).getAction().size(); k++) {
+                    if (policy.getAllDuties().get(j).getAction().get(k).getName().equals(pictureName)) {
+                        draw(colorDuty,g,xCord,yCord);
+                    }
+                }
+            }
+            */
+            g.setColor(Color.black);
 
             if(useIcon) {
                 try {
@@ -71,10 +124,12 @@ public class bubbleMap extends JComponent {
             } else {
                 g.drawString(pictureName,xCord,yCord);
             }
+            numberOnAction = 0;
         }
 
         lineNumber = 0;
         xCord = 280 + (65 * (numberPerLine));
+        numberPerLine = 4;
 
         for (int i= 0; i < nameLeftOperand.size(); i++) {
             if (i % numberPerLine == 0 && i!=0) {
@@ -82,17 +137,12 @@ public class bubbleMap extends JComponent {
             }
 
             String pictureName = nameLeftOperand.get(i);
-            xXCord = xCord + (65 * (i % numberPerLine));
+            xXCord = xCord + (65 * (i % numberPerLine)) ;
             yCord = 5 + (70 * lineNumber);
 
             for (int j = 0; j < policy.getAllConstraint().size(); j++) {
                 if (policy.getAllConstraint().get(j).getName().equals(pictureName)) {
-                    Graphics2D g2 = (Graphics2D) g;
-                    g2.setStroke(new BasicStroke(2));
-                    g.setColor(Color.red);
-                    g.fillOval(xXCord-5,yCord-5,35,35);
-                    g.setColor(Color.black);
-                    g2.setStroke(new BasicStroke(1));
+                    draw(colorConstraint,g, xXCord,yCord);
                 }
             }
             g.setColor(Color.black);
@@ -107,8 +157,22 @@ public class bubbleMap extends JComponent {
             } else {
                 g.drawString(pictureName,xXCord,yCord);
             }
-
+            numberOnAction = 0;
         }
+
+    }
+
+    public void draw(Color wantedColor, Graphics g, int x, int y) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(sizeLines));
+        //Color color = new Color(wantedColor.getRed(), wantedColor.getGreen(), wantedColor.getBlue(), wantedColor.getAlfpha());
+        g.setColor(wantedColor);
+        g.fillOval(x - (numberOnAction*5) -5, y - (numberOnAction*5) -5, width+(numberOnAction*10), height+(numberOnAction*10));
+        g.setColor(wantedColor.darker());
+        g.drawOval(x - (numberOnAction*5) -5,y - (numberOnAction*5) -5,width+(numberOnAction*10),height+(numberOnAction*10));
+        g.setColor(Color.black);
+        g2.setStroke(new BasicStroke(1));
+        numberOnAction++;
 
     }
 
@@ -218,5 +282,11 @@ public class bubbleMap extends JComponent {
     }
 
     public void addUseIcon(boolean useIcon) { this.useIcon = useIcon; }
+
+    public void addColorObligation(Color color) { this.colorObligation = color; }
+
+    public void addLineSize(int sizeLines) { this.sizeLines = sizeLines; }
+
+    public void addWidthHeight(int width, int height) { this.width = width; this.height = height; }
 
 }

@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Action extends attributeHolders {
-    private ArrayList<String> nameAction = new ArrayList<String>();
+    //private ArrayList<String> nameAction = new ArrayList<String>();
     private ArrayList<String> attributeNameList = new ArrayList<String>();
     private String name;
     private String id;
     private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
+    private Rules parentType;
 
     Action() {
         buildAttributeList();
@@ -29,6 +30,16 @@ public class Action extends attributeHolders {
     }
 
     public String getID() { return this.id; }
+
+    public void setParentType(Rules rule) {
+        this.parentType = rule;
+        if(parentType instanceof Permission){
+            System.out.println("It is an instanceOFFF Insinde");
+        }
+
+    }
+
+    public Rules getParentType() { return parentType;}
 
     /*
     public void buildAction() {

@@ -19,6 +19,7 @@ public class Constraint extends attributeHolders {
     private boolean isLogicalConstraint;
     private ArrayList<Constraint> attachedConstraint = new ArrayList<Constraint>();
     private String optionalLogicalOperand;
+    private Rules parentType;
 
     public Constraint() {
         buildAttributeList();
@@ -77,6 +78,10 @@ public class Constraint extends attributeHolders {
     public String getRightOperand() { return this.rightOperand; }
 
     public  String getLeftOperand() { return this.leftOperand; }
+
+    public void setParentType(Rules rule) { this.parentType = rule; }
+
+    public Rules getParentType() { return parentType;}
 
     public void setConstraint(Constraint refinement) {}
 

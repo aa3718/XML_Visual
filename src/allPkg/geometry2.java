@@ -59,7 +59,7 @@ public class geometry2 extends JComponent {
         g.setColor(Color.black);
 
         numberOfTotalElementsPolicy = policy.getNumberOfProhibitions() + policy.getNumberOfPermissions() + policy.getNumberOfObligations();
-        System.out.println(policy.getConstraint(0).getAttachedConstraint().get(1).getOptionalLogicalOperand() + "WHATTTTTTTT222");
+        //System.out.println(policy.getConstraint(0).getAttachedConstraint().get(1).getOptionalLogicalOperand() + "WHATTTTTTTT222");
         ruleLengthSize = 400;
         name = "Permission";
         isPermission = true;
@@ -175,9 +175,8 @@ public class geometry2 extends JComponent {
             latestY += 28;
 
             drawInnerAAP(rule.getDuty().get(j), g, true);
-            rule.getDuty().get(j).getConstraint();
-            for (int i = 0; i < rule.getConstraint().size(); i++) {
-                drawConstraintsRecusive(rule.getConstraint().get(i), g, false);
+            for (int i = 0; i < rule.getDuty().get(j).getConstraint().size(); i++) {
+                drawConstraintsRecusive(rule.getDuty().get(j).getConstraint().get(i), g, true);
             }
             latestY += spaceBetweenDutyAndDuty;
             startBoxY += spaceBetweenDutyAndDuty;
@@ -309,7 +308,7 @@ public class geometry2 extends JComponent {
                 if (constraint.getOn() != null) {
                     g.drawString("Constraint: " + constraint.getOn(), latestX + 7, latestY + 15);
                     latestY += 30;
-                } else if (constraint.getOn() == null) {
+                } else {
                     g.drawString("Constraint", latestX + 7, latestY + 15);
                     latestY += 30;
                 }

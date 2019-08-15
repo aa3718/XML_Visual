@@ -1,17 +1,17 @@
 package allPkg;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Policy {
 
-    public List<Permission> permissions;
-    private List<Prohibition> prohibitions;
-    private List<Action> actions;
-    private List<Asset> assets;
-    private List<Constraint> constraints;
-    private List<Duty> duties;
-    private List<Party> parties;
-    private List<Duty> obligations;
+    public ArrayList<Permission> permissions;
+    private ArrayList<Prohibition> prohibitions;
+    private ArrayList<Action> actions;
+    private ArrayList<Asset> assets;
+    private ArrayList<Constraint> constraints;
+    private ArrayList<Duty> duties;
+    private ArrayList<Party> parties;
+    private ArrayList<Duty> obligations;
 
     private String uid;
     private String type;
@@ -19,33 +19,33 @@ public class Policy {
     private String inheritFrom;
     private String profile;
 
-    public Policy(List<Permission> permissions) {
+    public Policy(ArrayList<Permission> permissions) {
         this.permissions = permissions;
     }
 
-    public void addProhibition(List<Prohibition> prohibitions) {
+    public void addProhibition(ArrayList<Prohibition> prohibitions) {
         this.prohibitions = prohibitions;
     }
 
-    public void addAction(List<Action> actions) {
+    public void addAction(ArrayList<Action> actions) {
         this.actions = actions;
     }
 
-    public void addObligation(List<Duty> obligations) { this.obligations = obligations; }
+    public void addObligation(ArrayList<Duty> obligations) { this.obligations = obligations; }
 
-    public void addAsset(List<Asset> assets) {
+    public void addAsset(ArrayList<Asset> assets) {
         this.assets = assets;
     }
 
-    public void addConstraint(List<Constraint> constraints) {
+    public void addConstraint(ArrayList<Constraint> constraints) {
         this.constraints = constraints;
     }
 
-    public void addDuty(List<Duty> duties) {
+    public void addDuty(ArrayList<Duty> duties) {
         this.duties = duties;
     }
 
-    public void addParty(List<Party> parties) {
+    public void addParty(ArrayList<Party> parties) {
         this.parties = parties;
     }
 
@@ -99,25 +99,29 @@ public class Policy {
         return constraints.get(index);
     }
 
-    public List<Permission> getAllPermission() {
+    public ArrayList<Permission> getAllPermission() {
         return permissions;
     }
 
-    public List<Prohibition> getAllProhibition() {
+    public ArrayList<Prohibition> getAllProhibition() {
         return prohibitions;
     }
 
-    public List<Duty> getAllObligation() { return obligations; }
+    public ArrayList<Duty> getAllDuties() {
+        return duties;
+    }
 
-    public List<Action> getAllAction() {
+    public ArrayList<Duty> getAllObligation() { return obligations; }
+
+    public ArrayList<Action> getAllAction() {
         return actions;
     }
 
-    public List<Asset> getAllAsset() {
+    public ArrayList<Asset> getAllAsset() {
         return assets;
     }
 
-    public List<Constraint> getAllConstraint() {
+    public ArrayList<Constraint> getAllConstraint() {
         return constraints;
     }
 

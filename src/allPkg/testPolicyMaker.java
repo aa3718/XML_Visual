@@ -73,7 +73,8 @@ public class testPolicyMaker {
             NodeList nodeObligationList = doc.getElementsByTagName("o:obligation");
             if (nodeObligationList.getLength() != 0) {
                 for (int i = 0; i < nodeObligationList.getLength(); i++) {
-                    Duty duty = new Duty();
+                    Duty duty = new Obligation();
+                    duty.setIsObligation(true);
                     builder.withObligation(duty);
                     Node nodeP = nodeObligationList.item(i);
                     forAll(nodeP, duty, builder);
@@ -93,7 +94,6 @@ public class testPolicyMaker {
         if (ruleNode.getNodeType() == Node.ELEMENT_NODE) {
             Element eElement = (Element) ruleNode;
             NodeList nodeListForEachElement = eElement.getChildNodes();
-
             for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
                 Node nodePP = nodeListForEachElement.item(k);
 
@@ -101,7 +101,13 @@ public class testPolicyMaker {
                     Action action = new Action();
                     setAttributes(nodePP, action, builder,false);
                     forRefinement(nodePP,rules,action,builder,action.getName());
+                    action.setParentType(rules);
                     rules.setAction(action);
+                    action.setParentType(rules);
+                    if(rules instanceof Permission){
+                        System.out.println("It is an instanceOFFF");
+                    }
+
                     builder.withAction(action);
                 }
 
@@ -116,6 +122,7 @@ public class testPolicyMaker {
                 if (nodePP.getNodeName().equals("o:constraint")) {
                     Constraint constraint = new Constraint();
                     setAttributes(nodePP, constraint, builder,false);
+                    constraint.setParentType(rules);
                     rules.setConstraint(constraint);
                     builder.withConstraint(constraint);
                 }
@@ -131,10 +138,14 @@ public class testPolicyMaker {
                 if (nodePP.getNodeName().equals("o:duty") || nodePP.getNodeName().equals("o:remedy") || nodePP.getNodeName().equals("o:consequence")) {
                     System.out.println("In consequence and remedy area");
                     Duty duty = new Duty();
-                    setAttributes(nodePP, duty, builder,false);
-                    rules.setDuty(duty);
-                    builder.withDuty(duty);
-                    forAll(nodePP, duty, builder);
+                    if (setDutyAttributes(nodePP,duty,builder,false)) {
+                        rules.setDuty(duty);
+                    } else {
+                        setAttributes(nodePP, duty, builder, false);
+                        rules.setDuty(duty);
+                        builder.withDuty(duty);
+                        forAll(nodePP, duty, builder);
+                    }
                 }
             }
         }
@@ -144,6 +155,7 @@ public class testPolicyMaker {
                 rules.setAsset(globalAssets.get(i));
             }
             for (int i = 0; i < globalActions.size(); i++) {
+                globalActions.get(i).setParentType(rules);
                 rules.setAction(globalActions.get(i));
             }
             for (int i = 0; i < globalParties.size(); i++) {
@@ -164,6 +176,7 @@ public class testPolicyMaker {
                     constraint.setConstraintOn(on);
                     setAttributes(nodePP, constraint, builder,false);
                     attributeHolders.setConstraint(constraint);
+                    constraint.setParentType(rule);
                     rule.setConstraint(constraint);
                     builder.withConstraint(constraint);
                 }
@@ -180,38 +193,68 @@ public class testPolicyMaker {
             for (int k = 0; k < nodeListForEachElement.getLength(); k++) {
                 Node nodePP = nodeListForEachElement.item(k);
 
-                if (nodePP.getNodeName().equals("o:action")) {
-                    Action action = new Action();
-                    setAttributes(nodePP, action, builder,false);
-                    globalActions.add(action);
-                    builder.withAction(action);
-                }
+                if (nodePP.getParentNode().getNodeName().equals("o:Policy")) {
 
-                if (nodePP.getNodeName().equals("o:asset")) {
-                    Asset asset = new Asset();
-                    setAttributes(nodePP, asset, builder,false);
-                    globalAssets.add(asset);
-                    builder.withAsset(asset);
-                }
+                    if (nodePP.getNodeName().equals("o:action")) {
+                        Action action = new Action();
+                        setAttributes(nodePP, action, builder, false);
+                        globalActions.add(action);
+                        builder.withAction(action);
+                    }
 
-                if (nodePP.getNodeName().equals("o:party")) {
-                    Party party = new Party();
-                    setAttributes(nodePP, party, builder,false);
-                    globalParties.add(party);
-                    builder.withParty(party);
-                }
+                    if (nodePP.getNodeName().equals("o:asset")) {
+                        Asset asset = new Asset();
+                        setAttributes(nodePP, asset, builder, false);
+                        globalAssets.add(asset);
+                        builder.withAsset(asset);
+                    }
 
-                if (nodePP.getNodeName().equals("o:constraint") || nodePP.getNodeName().equals("o:refinement")) {
-                    Constraint constraint = new Constraint();
-                    setAttributes(nodePP, constraint, builder,true);
-                    globalConstraints.add(constraint);
-                    //builder.withConstraint(constraint);
+                    if (nodePP.getNodeName().equals("o:party")) {
+                        Party party = new Party();
+                        setAttributes(nodePP, party, builder, false);
+                        globalParties.add(party);
+                        builder.withParty(party);
+                    }
+
+                    if (nodePP.getNodeName().equals("o:constraint") || nodePP.getNodeName().equals("o:refinement")) {
+                        Constraint constraint = new Constraint();
+                        setAttributes(nodePP, constraint, builder, true);
+                        globalConstraints.add(constraint);
+                        builder.withConstraint(constraint);
+                    }
                 }
 
             }
         }
     }
 
+    public boolean setDutyAttributes(Node node, attributeHolders element, PolicyBuilder builder, boolean fromGlobalConstraint) {
+        NamedNodeMap map = node.getAttributes();
+        int numberAttr = map.getLength();
+
+        // No attributes
+        if (numberAttr == 0) {
+            return false;
+        }
+
+        for (int i = 0; i < numberAttr; i++) {
+            Attr attribute = (Attr) map.item(i);
+            if (attribute.getName().equals("uid") && element instanceof Duty) {
+                System.out.println(attribute.getValue().lastIndexOf("#") + "<- index of #");
+                if (attribute.getValue().lastIndexOf("#") >= 0) {
+                    String reference = attribute.getValue().substring(attribute.getValue().lastIndexOf("#") + 1);
+                    try {
+                        (builder.findDuty(reference)).copyInstance((Duty) element);
+                        return true;
+                    } catch (Exception e) {
+                        System.out.println("Error Cloning");
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     // Takes in one node and set attribute to the model
     public void setAttributes(Node node, attributeHolders element, PolicyBuilder builder, boolean fromGlobalConstraint) {
@@ -231,7 +274,7 @@ public class testPolicyMaker {
                 String reference = attribute.getValue();
                 if (element instanceof Asset) {
                     try {
-                        (builder.findAsset(reference)).copyInstance((Asset)element);
+                        (builder.findAsset(reference)).copyInstance((Asset) element);
                     } catch (Exception e) {
                         e.printStackTrace(System.out);
                         System.out.println("Error Cloning");
@@ -239,14 +282,14 @@ public class testPolicyMaker {
                 }
                 if (element instanceof Action) {
                     try {
-                        (builder.findAction(reference)).copyInstance((Action)element);
+                        (builder.findAction(reference)).copyInstance((Action) element);
                     } catch (Exception e) {
                         System.out.println("Error Cloning");
                     }
                 }
                 if (element instanceof Constraint) {
                     try {
-                        (builder.findConstraint(reference)).copyInstance((Constraint)element);
+                        (builder.findConstraint(reference)).copyInstance((Constraint) element);
                     } catch (Exception e) {
                         System.out.println("Error Cloning");
                     }
@@ -262,23 +305,12 @@ public class testPolicyMaker {
                 */
                 if (element instanceof Party) {
                     try {
-                        (builder.findParty(reference)).copyInstance((Party)element);
+                        (builder.findParty(reference)).copyInstance((Party) element);
                     } catch (Exception e) {
                         System.out.println("Error Cloning");
                     }
                 }
                 return;
-            }
-
-            if (attribute.getName().equals("uid") && element instanceof Duty) {
-
-                String reference = attribute.getValue().substring(attribute.getValue().lastIndexOf("#")+1);
-                System.out.println(reference);
-                try {
-                    (builder.findDuty(reference)).copyInstance((Duty)element);
-                } catch (Exception e) {
-                    System.out.println("Error Cloning");
-                }
             }
 
             ArrayList<String> theList = element.getAttributeList();
@@ -290,7 +322,7 @@ public class testPolicyMaker {
                 System.out.println(attribute.getValue().lastIndexOf("/") + "<- Number / in value");
                 if (attribute.getValue().lastIndexOf("/") > 0) {
                     String subString = attribute.getValue().substring(attribute.getValue().lastIndexOf("/") + 1);
-                    if (attribute.getValue().lastIndexOf("#")+1 > attribute.getValue().lastIndexOf("/") + 1) {
+                    if (attribute.getValue().lastIndexOf("#") + 1 > attribute.getValue().lastIndexOf("/") + 1) {
                         subString = attribute.getValue().substring(attribute.getValue().lastIndexOf("#") + 1);
                     }
                     element.setAttribute(attribute.getName(), subString);
@@ -301,9 +333,7 @@ public class testPolicyMaker {
         }
         if (!fromGlobalConstraint) {
             if (element instanceof Constraint) {
-                System.out.println("Constraint is logical!!!!");
-                if (logicalConstraint.contains(((Constraint)element).getName())) {
-                    System.out.println("Constraint is logical");
+                if (logicalConstraint.contains(((Constraint) element).getName())) {
                     searchForLogical((Constraint) element);
                 }
             }
@@ -357,7 +387,7 @@ public class testPolicyMaker {
 
 
     public void print() {
-       System.out.println(policy.getConstraint(0).getAttachedConstraint().get(1).getOptionalLogicalOperand() + "WHATTTTTTTT");
+       System.out.println(policy.getPermission(1).getDuty().get(0).getConstraint().get(0).getName() + "WHATTTTTTTT");
     }
 
 
