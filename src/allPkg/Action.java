@@ -10,6 +10,8 @@ public class Action extends attributeHolders {
     private String id;
     private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
     private Rules parentType;
+    private String fullName;
+    private String fullId;
 
     Action() {
         buildAttributeList();
@@ -141,11 +143,38 @@ public class Action extends attributeHolders {
         }
     }
 
+
+    void setFullAttribute(String attribute, String value) {
+        if (attribute.equals("id")){
+            this.fullId = value;
+            return;
+        }
+
+        if (attribute.equals("name")){
+            this.fullName = value;
+            return;
+        }
+    }
+
     public void copyInstance(Action action) {
         action.setName(this.name);
         action.setID(this.id);
+        action.setFullID(this.fullId);
+        action.setFullName(this.fullName);
     }
 
     public String getName() { return this.name; }
+
+    public String getFullName() { return this.fullName; }
+
+    public String getFullID() { return this.fullId; }
+
+    public void setFullID(String fullId) {
+        this.fullId = fullId;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
 }

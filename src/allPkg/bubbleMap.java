@@ -25,7 +25,6 @@ public class bubbleMap extends JComponent {
     private ArrayList<Action> actionS;
     private int width;
     private int height;
-    int alpha;
     int numberOnAction;
 
     bubbleMap(Policy policy) {
@@ -42,13 +41,7 @@ public class bubbleMap extends JComponent {
 
         int numberPerLine = 7;
         int lineNumber = 0;
-        //alpha = 70;
         numberOnAction = 0;
-
-        for (int j = 0; j < policy.getAllAction().size(); j++) {
-            System.out.println(policy.getAllAction().get(j).getParentType());
-            System.out.println(policy.getAllAction().get(j).getParentType() instanceof Permission);
-        }
 
         for (int i = 0; i < nameAction.size(); i++) {
 
@@ -57,12 +50,8 @@ public class bubbleMap extends JComponent {
             }
 
             String pictureName = nameAction.get(i);
-            xCord = 280 + (65 * (i % numberPerLine));
-            yCord = 5 + (70 * lineNumber);
-            //movingXCord = xCord;
-            //movingXCord = yCord;
-
-
+            xCord = 350 + (85 * (i % numberPerLine));
+            yCord = 50 + (95 * lineNumber);
 
             for (int j = 0; j < policy.getAllAction().size(); j++) {
                 if(policy.getAllAction().get(j).getName().equals(pictureName)) {
@@ -78,40 +67,6 @@ public class bubbleMap extends JComponent {
                 }
             }
 
-            /*
-            for (int j = 0; j < policy.getAllPermission().size(); j++) {
-                for (int k = 0; k < policy.getPermission(j).getAction().size(); k++) {
-                    if (policy.getPermission(j).getAction().get(k).getName().equals(pictureName)) {
-                        System.out.println(policy.getPermission(j).getAction().get(k).getName());
-                        draw(colorPermission,g,xCord,yCord);
-                    }
-                }
-            }
-
-            for (int j = 0; j < policy.getAllProhibition().size(); j++) {
-                for (int k = 0; k < policy.getProhibition(j).getAction().size(); k++) {
-                    if (policy.getPermission(j).getAction().get(k).getName().equals(pictureName)) {
-                        draw(colorProhibition,g,xCord,yCord);
-                    }
-                }
-            }
-
-            for (int j = 0; j < policy.getAllObligation().size(); j++) {
-                for (int k = 0; k < policy.getObligation(j).getAction().size(); k++) {
-                    if (policy.getObligation(j).getAction().get(k).getName().equals(pictureName)) {
-                        draw(colorObligation,g,xCord,yCord);
-                    }
-                }
-            }
-
-            for (int j = 0; j < policy.getAllDuties().size(); j++) {
-                for (int k = 0; k < policy.getAllDuties().get(j).getAction().size(); k++) {
-                    if (policy.getAllDuties().get(j).getAction().get(k).getName().equals(pictureName)) {
-                        draw(colorDuty,g,xCord,yCord);
-                    }
-                }
-            }
-            */
             g.setColor(Color.black);
 
             if(useIcon) {
@@ -128,7 +83,7 @@ public class bubbleMap extends JComponent {
         }
 
         lineNumber = 0;
-        xCord = 280 + (65 * (numberPerLine));
+        xCord = 350 + (85 * (numberPerLine));
         numberPerLine = 4;
 
         for (int i= 0; i < nameLeftOperand.size(); i++) {
@@ -137,8 +92,8 @@ public class bubbleMap extends JComponent {
             }
 
             String pictureName = nameLeftOperand.get(i);
-            xXCord = xCord + (65 * (i % numberPerLine)) ;
-            yCord = 5 + (70 * lineNumber);
+            xXCord = xCord + (85 * (i % numberPerLine)) ;
+            yCord = 50 + (80 * lineNumber);
 
             for (int j = 0; j < policy.getAllConstraint().size(); j++) {
                 if (policy.getAllConstraint().get(j).getName().equals(pictureName)) {
@@ -168,8 +123,6 @@ public class bubbleMap extends JComponent {
         //Color color = new Color(wantedColor.getRed(), wantedColor.getGreen(), wantedColor.getBlue(), wantedColor.getAlfpha());
         g.setColor(wantedColor);
         g.fillOval(x - (numberOnAction*5) -5, y - (numberOnAction*5) -5, width+(numberOnAction*10), height+(numberOnAction*10));
-        g.setColor(wantedColor.darker());
-        g.drawOval(x - (numberOnAction*5) -5,y - (numberOnAction*5) -5,width+(numberOnAction*10),height+(numberOnAction*10));
         g.setColor(Color.black);
         g2.setStroke(new BasicStroke(1));
         numberOnAction++;

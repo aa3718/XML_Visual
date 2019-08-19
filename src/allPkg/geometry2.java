@@ -24,6 +24,7 @@ public class geometry2 extends JComponent {
     private int maxYBoxOnLine;
     private int baseYForLine;
     private int theYforDutyWithConstraint;
+    private int lineThickness;
 
     private int prefferedRuleBoxSizeW;
     private int numberElementPerLine;
@@ -42,6 +43,7 @@ public class geometry2 extends JComponent {
 
     private Color colorPermission;
     private Color colorProhibition;
+    private Color colorObligation;
     private Color colorConstraint;
     private Color colorDuty;
 
@@ -59,7 +61,6 @@ public class geometry2 extends JComponent {
         g.setColor(Color.black);
 
         numberOfTotalElementsPolicy = policy.getNumberOfProhibitions() + policy.getNumberOfPermissions() + policy.getNumberOfObligations();
-        //System.out.println(policy.getConstraint(0).getAttachedConstraint().get(1).getOptionalLogicalOperand() + "WHATTTTTTTT222");
         ruleLengthSize = 400;
         name = "Permission";
         isPermission = true;
@@ -67,6 +68,7 @@ public class geometry2 extends JComponent {
         isProhibition = false;
         maxYBoxOnLine = 0;
         lineNumber = 0;
+        Color colorPass;
 
         for (int i = 0; i < numberOfTotalElementsPolicy; i++) {
 
@@ -116,14 +118,16 @@ public class geometry2 extends JComponent {
                 Rules rule;
                 if (isPermission) {
                     rule = policy.getPermission(i);
+                    colorPass = colorPermission;
                 } else if (isProhibition) {
                     rule = policy.getProhibition(i - policy.getNumberOfPermissions());
+                    colorPass = colorProhibition;
                 } else {
-                    System.out.println(i - (policy.getNumberOfPermissions() + policy.getNumberOfProhibitions()) + "index for obli");
                     rule = policy.getObligation(i - (policy.getNumberOfPermissions() + policy.getNumberOfProhibitions()));
+                    colorPass = colorObligation;
                 }
 
-                drawInnerAAP(rule, g, false);
+                drawInnerAAP(rule, g, false, colorPass);
                 for (int k = 0; k < rule.getConstraint().size(); k++) {
                     drawConstraintsRecusive(rule.getConstraint().get(k), g, false);
                 }
@@ -150,8 +154,10 @@ public class geometry2 extends JComponent {
 
             if (isPermission) {
                 g.setColor(colorPermission);
-            } else {
+            } else if (isProhibition) {
                 g.setColor(colorProhibition);
+            } else if (isObligation) {
+                g.setColor(colorObligation);
             }
             g.drawRect((285 + (205 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
             g.setColor(Color.black);
@@ -174,7 +180,7 @@ public class geometry2 extends JComponent {
             // Transform from Title P or P
             latestY += 28;
 
-            drawInnerAAP(rule.getDuty().get(j), g, true);
+            drawInnerAAP(rule.getDuty().get(j), g, true,colorDuty);
             for (int i = 0; i < rule.getDuty().get(j).getConstraint().size(); i++) {
                 drawConstraintsRecusive(rule.getDuty().get(j).getConstraint().get(i), g, true);
             }
@@ -187,7 +193,7 @@ public class geometry2 extends JComponent {
 
     }
 
-    public void drawInnerAAP(Rules rule, Graphics g, Boolean isDuty) {
+    public void drawInnerAAP(Rules rule, Graphics g, Boolean isDuty, Color colorPass) {
         try {
             // Draw Parties
             for (int j = 0; j < rule.getParty().size(); j++) {
@@ -217,7 +223,7 @@ public class geometry2 extends JComponent {
 
             // Draw Rule box after depending on last points
             if (isDuty == false) {
-                g.setColor(colorPermission);
+                g.setColor(colorPass);
                 g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
             } else {
                 if (rule.getConstraint().isEmpty()) {
@@ -241,12 +247,10 @@ public class geometry2 extends JComponent {
                     if (constraint.getAttachedConstraint().get(j).getIsLogicalConstraint()) {
                         drawConstraintsRecusive(constraint.getAttachedConstraint().get(j), g, false);
                     } else {
-                        g.setColor(colorConstraint);
-
-                        if(constraint.getAttachedConstraint().get(j).getOptionalLogicalOperand() != null && j!=0) {
+                        //if(constraint.getAttachedConstraint().get(j).getOptionalLogicalOperand() != null && j!=0) {
                             g.drawString(constraint.getAttachedConstraint().get(j).getOptionalLogicalOperand(), startBoxX + (sizeOfInnerBoxesW/2)+((sizeOfInnerBoxesW/2)/2), startBoxY + 9);
-                        }
-
+                        //}
+                        g.setColor(colorConstraint);
                         g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, widenessOfConstraintLines);
                         g.setColor(Color.black);
                         latestY += widenessOfConstraintLines;
@@ -285,8 +289,10 @@ public class geometry2 extends JComponent {
                         latestY += spaceAtBottomOfBoxes;
 
                         if (isDuty == false) {
+                            g.setColor(colorConstraint);
                             g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
                         } else {
+                            g.setColor(colorDuty);
                             g.drawRoundRect(startBoxX, theYforDutyWithConstraint, sizeOfInnerBoxesW, latestY - theYforDutyWithConstraint, arcWDuty, arcHDuty);
                         }
                         g.setColor(Color.black);
@@ -342,8 +348,10 @@ public class geometry2 extends JComponent {
                 }
 
                 if (isDuty == false) {
+                    g.setColor(colorConstraint);
                     g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
                 } else {
+                    g.setColor(colorDuty);
                     g.drawRoundRect(startBoxX, theYforDutyWithConstraint, sizeOfInnerBoxesW, latestY - theYforDutyWithConstraint, arcWDuty, arcHDuty);
                 }
                 g.setColor(Color.black);
@@ -427,6 +435,11 @@ public class geometry2 extends JComponent {
     public void addDutyRounded(boolean bool) {
         this.makeDutyRounded = bool;
     }
+
+    public void addLineThickness(int lineThickness) {
+        this.lineThickness = lineThickness;
+    }
+
 
 }
 

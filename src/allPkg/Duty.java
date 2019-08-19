@@ -7,6 +7,8 @@ public class Duty extends attributeHolders implements Rules {
 
     private String uid;
     private String id;
+    private String fullUid;
+    private String fullId;
     private List<Asset> assets = new ArrayList<Asset>();
     private List<Action> actions = new ArrayList<Action>();
     private List<Constraint> constraints = new ArrayList<Constraint>();
@@ -73,6 +75,10 @@ public class Duty extends attributeHolders implements Rules {
         return this.attributeNameList;
     }
 
+    public String getFullUid() { return this.fullUid; }
+
+    public String getFullId() { return this.fullId; }
+
     public void buildAttributeList() {
         attributeNameList.add("id");
         attributeNameList.add("uid");
@@ -90,12 +96,32 @@ public class Duty extends attributeHolders implements Rules {
         }
     }
 
+    public void setFullAttribute(String attribute, String value) {
+        if (attribute.equals("id")){
+            this.fullId = value;
+            return;
+        }
+
+        if (attribute.equals("uid")){
+            this.fullUid = value;
+            return;
+        }
+    }
+
     public void setUID(String uid) {
         this.uid = uid;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setFullUID(String uid) {
+        this.fullUid = uid;
+    }
+
+    public void setFullId(String id) {
+        this.fullId = id;
     }
 
     public void copyInstance(Duty duty) {
@@ -107,6 +133,9 @@ public class Duty extends attributeHolders implements Rules {
         duty.setEntireParty(this.getParty());
         duty.setId(this.id);
         duty.setUID(this.uid);
+        duty.setIsObligation(this.isObligation);
+        duty.setFullUID(this.fullUid);
+        duty.setId(this.fullId);
     }
 
 }

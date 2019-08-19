@@ -12,6 +12,16 @@ public class PolicyBuilder {
     public ArrayList<Constraint> constraints = new ArrayList<Constraint>();
     public ArrayList<Duty> duties = new ArrayList<Duty>();
     public ArrayList<Party> parties = new ArrayList<Party>();
+    private ArrayList<String> attributeNameList = new ArrayList<String>();
+    private String uid;
+    private String type;
+    private String conflict;
+    private String inheritFrom;
+    private String profile;
+
+    public PolicyBuilder() {
+        buildAttributeList();
+    }
 
     public Policy build() {
         Policy policy = new Policy(permissions);
@@ -22,6 +32,11 @@ public class PolicyBuilder {
         policy.addConstraint(constraints);
         policy.addDuty(duties);
         policy.addParty(parties);
+        policy.setUID(uid);
+        policy.setConflict(conflict);
+        policy.setInheritFrom(inheritFrom);
+        policy.setType(type);
+        policy.setProfile(profile);
         return policy;
     }
 
@@ -93,10 +108,9 @@ public class PolicyBuilder {
     }
 
     public Duty findDuty(String uid) {
-        System.out.println("gets here!! ");
         /*
         for (int i = 0; i < duties.size(); i++) {
-            if (duties.get(i).id.equals(uid)) {
+            if (duties.get(i).getID().equals(uid)) {
                 return duties.get(i);
             }
         }
@@ -118,4 +132,44 @@ public class PolicyBuilder {
         }
         return null;
     }
+
+    public void buildAttributeList() {
+        attributeNameList.add("uid");
+        attributeNameList.add("conflict");
+        attributeNameList.add("type");
+        attributeNameList.add("profile");
+        attributeNameList.add("inheritFrom");
+    }
+
+    public ArrayList<String> getAttributeNameList() { return this.attributeNameList; }
+
+    public PolicyBuilder setPolicyAttributes(String attribute, String value) {
+        if (attribute.equals("uid")){
+            this.uid = value;
+            return this;
+        }
+
+        if (attribute.equals("type")){
+            this.type = value;
+            return this;
+        }
+
+        if (attribute.equals("conflict")){
+            this.conflict = value;
+            return this;
+        }
+
+        if (attribute.equals("inheritFrom")){
+            this.inheritFrom = value;
+            return this;
+        }
+
+        if (attribute.equals("profile")){
+            this.profile = value;
+            return this;
+        }
+        return this;
+    }
+
+
 }

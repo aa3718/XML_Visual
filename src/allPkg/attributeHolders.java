@@ -9,6 +9,8 @@ abstract ArrayList<String> getAttributeList();
 
 abstract void setAttribute(String attribute, String value);
 
+abstract void setFullAttribute(String attribute, String value);
+
 abstract void setConstraint(Constraint refinement);
 
 abstract List<Constraint> getConstraint();

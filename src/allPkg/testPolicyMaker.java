@@ -44,6 +44,7 @@ public class testPolicyMaker {
                 for (int i = 0; i < nodePolicyList.getLength(); i++) {
                     Node nodeP = nodePolicyList.item(i);
                     forPolicy(nodeP, builder);
+                    forPolicyAttributes(nodeP,builder);
                 }
             }
 
@@ -104,10 +105,6 @@ public class testPolicyMaker {
                     action.setParentType(rules);
                     rules.setAction(action);
                     action.setParentType(rules);
-                    if(rules instanceof Permission){
-                        System.out.println("It is an instanceOFFF");
-                    }
-
                     builder.withAction(action);
                 }
 
@@ -136,7 +133,6 @@ public class testPolicyMaker {
                 }
 
                 if (nodePP.getNodeName().equals("o:duty") || nodePP.getNodeName().equals("o:remedy") || nodePP.getNodeName().equals("o:consequence")) {
-                    System.out.println("In consequence and remedy area");
                     Duty duty = new Duty();
                     if (setDutyAttributes(nodePP,duty,builder,false)) {
                         rules.setDuty(duty);
@@ -228,6 +224,26 @@ public class testPolicyMaker {
         }
     }
 
+    public void forPolicyAttributes(Node policyNode, PolicyBuilder builder) {
+        NamedNodeMap map = policyNode.getAttributes();
+        int numberAttr = map.getLength();
+
+        // No attributes
+        if (numberAttr == 0) {
+            return;
+        }
+
+        for (int i = 0; i < numberAttr; i++) {
+            Attr attribute = (Attr) map.item(i);
+
+            ArrayList<String> theList = builder.getAttributeNameList();
+
+            if (theList.contains(attribute.getName())) {
+                builder.setPolicyAttributes(attribute.getName(),attribute.getValue());
+            }
+        }
+    }
+
     public boolean setDutyAttributes(Node node, attributeHolders element, PolicyBuilder builder, boolean fromGlobalConstraint) {
         NamedNodeMap map = node.getAttributes();
         int numberAttr = map.getLength();
@@ -294,7 +310,6 @@ public class testPolicyMaker {
                         System.out.println("Error Cloning");
                     }
                 }
-                /*
                 if (element instanceof Duty) {
                     try {
                         (builder.findDuty(reference)).copyInstance((Duty)element);
@@ -302,7 +317,6 @@ public class testPolicyMaker {
                         System.out.println("Error Cloning");
                     }
                 }
-                */
                 if (element instanceof Party) {
                     try {
                         (builder.findParty(reference)).copyInstance((Party) element);
@@ -326,8 +340,10 @@ public class testPolicyMaker {
                         subString = attribute.getValue().substring(attribute.getValue().lastIndexOf("#") + 1);
                     }
                     element.setAttribute(attribute.getName(), subString);
+                    element.setFullAttribute(attribute.getName(),attribute.getValue());
                 } else {
                     element.setAttribute(attribute.getName(), attribute.getValue());
+                    element.setFullAttribute(attribute.getName(),attribute.getValue());
                 }
             }
         }
@@ -362,7 +378,6 @@ public class testPolicyMaker {
         }
     }
 
-
     public void buildLogicalConstraint() {
         logicalConstraint.add("xone");
         logicalConstraint.add("or");
@@ -387,7 +402,11 @@ public class testPolicyMaker {
 
 
     public void print() {
-       System.out.println(policy.getPermission(1).getDuty().get(0).getConstraint().get(0).getName() + "WHATTTTTTTT");
+
+//        System.out.println(policy.getPermission(1).getDuty().get(0).getConstraint().get(0) + "WHATTTTTTTT1");
+       // System.out.println(policy.getPermission(1).getDuty().get(0).getConstraint() + "WHATTTTTTTT2");
+      //  System.out.println(policy.getPermission(1).getDuty().get(0) + "WHATTTTTTTT");
+      //  System.out.println(policy.getPermission(1).getDuty().get(0).getConstraint().get(0).getName() + "WHATTTTTTTT");
     }
 
 

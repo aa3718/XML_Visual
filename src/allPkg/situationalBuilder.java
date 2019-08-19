@@ -8,7 +8,9 @@ public class situationalBuilder {
     private Color colorProhibition = Color.black;
     private Color colorConstraint = Color.black;
     private Color colorDuty = Color.black;
-
+    private  Color colorObligation = Color.black;
+    private boolean useIcons = false;
+    private int lineThickness = 2;
     private int numberElementPerLine = 3;
 
 
@@ -16,9 +18,12 @@ public class situationalBuilder {
         situational situational = new situational(policy);
         situational.addColorPermission(colorPermission);
         situational.addColorProhibition(colorProhibition);
+        situational.addColorObligation(colorObligation);
         situational.addColorDuty(colorDuty);
         situational.addColorConstraint(colorConstraint);
         situational.addNumberElementPerLine(numberElementPerLine);
+        situational.addUseIcons(useIcons);
+        situational.addLineThickness(lineThickness);
         return situational;
     }
 
@@ -37,6 +42,11 @@ public class situationalBuilder {
         return this;
     }
 
+    public situationalBuilder setColorObligation(Color color) {
+        this.colorObligation = color;
+        return this;
+    }
+
     public situationalBuilder setColorDuty(Color color) {
         this.colorDuty = color;
         return this;
@@ -44,6 +54,16 @@ public class situationalBuilder {
 
     public situationalBuilder setColorConstraint(Color color) {
         this.colorConstraint = color;
+        return this;
+    }
+
+    public situationalBuilder setUseIcons(Boolean useIcons) {
+        this.useIcons = useIcons;
+        return this;
+    }
+
+    public situationalBuilder setLineThickness(int lineThickness) {
+        this.lineThickness = lineThickness;
         return this;
     }
 

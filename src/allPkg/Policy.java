@@ -51,8 +51,7 @@ public class Policy {
 
 
     public void setType(String type) {
-        int indexLast = type.lastIndexOf("/");
-        this.type = type.substring(indexLast);
+        this.type = type;
     }
 
     public String getType() {
@@ -63,9 +62,16 @@ public class Policy {
         return this.profile;
     }
 
+    public String getConflict() {
+        return this.conflict;
+    }
+
+    public String getInheritFrom() {
+        return this.inheritFrom;
+    }
+
     public void setUID(String UID) {
-        int indexLast = UID.lastIndexOf("/");
-        this.uid = UID.substring(indexLast);;
+        this.uid = UID;
     }
 
     public String getUID() {
@@ -73,8 +79,15 @@ public class Policy {
     }
 
     public void setProfile(String profile) {
-        int indexLast = profile.lastIndexOf("/");
-        this.profile = profile.substring(indexLast);;
+        this.profile = profile;
+    }
+
+    public void setConflict(String conflict) {
+        this.conflict = conflict;
+    }
+
+    public void setInheritFrom(String inheritFrom) {
+        this.inheritFrom = inheritFrom;
     }
 
     public Permission getPermission(int index) {

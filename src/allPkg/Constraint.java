@@ -16,6 +16,13 @@ public class Constraint extends attributeHolders {
     private String status;
     private String leftOperand;
     private String on;
+    private String fullId;
+    private String fullName;
+    private String fullOperator;
+    private String fullRightOperand;
+    private String fullDataType;
+    private String fullUnit;
+    private String fullStatus;
     private boolean isLogicalConstraint;
     private ArrayList<Constraint> attachedConstraint = new ArrayList<Constraint>();
     private String optionalLogicalOperand;
@@ -78,6 +85,46 @@ public class Constraint extends attributeHolders {
     public String getRightOperand() { return this.rightOperand; }
 
     public  String getLeftOperand() { return this.leftOperand; }
+
+    public  String getFullName() { return this.fullName; }
+
+    public  String getFullID() { return this.fullId; }
+
+    public  String getFullOperator() { return this.fullOperator; }
+
+    public  String getFullRightOperand() { return this.fullRightOperand; }
+
+    public  String getFullUnit() { return this.fullUnit; }
+
+    public  String getFullDataType() { return this.fullDataType; }
+
+    public  String getFullStatus() { return this.fullStatus; }
+
+    public void setFullID(String id) {
+        this.fullId = id;
+    }
+
+    public void setFullName(String name) {
+        this.fullName = name;
+    }
+
+    public void setFullOperator(String operator) { this.fullOperator = operator; }
+
+    public void setFullRightOperand(String rightOperand) {
+        this.fullRightOperand = rightOperand;
+    }
+
+    public void setFullDataType(String dataType) {
+        this.fullDataType = dataType;
+    }
+
+    public void setFullUnit(String unit) {
+        this.fullUnit = unit;
+    }
+
+    public void setFullStatus(String fullStatus) {
+        this.fullStatus = fullStatus;
+    }
 
     public void setParentType(Rules rule) { this.parentType = rule; }
 
@@ -201,6 +248,43 @@ public class Constraint extends attributeHolders {
         }
     }
 
+    void setFullAttribute(String attribute, String value) {
+        if(attribute.equals("id")) {
+            this.fullId = value;
+            return;
+        }
+
+        if(attribute.equals("name")) {
+            this.fullName = value;
+            return;
+        }
+
+        if(attribute.equals("operator")) {
+            this.fullOperator = value;
+            return;
+        }
+
+        if(attribute.equals("dataType")) {
+            this.fullDataType = value;
+            return;
+        }
+
+        if(attribute.equals("unit")) {
+            this.fullUnit = value;
+            return;
+        }
+
+        if(attribute.equals("status")) {
+            this.fullStatus = value;
+            return;
+        }
+
+        if(attribute.equals("rightOperand")) {
+            this.fullRightOperand = value;
+            return;
+        }
+    }
+
     public void copyInstance(Constraint constraint) {
         constraint.setOperator(this.operator);
         constraint.setName(this.name);
@@ -210,6 +294,15 @@ public class Constraint extends attributeHolders {
         constraint.setStatus(this.status);
         constraint.setUnit(this.unit);
         constraint.setLeftOperand(this.leftOperand);
+        constraint.setLogicalConstraint(this.isLogicalConstraint);
+        constraint.setFullName(this.fullName);
+        constraint.setFullOperator(this.fullOperator);
+        constraint.setFullID(this.fullId);
+        constraint.setFullDataType(this.fullDataType);
+        constraint.setFullRightOperand(fullRightOperand);
+        constraint.setFullStatus(this.fullStatus);
+        constraint.setFullUnit(this.fullUnit);
+
     }
 
 }

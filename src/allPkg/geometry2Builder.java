@@ -17,9 +17,11 @@ public class geometry2Builder {
     private int spaceBetweenRulesAndDuty = 15;
     private int spaceBetweenDutyAndDuty = 25;
     private int bottomPadding = 15;
+    private int lineThickness = 1;
 
     private Color colorPermission = Color.black;
     private Color colorProhibition = Color.black;
+    private Color colorObligation = Color.black;
     private Color colorConstraint = Color.black;
     private Color colorDuty = Color.black;
 
@@ -49,9 +51,11 @@ public class geometry2Builder {
         geometry2.addBottomPadding(bottomPadding);
         geometry2.addColorPermission(colorPermission);
         geometry2.addColorProhibition(colorProhibition);
+        geometry2.addColorProhibition(colorObligation);
         geometry2.addColorDuty(colorDuty);
         geometry2.addColorConstraint(colorConstraint);
         geometry2.addDutyRounded(makeDutyRounded);
+        geometry2.addLineThickness(lineThickness);
         return geometry2;
     }
 
@@ -130,6 +134,11 @@ public class geometry2Builder {
         return this;
     }
 
+    public geometry2Builder setColorObligation(Color color) {
+        this.colorObligation = color;
+        return this;
+    }
+
     public geometry2Builder setColorDuty(Color color) {
         this.colorDuty = color;
         return this;
@@ -137,6 +146,11 @@ public class geometry2Builder {
 
     public geometry2Builder setColorConstraint(Color color) {
         this.colorConstraint = color;
+        return this;
+    }
+
+    public geometry2Builder setLineThickness(int lineThickness) {
+        this.lineThickness = lineThickness;
         return this;
     }
 

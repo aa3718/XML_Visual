@@ -11,6 +11,10 @@ public class Party extends attributeHolders{
     private String uid;
     private String scope;
     private String id;
+    private String fullFunction;
+    private String fullUid;
+    private String fullScope;
+    private String fullId;
     private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
 
     Party() {
@@ -39,7 +43,25 @@ public class Party extends attributeHolders{
 
     public String getID() { return this.id; }
 
+    public String getFullID() { return this.fullId; }
+
+    public String getFullUid() { return this.fullUid; }
+
+    public String getFullFunction() { return this.fullFunction; }
+
+    public String getFullScope() { return this.fullScope; }
+
+    public void setFullUid(String uid) { this.fullUid = uid; }
+
+    public void setFullId(String id) { this.fullId = id; }
+
+    public void setFullFunction(String function) { this.fullFunction = function; }
+
+    public void setFullScope(String scope) { this.fullScope = scope; }
+
     public void setConstraint(Constraint refinement) { this.refinements.add(refinement); }
+
+    public void setFullConstraint(ArrayList<Constraint> refinement) { this.refinements = refinement; }
 
     public List<Constraint> getConstraint() {
         return refinements;
@@ -77,6 +99,28 @@ public class Party extends attributeHolders{
         }
     }
 
+    public void setFullAttribute(String attribute, String value) {
+        if (attribute.equals("function")){
+            this.fullFunction = value;
+            return;
+        }
+
+        if (attribute.equals("uid")){
+            this.fullUid = value;
+            return;
+        }
+
+        if (attribute.equals("id")){
+            this.fullId = value;
+            return;
+        }
+
+        if (attribute.equals("scope")){
+            this.fullScope = value;
+            return;
+        }
+    }
+
     public void buildAttributeList() {
         attributeNameList.add("function");
         attributeNameList.add("relation");
@@ -94,6 +138,11 @@ public class Party extends attributeHolders{
         party.setFunction(this.function);
         party.setID(this.id);
         party.setUID(this.uid);
+        party.setFullConstraint(this.refinements);
+        party.setFullFunction(this.fullFunction);
+        party.setFullUid(this.fullUid);
+        party.setFullScope(this.fullScope);
+        party.setFullId(this.fullId);
     }
 
 }

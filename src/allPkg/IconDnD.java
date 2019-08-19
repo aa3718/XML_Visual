@@ -1,7 +1,10 @@
 package allPkg;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
@@ -11,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-public class IconDnD implements ActionListener {
+public class IconDnD implements ActionListener,ChangeListener {
     private Boolean importedPolicy = false;
     private ArrayList<Policy> policies = new ArrayList<Policy>();
     private JFrame frame;
@@ -25,7 +28,7 @@ public class IconDnD implements ActionListener {
     private ArrayList<JComboBox> colorComBox;
     private ArrayList<String> menuName;
     private Hashtable<String, Color> stringToColor = new Hashtable<>() {};
-    private String[] colors = {"black","blue","cyan","gray","green","magenta","orange","red", "pink","yellow"};
+    private String[] colors = {"default","blue","cyan","gray","green","magenta","orange","red", "pink","yellow"};
     private String[] nameParty= {"assigner","assignee","attributedParty","consentingParting","informedParty","compensatedParty","trackingParty"};
     private int widthOfPage = 1400;
     private int heightOfPage = 800;
@@ -94,19 +97,13 @@ public class IconDnD implements ActionListener {
         panelBoxV.setBackground(Color.lightGray);
         panelBoxV.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
 
-
         visual.setBounds(250, 0, (widthOfPage-250), heightOfPage);
         visual.setBackground(Color.white);
         visual.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
 
-        /*
-        panel.setBounds(0, 600, 900, 100);
-        panel.setBackground(Color.blue);
-*/
         frame.add(panelBoxV);
         frame.add(panelBox);
         frame.add(visual);
-        //frame.add(panel);
 
         myMenuList = new ArrayList<JButton>();
 
@@ -175,15 +172,17 @@ public class IconDnD implements ActionListener {
 
         PolicyBuilder newPolicy = new PolicyBuilder();
 
-
         permission.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                JPanel panelNewPermission = new JPanel();
-                GroupLayout layoutNewPermission = new GroupLayout(panelNewPermission);
+                Permission permission = new Permission();
+                newPolicy.withPermission(permission);
+
+
+                GroupLayout layoutNewPermission = new GroupLayout(visual);
                 layoutNewPermission.setAutoCreateGaps(true);
-                panelNewPermission.setBorder(new TitledBorder("Permission"));
+                visual.setBorder(new TitledBorder("Permission"));
 
                 Party party = new Party();
                 JLabel partyLabel = new JLabel("Party: ");
@@ -198,7 +197,7 @@ public class IconDnD implements ActionListener {
                                 .addComponent(newParty)
                         );
 
-                visual.add(panelNewPermission);
+                //visual.add(panelNewPermission);
                 //visual.add(permission);
             }
 
@@ -215,37 +214,40 @@ public class IconDnD implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 visual.add(prohibition);
             }
-
-
         });
     }
 
     public void addVisualMenu() {
         panelVisualMenu = new JPanel();
+        panelVisualMenu.setBounds(0, 200, 250, (heightOfPage-200));
         GroupLayout layoutNewPermission = new GroupLayout(panelVisualMenu);
         panelVisualMenu.setLayout(layoutNewPermission);
-        panelVisualMenu.setBackground(Color.lightGray);
+        panelVisualMenu.setBackground(Color.darkGray);
         layoutNewPermission.setAutoCreateGaps(true);
         panelVisualMenu.setLayout(layoutNewPermission);
 
-        TitledBorder buildMenu = new TitledBorder("Parameters");
-        buildMenu.setTitlePosition(TitledBorder.ABOVE_TOP);
-        buildMenu.setTitlePosition(TitledBorder.ABOVE_TOP);
+        Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+        panelVisualMenu.setBorder(raisedbevel);
 
-        panelVisualMenu.setBorder(buildMenu);
+        //TitledBorder buildMenu = new TitledBorder("Parameters");
+        //buildMenu.setTitlePosition(TitledBorder.ABOVE_TOP);
+        //buildMenu.setTitlePosition(TitledBorder.ABOVE_TOP);
 
-        String[] listColorLabel = {"Permission", "Prohibition", "Constraint","Duty"};
+        //panelVisualMenu.setBorder(buildMenu);
+
+        String[] listColorLabel = {"Permission", "Prohibition", "Obligation", "Duty", "Constraint"};
 
         colorComBox = new ArrayList<>();
         ArrayList<JLabel> labels= new ArrayList<>();
 
-        for (int i = 0 ; i < 4; i++) {
+        for (int i = 0 ; i < listColorLabel.length; i++) {
             JLabel labelColor = new JLabel(listColorLabel[i]+ ": ");
+            labelColor.setForeground(Color.white);
             JComboBox boxColor = new JComboBox(colors);
             boxColor.setUI(new BasicComboBoxUI(){
                 protected JButton createArrowButton()
                 {
-                    BasicArrowButton arrowButton = new BasicArrowButton(BasicArrowButton.SOUTH, null, null, Color.GRAY, null);
+                    BasicArrowButton arrowButton = new BasicArrowButton(BasicArrowButton.SOUTH, null, null, Color.white, null);
                     return arrowButton;
                 }
             });
@@ -256,6 +258,18 @@ public class IconDnD implements ActionListener {
             labels.add(labelColor);
             colorComBox.add(boxColor);
         }
+
+        JLabel lineThicknessLabel = new JLabel("Line Thickness: ");
+        lineThicknessLabel.setForeground(Color.white);
+
+        JSlider lineThickness = new JSlider(JSlider.HORIZONTAL,1,8,2);
+        lineThickness.addChangeListener(this);
+        lineThickness.setForeground(Color.white);
+
+        lineThickness.setMajorTickSpacing(2);
+        lineThickness.setMinorTickSpacing(1);
+        lineThickness.setPaintTicks(true);
+        lineThickness.setPaintLabels(true);
 
         JButton done = new JButton("Done");
         panelVisualMenu.add(done);
@@ -273,12 +287,16 @@ public class IconDnD implements ActionListener {
                                 .addComponent(labels.get(1))
                                 .addComponent(labels.get(2))
                                 .addComponent(labels.get(3))
+                                .addComponent(labels.get(4))
+                                .addComponent(lineThicknessLabel)
                                 .addComponent(done))
                         .addGroup(layoutNewPermission.createParallelGroup()
                                 .addComponent(colorComBox.get(0))
                                 .addComponent(colorComBox.get(1))
                                 .addComponent(colorComBox.get(2))
                                 .addComponent(colorComBox.get(3))
+                                .addComponent(colorComBox.get(4))
+                                .addComponent(lineThickness)
                                 .addComponent(reset))
         );
 
@@ -293,8 +311,16 @@ public class IconDnD implements ActionListener {
                         .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(labels.get(3)).addComponent(colorComBox.get(3)))
                         .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(labels.get(4)).addComponent(colorComBox.get(4)))
+                        .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lineThicknessLabel).addComponent(lineThickness))
+                        .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(done).addComponent(reset))
         );
+
+        Dimension dimension = new Dimension(240,400);
+        panelVisualMenu.setPreferredSize(dimension);
+
         panelBoxV.add(panelVisualMenu);
     }
 
@@ -339,8 +365,17 @@ public class IconDnD implements ActionListener {
             panelBoxV.repaint();
             */
 
+            if (e.getActionCommand().equals("Export")) {
+                xmlMaking xmlFile = new xmlMaking(policies.get(policies.size() - 1));
+                xmlFile.createFile();
+                JOptionPane successfulFile = new JOptionPane();
+                successfulFile.showMessageDialog(panel, "File created.", "Export", JOptionPane.INFORMATION_MESSAGE);
+            }
+
             if (e.getActionCommand().equals("Build")) {
+                panelBoxV.remove(panelVisualMenu);
                 addBuildMenu();
+
             }
 
             if (e.getActionCommand().equals("Import")) {
@@ -354,7 +389,7 @@ public class IconDnD implements ActionListener {
                 inSituation = false;
                 geometry2Builder = new geometry2Builder();
                 if (panelVisualMenu == null) { addVisualMenu(); }
-                if (bubble != null) { frame.remove(bubble); }
+                if (bubble != null) {frame.remove(bubble); }
                 if (situational != null) {frame.remove(situational); }
             }
 
@@ -376,8 +411,6 @@ public class IconDnD implements ActionListener {
                 if (visualization != null) { frame.remove(visualization); }
                 if (bubble != null) { frame.remove(bubble); }
                 if (panelVisualMenu == null) { addVisualMenu(); }
-                situationalBuilder = new situationalBuilder();
-
             }
             frame.setVisible(true);
         }
@@ -437,35 +470,103 @@ public class IconDnD implements ActionListener {
                 switch (lastNumber) {
                     case "0":
                         String choice0 = (String) colorComBox.get(0).getSelectedItem();
-                        if (inGranular) { geometry2Builder.setColorPermission(stringToColor.remove(choice0)); }
-                        if (inBubble) { bubbleBuilder.setColorPermission(stringToColor.remove(choice0)); }
-                        if (inSituation) { situationalBuilder.setColorPermission(stringToColor.remove(choice0)); }
+                        System.out.println(choice0 + "<-choice0");
+                        System.out.println(!choice0.equals("default"));
+                        if (!choice0.equals("default")) {
+                            if (inGranular) { geometry2Builder.setColorPermission(stringToColor.remove(choice0)); }
+                            if (inBubble) { bubbleBuilder.setColorPermission(stringToColor.remove(choice0)); }
+                            if (inSituation) { situationalBuilder.setColorPermission(stringToColor.remove(choice0)); }
+                        }
                         break;
 
                     case "1":
                         String choice1 = (String) colorComBox.get(1).getSelectedItem();
-                        if (inGranular) { geometry2Builder.setColorProhibition(stringToColor.remove(choice1)); }
-                        if (inBubble) { bubbleBuilder.setColorProhibition(stringToColor.remove(choice1)); }
-                        if (inSituation) { situationalBuilder.setColorProhibition(stringToColor.remove(choice1)); }
+                        System.out.println(choice1 + "<-choice1");
+                        System.out.println(!choice1.equals("default"));
+                        if (!choice1.equals("default")) {
+                            if (inGranular) {
+                                geometry2Builder.setColorProhibition(stringToColor.remove(choice1));
+                            }
+                            if (inBubble) {
+                                bubbleBuilder.setColorProhibition(stringToColor.remove(choice1));
+                            }
+                            if (inSituation) {
+                                situationalBuilder.setColorProhibition(stringToColor.remove(choice1));
+                            }
+                        }
                         break;
 
                     case "2":
                         String choice2 = (String) colorComBox.get(2).getSelectedItem();
-                        if (inGranular) { geometry2Builder.setColorConstraint(stringToColor.remove(choice2)); }
-                        if (inBubble) { bubbleBuilder.setColorConstraint(stringToColor.remove(choice2)); }
-                        if (inSituation) { situationalBuilder.setColorConstraint(stringToColor.remove(choice2)); }
+                        System.out.println(choice2 + "<-choice1");
+                        System.out.println(!choice2.equals("default"));
+                        if (!choice2.equals("default")) {
+                            if (inGranular) {
+                                geometry2Builder.setColorObligation(stringToColor.remove(choice2));
+                            }
+                            if (inBubble) {
+                                bubbleBuilder.setColorObligation(stringToColor.remove(choice2));
+                            }
+                            if (inSituation) {
+                                situationalBuilder.setColorObligation(stringToColor.remove(choice2));
+                            }
+                        }
                         break;
 
                     case "3":
                         String choice3 = (String) colorComBox.get(3).getSelectedItem();
-                        if (inGranular) { geometry2Builder.setColorDuty(stringToColor.remove(choice3)); }
-                        if (inBubble) { bubbleBuilder.setColorDuty(stringToColor.remove(choice3)); }
-                        if (inSituation) { situationalBuilder.setColorDuty(stringToColor.remove(choice3)); }
+                        System.out.println(choice3 + "<-choice1");
+                        System.out.println(!choice3.equals("default"));
+                        if (!choice3.equals("default")) {
+                            if (inGranular) {
+                                geometry2Builder.setColorDuty(stringToColor.remove(choice3));
+                            }
+                            if (inBubble) {
+                                bubbleBuilder.setColorDuty(stringToColor.remove(choice3));
+                            }
+                            if (inSituation) {
+                                situationalBuilder.setColorDuty(stringToColor.remove(choice3));
+                            }
+                        }
+                        break;
+
+                    case "4":
+                        String choice4 = (String) colorComBox.get(4).getSelectedItem();
+                        System.out.println(choice4 + "<-choice1");
+                        System.out.println(!choice4.equals("default"));
+                        if (!choice4.equals("default")) {
+                            if (inGranular) {
+                                geometry2Builder.setColorConstraint(stringToColor.remove(choice4));
+                            }
+                            if (inBubble) {
+                                bubbleBuilder.setColorConstraint(stringToColor.remove(choice4));
+                            }
+                            if (inSituation) {
+                                situationalBuilder.setColorConstraint(stringToColor.remove(choice4));
+                            }
+                        }
                         break;
                 }
             }
     }
 
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        JSlider source = (JSlider)e.getSource();
+        if (!source.getValueIsAdjusting()) {
+            int lineSize = (int)source.getValue();
+            if (inGranular) {
+                geometry2Builder.setLineThickness(lineSize);
+            }
+            if (inBubble) {
+                bubbleBuilder.setSizeLines(lineSize);
+            }
+            if (inSituation) {
+                situationalBuilder.setLineThickness(lineSize);
+            }
+
+        }
+    }
 
     public static void main(String[] args) {
         new IconDnD().display();
