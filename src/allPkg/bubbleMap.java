@@ -6,7 +6,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 
-public class bubbleMap extends JComponent {
+public class bubbleMap extends JPanel {
     private Policy policy;
     private boolean useIcon;
     private ArrayList<String> nameAction;

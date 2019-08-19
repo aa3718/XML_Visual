@@ -1,7 +1,6 @@
 package allPkg;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,21 +28,19 @@ public class IconDnD implements ActionListener,ChangeListener {
     private ArrayList<String> menuName;
     private Hashtable<String, Color> stringToColor = new Hashtable<>() {};
     private String[] colors = {"default","blue","cyan","gray","green","magenta","orange","red", "pink","yellow"};
-    private String[] nameParty= {"assigner","assignee","attributedParty","consentingParting","informedParty","compensatedParty","trackingParty"};
     private int widthOfPage = 1400;
     private int heightOfPage = 800;
     private boolean inBubble = false;
     private boolean inGranular = false;
     private boolean inSituation = false;
+    private boolean inBuildArea = false;
 
     private geometry2Builder geometry2Builder;
     private situationalBuilder situationalBuilder;
     private bubbleMapBuilder bubbleBuilder;
-    private geometry2 visualization;
-    private bubbleMap bubble;
-    private situational situational;
-
-
+    private JPanel visualization;
+    private JPanel bubble;
+    private JPanel situational;
 
     IconDnD() {
         stringToColor();
@@ -77,10 +74,12 @@ public class IconDnD implements ActionListener,ChangeListener {
         frame = new JFrame("ODRL Visual");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(widthOfPage, heightOfPage);
+        frame.setLayout(null);
 
         menu = new TitledBorder("Menu");
         menu.setTitlePosition(TitledBorder.CENTER);
         menu.setTitlePosition(TitledBorder.TOP);
+        menu.setTitleColor(Color.lightGray);
 
         panelBox = new JPanel();
         panelBox.setLayout(new GridLayout(6,1,0,0));
@@ -89,17 +88,24 @@ public class IconDnD implements ActionListener,ChangeListener {
         visual = new JPanel();
 
         panelBox.setBounds(0, 0, 250, 200);
-        panelBox.setBackground(Color.lightGray);
-        panelBox.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.gray));
+        panelBox.setBackground(Color.white);
+        panelBox.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
         panelBox.setBorder(menu);
 
         panelBoxV.setBounds(0, 200, 250, (heightOfPage-200));
-        panelBoxV.setBackground(Color.lightGray);
-        panelBoxV.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
+        panelBoxV.setBackground(Color.white);
+        panelBoxV.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.lightGray));
+        panelBoxV.setLayout(null);
+        TitledBorder buildMenu = new TitledBorder("Build");
+        buildMenu.setTitlePosition(TitledBorder.CENTER);
+        buildMenu.setTitlePosition(TitledBorder.TOP);
+        buildMenu.setTitleColor(Color.lightGray);
+        panelBoxV.setBorder(buildMenu);
 
         visual.setBounds(250, 0, (widthOfPage-250), heightOfPage);
         visual.setBackground(Color.white);
-        visual.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.gray));
+        visual.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
+        visual.setLayout(new GridLayout(1,3,5,5));
 
         frame.add(panelBoxV);
         frame.add(panelBox);
@@ -151,89 +157,22 @@ public class IconDnD implements ActionListener,ChangeListener {
     }
 
     public void addBuildMenu() {
-        TitledBorder buildMenu = new TitledBorder("Build");
-        buildMenu.setTitlePosition(TitledBorder.CENTER);
-        buildMenu.setTitlePosition(TitledBorder.TOP);
-
-        JPanel panelPP = new JPanel();
-
-        TitledBorder buildMenuPP = new TitledBorder("Rule");
-        buildMenu.setTitlePosition(TitledBorder.CENTER);
-        buildMenu.setTitlePosition(TitledBorder.TOP);
-        panelPP.setBorder(buildMenuPP);
-        panelBoxV.add(panelPP);
-        panelBoxV.setBorder(buildMenu);
-
-        Icon permissionI = new ImageIcon("/Users/Chapman/Downloads/permissionI.png");
-        JButton permission = new JButton(permissionI);
-        permission.setPreferredSize(new Dimension(60, 60));
-        permission.setFocusPainted(false);
-        panelPP.add(permission);
-
-        PolicyBuilder newPolicy = new PolicyBuilder();
-
-        permission.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                Permission permission = new Permission();
-                newPolicy.withPermission(permission);
+        odrlBuilding build = new odrlBuilding(visual,panelBoxV);
+        build.addBuildMenu();
+        panelBoxV.revalidate();
+        panelBoxV.repaint();
 
 
-                GroupLayout layoutNewPermission = new GroupLayout(visual);
-                layoutNewPermission.setAutoCreateGaps(true);
-                visual.setBorder(new TitledBorder("Permission"));
-
-                Party party = new Party();
-                JLabel partyLabel = new JLabel("Party: ");
-                JComboBox newParty = new JComboBox(nameParty);
-                newParty.setBounds(50, 50,90,20);
-                newParty.addActionListener(this);
-
-                JTextField nameParty = new JTextField("Party name");
-
-                layoutNewPermission.setHorizontalGroup(layoutNewPermission.createSequentialGroup()
-                                .addComponent(partyLabel)
-                                .addComponent(newParty)
-                        );
-
-                //visual.add(panelNewPermission);
-                //visual.add(permission);
-            }
-
-
-        });
-
-        Icon prohibitionI = new ImageIcon("/Users/Chapman/Downloads/error.png");
-        JButton prohibition = new JButton(prohibitionI);
-        prohibition.setPreferredSize(new Dimension(60, 60));
-        prohibition.setFocusPainted(false);
-        panelPP.add(prohibition);
-        prohibition.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                visual.add(prohibition);
-            }
-        });
     }
 
     public void addVisualMenu() {
         panelVisualMenu = new JPanel();
-        panelVisualMenu.setBounds(0, 200, 250, (heightOfPage-200));
+        panelVisualMenu.setBounds(10, 20, 210, (heightOfPage-200));
         GroupLayout layoutNewPermission = new GroupLayout(panelVisualMenu);
         panelVisualMenu.setLayout(layoutNewPermission);
-        panelVisualMenu.setBackground(Color.darkGray);
+        panelVisualMenu.setBackground(Color.white);
         layoutNewPermission.setAutoCreateGaps(true);
         panelVisualMenu.setLayout(layoutNewPermission);
-
-        Border raisedbevel = BorderFactory.createRaisedBevelBorder();
-        panelVisualMenu.setBorder(raisedbevel);
-
-        //TitledBorder buildMenu = new TitledBorder("Parameters");
-        //buildMenu.setTitlePosition(TitledBorder.ABOVE_TOP);
-        //buildMenu.setTitlePosition(TitledBorder.ABOVE_TOP);
-
-        //panelVisualMenu.setBorder(buildMenu);
 
         String[] listColorLabel = {"Permission", "Prohibition", "Obligation", "Duty", "Constraint"};
 
@@ -242,7 +181,7 @@ public class IconDnD implements ActionListener,ChangeListener {
 
         for (int i = 0 ; i < listColorLabel.length; i++) {
             JLabel labelColor = new JLabel(listColorLabel[i]+ ": ");
-            labelColor.setForeground(Color.white);
+            labelColor.setForeground(Color.gray);
             JComboBox boxColor = new JComboBox(colors);
             boxColor.setUI(new BasicComboBoxUI(){
                 protected JButton createArrowButton()
@@ -260,11 +199,11 @@ public class IconDnD implements ActionListener,ChangeListener {
         }
 
         JLabel lineThicknessLabel = new JLabel("Line Thickness: ");
-        lineThicknessLabel.setForeground(Color.white);
+        lineThicknessLabel.setForeground(Color.gray);
 
         JSlider lineThickness = new JSlider(JSlider.HORIZONTAL,1,8,2);
         lineThickness.addChangeListener(this);
-        lineThickness.setForeground(Color.white);
+        lineThickness.setForeground(Color.lightGray);
 
         lineThickness.setMajorTickSpacing(2);
         lineThickness.setMinorTickSpacing(1);
@@ -318,8 +257,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                                 .addComponent(done).addComponent(reset))
         );
 
-        Dimension dimension = new Dimension(240,400);
-        panelVisualMenu.setPreferredSize(dimension);
+        //Dimension dimension = new Dimension(210,400);
+        //panelVisualMenu.setPreferredSize(dimension);
 
         panelBoxV.add(panelVisualMenu);
     }
@@ -373,7 +312,12 @@ public class IconDnD implements ActionListener,ChangeListener {
             }
 
             if (e.getActionCommand().equals("Build")) {
-                panelBoxV.remove(panelVisualMenu);
+                inBuildArea = true;
+                System.out.println(inBuildArea + "<- building area");
+                panelVisualMenu = null;
+                panelBoxV.removeAll();
+                panelBoxV.revalidate();
+                panelBoxV.repaint();
                 addBuildMenu();
 
             }
@@ -384,19 +328,33 @@ public class IconDnD implements ActionListener,ChangeListener {
             }
 
             if (e.getActionCommand().equals("Granular")) {
+                if (inBuildArea) {
+                    panelBoxV.removeAll();
+                    panelBoxV.revalidate();
+                    panelBoxV.repaint();
+                }
                 inGranular = true;
                 inBubble = false;
                 inSituation = false;
+                inBuildArea = false;
                 geometry2Builder = new geometry2Builder();
-                if (panelVisualMenu == null) { addVisualMenu(); }
+                if (panelVisualMenu == null) {
+                    System.out.println("IN NULL");
+                    addVisualMenu(); }
                 if (bubble != null) {frame.remove(bubble); }
                 if (situational != null) {frame.remove(situational); }
             }
 
             if (e.getActionCommand().equals("Map")) {
+                if (inBuildArea) {
+                    panelBoxV.removeAll();
+                    panelBoxV.revalidate();
+                    panelBoxV.repaint();
+                }
                 inBubble = true;
                 inSituation = false;
                 inGranular = false;
+                inBuildArea = false;
                 bubbleBuilder = new bubbleMapBuilder();
                 if (panelVisualMenu == null) { addVisualMenu(); }
                 if (visualization != null) { frame.remove(visualization); }
@@ -404,13 +362,19 @@ public class IconDnD implements ActionListener,ChangeListener {
             }
 
             if (e.getActionCommand().equals("Scene")) {
+                if (inBuildArea) {
+                    panelBoxV.removeAll();
+                    panelBoxV.revalidate();
+                    panelBoxV.repaint();
+                }
                 inSituation = true;
                 inBubble = false;
                 inGranular = false;
+                inBuildArea = false;
                 situationalBuilder = new situationalBuilder();
-                if (visualization != null) { frame.remove(visualization); }
+                if (panelVisualMenu != null) { frame.remove(visualization); }
                 if (bubble != null) { frame.remove(bubble); }
-                if (panelVisualMenu == null) { addVisualMenu(); }
+                if (panelBoxV == null) { addVisualMenu(); }
             }
             frame.setVisible(true);
         }
@@ -419,6 +383,7 @@ public class IconDnD implements ActionListener,ChangeListener {
             if (importedPolicy && inGranular) {
                 geometry2Builder.setPolicy(policies.get(policies.size() - 1));
                 visualization = geometry2Builder.build();
+                visualization.setBounds(0,0,widthOfPage,heightOfPage);
                 visual.setVisible(false);
                 frame.add(visualization);
             }
@@ -426,6 +391,7 @@ public class IconDnD implements ActionListener,ChangeListener {
             if (importedPolicy && inSituation) {
                 situationalBuilder.setPolicy(policies.get(policies.size() - 1));
                 situational = situationalBuilder.build();
+                situational.setBounds(0,0,widthOfPage,heightOfPage);
                 visual.setVisible(false);
                 frame.add(situational);
             }
@@ -434,6 +400,7 @@ public class IconDnD implements ActionListener,ChangeListener {
                 bubbleBuilder.setPolicy(policies.get(policies.size() - 1));
                 bubbleBuilder.setUseIcon(true);
                 bubble = bubbleBuilder.build();
+                bubble.setBounds(0,0,widthOfPage,heightOfPage);
                 visual.setVisible(false);
                 frame.add(bubble);
             }

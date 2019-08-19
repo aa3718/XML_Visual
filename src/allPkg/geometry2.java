@@ -7,8 +7,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 
-public class geometry2 extends JComponent {
-
+public class geometry2 extends JPanel {
+//Jcomponent
     private Policy policy;
     private int latestX = 0;
     private int latestY = 0;

@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Random;
 
-public class situational extends JComponent {
+public class situational extends JPanel {
 
     private Policy policy;
     private int sizeOfCircles = 300;
