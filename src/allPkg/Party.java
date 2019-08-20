@@ -102,21 +102,45 @@ public class Party extends attributeHolders{
     public void setFullAttribute(String attribute, String value) {
         if (attribute.equals("function")){
             this.fullFunction = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("function",subString);
+            } else {
+                setAttribute("function",value);
+            }
             return;
         }
 
         if (attribute.equals("uid")){
             this.fullUid = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("uid",subString);
+            } else {
+                setAttribute("uid",value);
+            }
             return;
         }
 
         if (attribute.equals("id")){
             this.fullId = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("id",subString);
+            } else {
+                setAttribute("id",value);
+            }
             return;
         }
 
         if (attribute.equals("scope")){
             this.fullScope = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("scope",subString);
+            } else {
+                setAttribute("scope",value);
+            }
             return;
         }
     }

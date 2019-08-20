@@ -251,36 +251,78 @@ public class Constraint extends attributeHolders {
     void setFullAttribute(String attribute, String value) {
         if(attribute.equals("id")) {
             this.fullId = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("id",subString);
+            } else {
+                setAttribute("id",value);
+            }
             return;
         }
 
         if(attribute.equals("name")) {
             this.fullName = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("name",subString);
+            } else {
+                setAttribute("name",value);
+            }
             return;
         }
 
         if(attribute.equals("operator")) {
             this.fullOperator = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("operator",subString);
+            } else {
+                setAttribute("operator",value);
+            }
             return;
         }
 
         if(attribute.equals("dataType")) {
             this.fullDataType = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("dataType",subString);
+            } else {
+                setAttribute("dataType",value);
+            }
             return;
         }
 
         if(attribute.equals("unit")) {
             this.fullUnit = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("unit",subString);
+            } else {
+                setAttribute("unit",value);
+            }
             return;
         }
 
         if(attribute.equals("status")) {
             this.fullStatus = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("status",subString);
+            } else {
+                setAttribute("status",value);
+            }
             return;
         }
 
         if(attribute.equals("rightOperand")) {
             this.fullRightOperand = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("rightOperand",subString);
+            } else {
+                setAttribute("rightOperand",value);
+            }
             return;
         }
     }

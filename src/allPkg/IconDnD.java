@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class IconDnD implements ActionListener,ChangeListener {
-    private Boolean importedPolicy = false;
+    private boolean importedPolicy = false;
+    private boolean builtPolicy = false;
     private ArrayList<Policy> policies = new ArrayList<Policy>();
     private JFrame frame;
     private TitledBorder menu;
@@ -105,7 +106,7 @@ public class IconDnD implements ActionListener,ChangeListener {
         visual.setBounds(250, 0, (widthOfPage-250), heightOfPage);
         visual.setBackground(Color.white);
         visual.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
-        visual.setLayout(new GridLayout(1,3,5,5));
+        visual.setLayout(new GridLayout(2,3,5,5));
 
         frame.add(panelBoxV);
         frame.add(panelBox);
@@ -157,12 +158,11 @@ public class IconDnD implements ActionListener,ChangeListener {
     }
 
     public void addBuildMenu() {
-        odrlBuilding build = new odrlBuilding(visual,panelBoxV);
+        odrlBuilding build = new odrlBuilding(visual,panelBoxV,policies);
         build.addBuildMenu();
         panelBoxV.revalidate();
         panelBoxV.repaint();
-
-
+        builtPolicy = true;
     }
 
     public void addVisualMenu() {
@@ -328,6 +328,8 @@ public class IconDnD implements ActionListener,ChangeListener {
             }
 
             if (e.getActionCommand().equals("Granular")) {
+                System.out.println(builtPolicy + "<=built in bool");
+                System.out.println(policies.get(0));
                 if (inBuildArea) {
                     panelBoxV.removeAll();
                     panelBoxV.revalidate();
@@ -380,7 +382,7 @@ public class IconDnD implements ActionListener,ChangeListener {
         }
 
         if (e.getActionCommand().equals("Done")) {
-            if (importedPolicy && inGranular) {
+            if (importedPolicy && inGranular || builtPolicy && inGranular) {
                 geometry2Builder.setPolicy(policies.get(policies.size() - 1));
                 visualization = geometry2Builder.build();
                 visualization.setBounds(0,0,widthOfPage,heightOfPage);
@@ -388,7 +390,7 @@ public class IconDnD implements ActionListener,ChangeListener {
                 frame.add(visualization);
             }
 
-            if (importedPolicy && inSituation) {
+            if (importedPolicy && inSituation || builtPolicy && inSituation) {
                 situationalBuilder.setPolicy(policies.get(policies.size() - 1));
                 situational = situationalBuilder.build();
                 situational.setBounds(0,0,widthOfPage,heightOfPage);
@@ -396,7 +398,7 @@ public class IconDnD implements ActionListener,ChangeListener {
                 frame.add(situational);
             }
 
-            if (importedPolicy && inBubble) {
+            if (importedPolicy && inBubble || builtPolicy && inBubble) {
                 bubbleBuilder.setPolicy(policies.get(policies.size() - 1));
                 bubbleBuilder.setUseIcon(true);
                 bubble = bubbleBuilder.build();

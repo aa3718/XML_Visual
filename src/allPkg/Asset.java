@@ -102,16 +102,34 @@ public class Asset extends attributeHolders {
     void setFullAttribute(String attribute, String value) {
         if (attribute.equals("id")){
             this.fullId = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("id",subString);
+            } else {
+                setAttribute("id",value);
+            }
             return;
         }
 
         if (attribute.equals("relation")){
             this.fullRelation = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("relation",subString);
+            } else {
+                setAttribute("relation",value);
+            }
             return;
         }
 
         if (attribute.equals("uid")){
             this.fullUid = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("uid",subString);
+            } else {
+                setAttribute("uid",value);
+            }
             return;
         }
     }

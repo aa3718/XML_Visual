@@ -147,11 +147,23 @@ public class Action extends attributeHolders {
     void setFullAttribute(String attribute, String value) {
         if (attribute.equals("id")){
             this.fullId = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("id",subString);
+            } else {
+                setAttribute("id",value);
+            }
             return;
         }
 
         if (attribute.equals("name")){
             this.fullName = value;
+            if (value.lastIndexOf("/") > 0) {
+                String subString = value.substring(value.lastIndexOf("/") + 1);
+                setAttribute("name",subString);
+            } else {
+                setAttribute("name",value);
+            }
             return;
         }
     }

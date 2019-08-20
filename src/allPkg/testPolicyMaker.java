@@ -334,6 +334,7 @@ public class testPolicyMaker {
 
             if (theList.contains(attribute.getName())) {
                 System.out.println(attribute.getValue().lastIndexOf("/") + "<- Number / in value");
+                /*
                 if (attribute.getValue().lastIndexOf("/") > 0) {
                     String subString = attribute.getValue().substring(attribute.getValue().lastIndexOf("/") + 1);
                     if (attribute.getValue().lastIndexOf("#") + 1 > attribute.getValue().lastIndexOf("/") + 1) {
@@ -342,9 +343,12 @@ public class testPolicyMaker {
                     element.setAttribute(attribute.getName(), subString);
                     element.setFullAttribute(attribute.getName(),attribute.getValue());
                 } else {
+
                     element.setAttribute(attribute.getName(), attribute.getValue());
                     element.setFullAttribute(attribute.getName(),attribute.getValue());
                 }
+                */
+                element.setFullAttribute(attribute.getName(),attribute.getValue());
             }
         }
         if (!fromGlobalConstraint) {
