@@ -22,6 +22,9 @@ public class situational extends JPanel {
     private int middleY;
     private int lineThickness;
 
+    private double newChangeCX;
+    private double newChangeCY;
+
     private int numberElementPerLine;
     private int numberOfTotalElementsPolicy;
     private int lineNumber;
@@ -122,8 +125,12 @@ public class situational extends JPanel {
                 drawParties(rule,g);
                 drawActions(rule,g,false);
                 drawDuties(rule,g);
-                drawConstraint(rule, g);
 
+                int index = 0;
+                for (int j = 0; j < rule.getConstraint().size(); j++) {
+                    drawConstraint(rule.getConstraint().get(j), g, index);
+                    index++;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -215,12 +222,59 @@ public class situational extends JPanel {
         }
     }
 
-    public void drawConstraint(Rules rule, Graphics g) {
+    public void drawConstraint(Constraint constraint, Graphics g, int index) {
         try {
-            for (int i = 0; i < rule.getConstraint().size(); i++) {
-                BufferedImage constraint = ImageIO.read(new File("/Users/Chapman/Desktop/icons/situational/" + rule.getConstraint().get(i).getName() + ".png"));
-                g.drawImage(constraint, edgeOuterCircle + (i + sizeOfInnerCircle), middleY-(sizeOfCircles/2), null);
-            }
+            if (constraint.getIsLogicalConstraint()) {
+                for (int j = 0; j < constraint.getAttachedConstraint().size(); j++) {
+                    if (constraint.getAttachedConstraint().get(j).getIsLogicalConstraint()) {
+                        drawConstraint(constraint.getAttachedConstraint().get(j), g, index);
+                    } else {
+                        BufferedImage constraintImageName = ImageIO.read(new File("/Users/Chapman/Desktop/icons/name/" + constraint.getAttachedConstraint().get(j).getName() + ".png"));
+                        if (index !=0 ) {
+                            if (index == 1) {
+                                newChangeCX = 0 * Math.cos(0.45) - 130 * Math.sin(0.45);
+                                newChangeCY = 0 * Math.sin(0.45) + 130 * Math.cos(0.45);
+                            } else {
+                                newChangeCX = newChangeCX * Math.cos(0.45) - newChangeCY * Math.sin(0.45);
+                                newChangeCY = newChangeCX * Math.sin(0.45) + newChangeCY * Math.cos(0.45);
+                            }
+                        }
+
+                        int drawX = (edgeOuterCircle + (sizeOfInnerCircle / 2) + 30) + (int)newChangeCX;
+                        int drawY = (130 - (int)newChangeCY) + (middleY - (sizeOfCircles / 2) + 10);
+
+                        if (index == 0) {
+                            g.drawImage(constraintImageName, edgeOuterCircle + (sizeOfInnerCircle / 2) + 30, middleY - (sizeOfCircles / 2) + 10, null);
+                        } else {
+                            g.drawImage(constraintImageName, drawX, drawY, null);
+                        }
+                        index++;
+                        }
+                    }
+                } else {
+                    System.out.println(constraint.getName() + "name constraint");
+                    BufferedImage constraintImageName = ImageIO.read(new File("/Users/Chapman/Desktop/icons/name/" + constraint.getName() + ".png"));
+
+                    if (index !=0 ) {
+                        if (index == 1) {
+                            newChangeCX = 0 * Math.cos(0.45) - 130 * Math.sin(0.45);
+                            newChangeCY = 0 * Math.sin(0.45) + 130 * Math.cos(0.45);
+                        } else {
+                            newChangeCX = newChangeCX * Math.cos(0.45) - newChangeCY * Math.sin(0.45);
+                            newChangeCY = newChangeCX * Math.sin(0.45) + newChangeCY * Math.cos(0.45);
+                        }
+                    }
+
+                    int drawX = (edgeOuterCircle + (sizeOfInnerCircle / 2) + 30) + (int)newChangeCX;
+                    int drawY = (130 - (int)newChangeCY) + (middleY - (sizeOfCircles / 2) + 10);
+
+                    if (index == 0) {
+                        g.drawImage(constraintImageName, edgeOuterCircle + (sizeOfInnerCircle / 2) + 30, middleY - (sizeOfCircles / 2) + 10, null);
+                    } else {
+                        g.drawImage(constraintImageName, drawX, drawY, null);
+                    }
+                index++;
+                }
         } catch (Exception e) {
             e.printStackTrace();
         }

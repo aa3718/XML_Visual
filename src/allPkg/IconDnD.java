@@ -374,9 +374,9 @@ public class IconDnD implements ActionListener,ChangeListener {
                 inGranular = false;
                 inBuildArea = false;
                 situationalBuilder = new situationalBuilder();
-                if (panelVisualMenu != null) { frame.remove(visualization); }
+                if (panelVisualMenu == null) { addVisualMenu(); }
                 if (bubble != null) { frame.remove(bubble); }
-                if (panelBoxV == null) { addVisualMenu(); }
+                if (visualization != null) { frame.remove(visualization); }
             }
             frame.setVisible(true);
         }

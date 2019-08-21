@@ -422,8 +422,8 @@ public class odrlBuilding implements ActionListener{
 
         if (e.getActionCommand().equals("done")) {
             for (int i = 0; i < allRules.size(); i++) {
+
                 if (allRules.get(i) instanceof Permission) {
-                    System.out.println("Permission in");
                     newPolicy.withPermission((Permission) allRules.get(i));
                 }
                 if (allRules.get(i) instanceof Prohibition) {
@@ -432,7 +432,36 @@ public class odrlBuilding implements ActionListener{
                 if (allRules.get(i) instanceof Obligation) {
                     newPolicy.withObligation((Obligation) allRules.get(i));
                 }
+
+                // Constraints
+                for (int k = 0; k < allRules.get(i).getConstraint().size(); k++) {
+                    newPolicy.withConstraint(allRules.get(i).getConstraint().get(k));
+                }
+
+                //Asset
+                for (int k = 0; k < allRules.get(i).getAsset().size(); k++) {
+                    newPolicy.withAsset(allRules.get(i).getAsset().get(k));
+                }
+
+                // Party
+                for (int k = 0; k < allRules.get(i).getParty().size(); k++) {
+                    newPolicy.withParty(allRules.get(i).getParty().get(k));
+                }
+
+                // Actions
+                for (int j = 0; j < allRules.get(i).getAction().size(); j++) {
+                    newPolicy.withAction(allRules.get(i).getAction().get(j));
+                    allRules.get(i).getAction().get(j).setParentType(allRules.get(i));
+                }
+
+                // Duty
+                for (int k = 0; k < allRules.get(i).getDuty().size(); k++) {
+                    newPolicy.withDuty(allRules.get(i).getDuty().get(k));
+                    setAllElements(allRules.get(i).getDuty().get(k));
+                }
+
             }
+
             policy = newPolicy.build();
             policies.add(policy);
             visual.removeAll();
@@ -441,6 +470,37 @@ public class odrlBuilding implements ActionListener{
         }
 
     }
+
+
+    public void setAllElements(Rules rule) {
+        // Constraints
+        for (int k = 0; k < rule.getConstraint().size(); k++) {
+            newPolicy.withConstraint(rule.getConstraint().get(k));
+        }
+
+        //Asset
+        for (int k = 0; k < rule.getAsset().size(); k++) {
+            newPolicy.withAsset(rule.getAsset().get(k));
+        }
+
+        // Party
+        for (int k = 0; k < rule.getParty().size(); k++) {
+            newPolicy.withParty(rule.getParty().get(k));
+        }
+
+        // Actions
+        for (int j = 0; j < rule.getAction().size(); j++) {
+            newPolicy.withAction(rule.getAction().get(j));
+            rule.getAction().get(j).setParentType(rule);
+        }
+
+        // Duty
+        for (int k = 0; k < rule.getDuty().size(); k++) {
+            newPolicy.withDuty(rule.getDuty().get(k));
+            setAllElements(rule.getDuty().get(k));
+        }
+    }
+
 
     public void buildAction() {
         nameAction.add("Attribute");
