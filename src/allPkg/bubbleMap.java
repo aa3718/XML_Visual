@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class bubbleMap extends JPanel {
+    private boolean bubbleWithLines;
     private Policy policy;
     private boolean useIcon;
     private ArrayList<String> nameAction;
@@ -43,13 +44,10 @@ public class bubbleMap extends JPanel {
         buildLeftOperand();
         numberOnActionList = new int[nameAction.size()];
         numberOnConstraintList = new int[nameLeftOperand.size()];
-        System.out.println(useIcon + " <= use icon");
     }
 
     public void paint(Graphics g) {
-
-        System.out.println(useIcon + "INSIDE FUNCTINO USEICON");
-
+/*
         g.setColor(Color.white);
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.black);
@@ -123,7 +121,9 @@ public class bubbleMap extends JPanel {
                             System.out.println(pictureName + " name ACTION");
                         }
                     }
-                    drawLineBetween(g,colorForLine);
+                    if (bubbleWithLines) {
+                        drawLineBetween(g, colorForLine);
+                    }
                 }
 
                 recursiveDuty(rule,g,xXCord,yCord,i,pictureName,colorDuty);
@@ -148,23 +148,22 @@ public class bubbleMap extends JPanel {
                         draw(colorConstraint, g, xXCord, yCord, i);
                         numberOnConstraintList[i] = numberOnConstraintList[i] + 1;
                     }
-                    drawLineBetween(g,colorForLine);
+                    if (bubbleWithLines) {
+                        drawLineBetween(g, colorForLine);
+                    }
                 }
                 recursiveDutyConstraint(rule,g,xXCord,yCord,i,pictureName,colorDuty);
             }
             lineNumber = 0;
 
-
-
-
         }
 
         numberPerLine = 7;
         drawIcons(g,numberPerLine,lineNumber);
+*/
 
 
 
-        /*
         g.setColor(Color.white);
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.black);
@@ -245,7 +244,7 @@ public class bubbleMap extends JPanel {
             }
         }
         numberOnAction = 0;
-        */
+
     }
 
     public void drawIcons(Graphics g, int numberPerLine, int lineNumber) {
@@ -327,8 +326,10 @@ public class bubbleMap extends JPanel {
             for (int k = 0; k < rule.getDuty().get(j).getAction().size(); k++) {
                 if (rule.getDuty().get(j).getAction().get(k).getName().equals(pictureName)) {
                     System.out.println(rule.getDuty().get(j).getAction().get(k).getName());
-                    draw(colorDuty, g, x, y, index);
-                    drawLineBetween(g,colorForLine);
+                    draw(colorDuty, g, x, y);
+                    if (bubbleWithLines) {
+                        drawLineBetween(g, colorForLine);
+                    }
                     recursiveDuty(rule.getDuty().get(j), g, x, y, index, pictureName, colorForLine);
                 }
             }
@@ -340,24 +341,28 @@ public class bubbleMap extends JPanel {
         for (int j = 0; j < rule.getDuty().size(); j++) {
             for (int k = 0; k < rule.getDuty().get(j).getConstraint().size(); k++) {
                 if (rule.getDuty().get(j).getConstraint().get(k).getName().equals(pictureName)) {
-                    draw(colorConstraint, g, x, y, index);
+                    if (bubbleWithLines) {
+                        draw(colorConstraint, g, x, y);
+                    }
                     drawLineBetween(g,colorForLine);
                 }
             }
         }
     }
 
-    public void draw(Color wantedColor, Graphics g, int x, int y, int index) {
+    //int index
+
+    public void draw(Color wantedColor, Graphics g, int x, int y) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setStroke(new BasicStroke(sizeLines));
         //Color color = new Color(wantedColor.getRed(), wantedColor.getGreen(), wantedColor.getBlue(), wantedColor.getAlfpha());
         g.setColor(wantedColor);
-        g.drawOval(x - (numberOnActionList[index]*5) -5, y - (numberOnActionList[index]*5) -5, width+(numberOnActionList[index]*10), height+(numberOnActionList[index]*10));
+        g.drawOval(x - (numberOnAction*5) -5, y - (numberOnAction*5) -5, width+(numberOnAction*10), height+(numberOnAction*10));
         g.setColor(Color.black);
         g2.setStroke(new BasicStroke(1));
-        movingXCord = x - (numberOnActionList[index]*5) -5;
-        movingYCord = y - (numberOnActionList[index]*5) -5;
-        //numberOnAction++;
+        movingXCord = x - (numberOnAction*5) -5;
+        movingYCord = y - (numberOnAction*5) -5;
+        numberOnAction++;
     }
 
     public void buildLeftOperand() {
@@ -466,6 +471,8 @@ public class bubbleMap extends JPanel {
     }
 
     public void addUseIcon(boolean useIcon) { this.useIcon = useIcon; }
+
+    public void addBubbleWithLines(boolean bubbleWithLines) { this.bubbleWithLines = bubbleWithLines; }
 
     public void addColorObligation(Color color) { this.colorObligation = color; }
 

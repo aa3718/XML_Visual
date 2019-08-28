@@ -27,6 +27,7 @@ public class geometry2Builder {
 
     private boolean makeDutyRounded;
     private boolean makeDutyHex;
+    private boolean includingString;
 
     private volatile int screenX = 0;
     private volatile int screenY = 0;
@@ -56,6 +57,7 @@ public class geometry2Builder {
         geometry2.addColorConstraint(colorConstraint);
         geometry2.addDutyRounded(makeDutyRounded);
         geometry2.addLineThickness(lineThickness);
+        geometry2.addIncludingStrings(includingString);
         return geometry2;
     }
 
@@ -151,6 +153,11 @@ public class geometry2Builder {
 
     public geometry2Builder setLineThickness(int lineThickness) {
         this.lineThickness = lineThickness;
+        return this;
+    }
+
+    public geometry2Builder setIncludingString(boolean includingString) {
+        this.includingString = includingString;
         return this;
     }
 

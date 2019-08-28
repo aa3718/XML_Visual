@@ -1,5 +1,6 @@
 package allPkg;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -10,8 +11,12 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
 
 public class IconDnD implements ActionListener,ChangeListener {
     private boolean importedPolicy = false;
@@ -43,7 +48,7 @@ public class IconDnD implements ActionListener,ChangeListener {
     private JPanel bubble;
     private JPanel situational;
     private JSlider mapLineThickness, lineThickness;
-    private JRadioButton useIcon, useWord;
+    private JRadioButton useIcon, useWord, useLines;
 
     IconDnD() {
         stringToColor();
@@ -209,6 +214,10 @@ public class IconDnD implements ActionListener,ChangeListener {
         lineThickness.setPaintTicks(true);
         lineThickness.setPaintLabels(true);
 
+        JButton includingString = new JButton("Color Text");
+        includingString.setActionCommand("includingString");
+
+
         JButton done = new JButton("Done");
         panelVisualMenu.add(done);
         done.addActionListener(this);
@@ -216,6 +225,17 @@ public class IconDnD implements ActionListener,ChangeListener {
         JButton reset = new JButton("Reset");
         panelVisualMenu.add(reset);
         reset.addActionListener(this);
+
+
+        JButton exportImage = new JButton("Export Image");
+        exportImage.setBackground(Color.lightGray);
+        //exportImage.setFont(new Font("Tahoma", Font.BOLD, 12));
+        exportImage.setForeground(Color.gray);
+        exportImage.setFocusPainted(false);
+        panelVisualMenu.add(exportImage);
+        exportImage.setActionCommand("exportImage");
+        exportImage.addActionListener(this);
+
 
         if (inBubble) {
             JLabel lineThicknessLabel = new JLabel("Circle Size:: ");
@@ -242,9 +262,14 @@ public class IconDnD implements ActionListener,ChangeListener {
             useWord.setActionCommand("useWord");
             useWord.addActionListener(this);
 
+            useLines = new JRadioButton("Line Model");
+            useLines.setActionCommand("useWord");
+            useLines.addActionListener(this);
+
             ButtonGroup group = new ButtonGroup();
             group.add(useWord);
             group.add(useIcon);
+            group.add(useLines);
 
             layoutNewPermission.setHorizontalGroup(
                     layoutNewPermission.createSequentialGroup()
@@ -257,7 +282,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                                     .addComponent(lineThicknessLabel)
                                     .addComponent(mapLineThicknessLabel)
                                     .addComponent(useIcon)
-                                    .addComponent(done))
+                                    .addComponent(done)
+                                    .addComponent(exportImage))
                             .addGroup(layoutNewPermission.createParallelGroup()
                                     .addComponent(colorComBox.get(0))
                                     .addComponent(colorComBox.get(1))
@@ -290,6 +316,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                                     .addComponent(useIcon).addComponent(useWord))
                             .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(done).addComponent(reset))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(exportImage))
             );
         } else if (inSituation) {
             JLabel lineThicknessLabel = new JLabel("Line Thickness: ");
@@ -304,7 +332,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                                     .addComponent(labels.get(3))
                                     .addComponent(labels.get(4))
                                     .addComponent(lineThicknessLabel)
-                                    .addComponent(done))
+                                    .addComponent(done)
+                                    .addComponent(exportImage))
                             .addGroup(layoutNewPermission.createParallelGroup()
                                     .addComponent(colorComBox.get(0))
                                     .addComponent(colorComBox.get(1))
@@ -331,6 +360,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                                     .addComponent(lineThicknessLabel).addComponent(lineThickness))
                             .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(done).addComponent(reset))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(exportImage))
             );
 
         } else {
@@ -346,7 +377,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                                 .addComponent(labels.get(3))
                                 .addComponent(labels.get(4))
                                 .addComponent(lineThicknessLabel)
-                                .addComponent(done))
+                                .addComponent(done)
+                                .addComponent(exportImage))
                         .addGroup(layoutNewPermission.createParallelGroup()
                                 .addComponent(colorComBox.get(0))
                                 .addComponent(colorComBox.get(1))
@@ -373,6 +405,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                                 .addComponent(lineThicknessLabel).addComponent(lineThickness))
                         .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(done).addComponent(reset))
+                        .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(exportImage))
         );
 
         }
@@ -505,17 +539,58 @@ public class IconDnD implements ActionListener,ChangeListener {
         }
 
         if (e.getActionCommand().equals("useIcon")) {
-            useIcon.setBackground(Color.lightGray);
-            useWord.setBackground(Color.white);
-            System.out.println("Pressed USEWICONNNN");
             bubbleBuilder.setUseIcon(true);
         }
 
         if (e.getActionCommand().equals("useWord")) {
-            useWord.setBackground(Color.lightGray);
-            useIcon.setBackground(Color.white);
-            System.out.println("Pressed USEWORDDDDDD");
             bubbleBuilder.setUseIcon(false);
+        }
+
+        if (e.getActionCommand().equals("useLines")) {
+            bubbleBuilder.setBubbleWithLines(true);
+        }
+
+        //https://stackoverflow.com/questions/26923282/getting-high-resolution-image-from-jpanel
+
+        if (e.getActionCommand().equals("exportImage")) {
+            JPanel panelBeingCopied;
+            if (inGranular) {
+                panelBeingCopied = visualization;
+            } else if (inBubble){
+                panelBeingCopied = bubble;
+            } else {
+                panelBeingCopied = situational;
+            }
+
+            BufferedImage image = new BufferedImage(panelBeingCopied.getWidth(), panelBeingCopied.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = image.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+            g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+            panelBeingCopied.printAll(g);
+            g.dispose();
+
+            JFrame parentFrame = new JFrame();
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Specify a file to save");
+
+            int userSelection = fileChooser.showSaveDialog(parentFrame);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                try {
+                    ImageIO.write(image, "jpg", new File(fileToSave.getAbsolutePath()));
+                    ImageIO.write(image, "png", new File(fileToSave.getAbsolutePath()));
+                } catch(IOException exp){
+                    exp.printStackTrace();
+                }
+            }
         }
 
         if (e.getActionCommand().equals("Done")) {

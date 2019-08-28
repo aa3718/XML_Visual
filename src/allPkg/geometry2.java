@@ -15,6 +15,7 @@ public class geometry2 extends JPanel {
     private boolean isPermission;
     private boolean isObligation;
     private boolean isProhibition;
+    private boolean includingStrings;
     private int numberOfTotalElementsPolicy;
     private int lineNumber;
     private int ruleLengthSize;
@@ -152,6 +153,9 @@ public class geometry2 extends JPanel {
                 System.out.println("Error");
             }
 
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(lineThickness));
+
             if (isPermission) {
                 g.setColor(colorPermission);
             } else if (isProhibition) {
@@ -161,6 +165,7 @@ public class geometry2 extends JPanel {
             }
             g.drawRect((285 + (205 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
             g.setColor(Color.black);
+            g2.setStroke(new BasicStroke(1));
 
             if (((latestY - baseYForLine) + bottomPadding) > maxYBoxOnLine) {
                 maxYBoxOnLine = ((latestY - baseYForLine) + bottomPadding);
@@ -175,7 +180,12 @@ public class geometry2 extends JPanel {
             if (inside) {
                 nameN = "Consequence";
             }
+
+            if(includingStrings) {
+                g.setColor(colorDuty);
+            }
             g.drawString(nameN, startBoxX + 10, startBoxY + 18);
+            g.setColor(Color.black);
 
             // Transform from Title P or P
             latestY += 28;
@@ -221,6 +231,9 @@ public class geometry2 extends JPanel {
 
             latestY += spaceAtBottomOfBoxes;
 
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(lineThickness));
+
             // Draw Rule box after depending on last points
             if (isDuty == false) {
                 g.setColor(colorPass);
@@ -233,6 +246,7 @@ public class geometry2 extends JPanel {
                 theYforDutyWithConstraint = startBoxY;
             }
             g.setColor(Color.black);
+            g2.setStroke(new BasicStroke(1));
             startBoxY = latestY;
 
         } catch (Exception exception) {
@@ -288,6 +302,9 @@ public class geometry2 extends JPanel {
                         g.drawString(constraint.getAttachedConstraint().get(j).getRightOperand(), latestX, latestY);
                         latestY += spaceAtBottomOfBoxes;
 
+                        Graphics2D g2 = (Graphics2D) g;
+                        g2.setStroke(new BasicStroke(lineThickness));
+
                         if (isDuty == false) {
                             g.setColor(colorConstraint);
                             g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
@@ -296,6 +313,7 @@ public class geometry2 extends JPanel {
                             g.drawRoundRect(startBoxX, theYforDutyWithConstraint, sizeOfInnerBoxesW, latestY - theYforDutyWithConstraint, arcWDuty, arcHDuty);
                         }
                         g.setColor(Color.black);
+                        g2.setStroke(new BasicStroke(1));
                         startBoxY = latestY;
 
                         track++;
@@ -347,6 +365,9 @@ public class geometry2 extends JPanel {
                     latestY += spaceAtBottomOfBoxes;
                 }
 
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setStroke(new BasicStroke(lineThickness));
+
                 if (isDuty == false) {
                     g.setColor(colorConstraint);
                     g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
@@ -354,6 +375,8 @@ public class geometry2 extends JPanel {
                     g.setColor(colorDuty);
                     g.drawRoundRect(startBoxX, theYforDutyWithConstraint, sizeOfInnerBoxesW, latestY - theYforDutyWithConstraint, arcWDuty, arcHDuty);
                 }
+
+                g2.setStroke(new BasicStroke(1));
                 g.setColor(Color.black);
                 startBoxY = latestY;
                 track++;
@@ -438,6 +461,10 @@ public class geometry2 extends JPanel {
 
     public void addLineThickness(int lineThickness) {
         this.lineThickness = lineThickness;
+    }
+
+    public void addIncludingStrings(boolean includingStrings) {
+        this.includingStrings = includingStrings;
     }
 
 

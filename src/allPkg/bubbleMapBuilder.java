@@ -5,6 +5,7 @@ import java.awt.*;
 public class bubbleMapBuilder {
     private Policy policy;
     private boolean useIcon = true;
+    private boolean bubbleWithLines = false;
     private Color colorPermission = Color.pink;
     private Color colorProhibition = Color.red.brighter();
     private Color colorConstraint = Color.blue.brighter();
@@ -26,6 +27,7 @@ public class bubbleMapBuilder {
         bubbleMap.addLineSize(sizeLines);
         bubbleMap.addWidthHeight(width,height);
         bubbleMap.addSizeBetweenLines(sizeInBetweenLines);
+        bubbleMap.addBubbleWithLines(bubbleWithLines);
         return bubbleMap;
     }
 
@@ -67,6 +69,11 @@ public class bubbleMapBuilder {
 
     public bubbleMapBuilder setUseIcon(Boolean useIcon) {
         this.useIcon = useIcon;
+        return this;
+    }
+
+    public bubbleMapBuilder setBubbleWithLines(Boolean bubbleWithLines) {
+        this.bubbleWithLines = bubbleWithLines;
         return this;
     }
 

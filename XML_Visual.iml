@@ -27,5 +27,8 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="org.mockito:mockito-all:2.0.2-beta" level="project" />
+    <orderEntry type="library" name="org.apache.pdfbox:fontbox:1.8.9" level="project" />
+    <orderEntry type="library" name="org.apache.directory.studio:org.bouncycastle.bcprov.jdk15:140" level="project" />
+    <orderEntry type="library" name="itextpdf-5.5.13.1-sources" level="project" />
   </component>
 </module>

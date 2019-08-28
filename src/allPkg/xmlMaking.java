@@ -4,6 +4,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -65,9 +66,24 @@ public class xmlMaking {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transf = tf.newTransformer();
             DOMSource domSource = new DOMSource(documents);
-            StreamResult streamResult = new StreamResult(new File("/Users/Chapman/Documents/ODRLxmlTestFile/madeFile.xml"));
 
-            transf.transform(domSource, streamResult);
+            JFrame parentFrame = new JFrame();
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Specify a file to save");
+
+            int userSelection = fileChooser.showSaveDialog(parentFrame);
+
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                new File(fileToSave.getAbsolutePath());
+                StreamResult streamResult = new StreamResult(new File(fileToSave.getAbsolutePath()));
+                transf.transform(domSource, streamResult);
+            }
+
+
+            // StreamResult streamResult = new StreamResult(new File("/Users/Chapman/Documents/ODRLxmlTestFile/madeFile.xml"));
+            //transf.transform(domSource, streamResult);
 
         } catch (Exception e) {
             e.printStackTrace();

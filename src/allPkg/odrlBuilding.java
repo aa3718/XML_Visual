@@ -29,6 +29,8 @@ public class odrlBuilding implements ActionListener{
     private Hashtable<String,Rules> mappingRemoveToRule = new Hashtable<String,Rules>();
     private Hashtable<String,Rules> mappingSelectToRule = new Hashtable<String,Rules>();
 
+    private Hashtable<String,JPanel> mappingCountToPanel = new Hashtable<String,JPanel>();
+
     odrlBuilding(JPanel panel, JPanel panelBoxV, ArrayList<Policy> policies) {
         this.policies = policies;
         this.visual = panel;
@@ -120,6 +122,40 @@ public class odrlBuilding implements ActionListener{
         panelBoxV.add(panelDone);
     }
 
+    public void addDutyElement(int rulePanelNumber, attributeHolders element) {
+        JPanel rulePanel = new JPanel();
+        rulePanel.setBackground(Color.white);
+        rulePanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+        rulePanel.setLayout(new BoxLayout(rulePanel,BoxLayout.Y_AXIS));
+
+        JLabel ruleLabel = new JLabel("Duty");
+        ruleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        rulePanel.add(ruleLabel);
+
+        JPanel editPanel = new JPanel();
+        editPanel.setLayout(new BoxLayout(editPanel,BoxLayout.X_AXIS));
+
+        Icon selectIcon = new ImageIcon("/Users/Chapman/Desktop/icons/select.png");
+        JButton select = new JButton(selectIcon);
+        select.setActionCommand("select"+count);
+        select.setBackground(Color.white);
+        select.setMaximumSize(new Dimension(40, 40));
+        select.setFocusPainted(false);
+        select.setOpaque(true);
+        select.addActionListener(this);
+        editPanel.add(select);
+
+        rulePanels.get(rulePanelNumber).add(rulePanel);
+        mappingSelectToRule.put("select"+count,(Duty) element);
+
+        editPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rulePanel.add(editPanel);
+        rulePanels.add(rulePanel);
+
+        count++;
+
+    }
 
     public void addAssetElement(int rulePanelNumber, attributeHolders element) {
         JPanel elementPanel = new JPanel();
@@ -141,6 +177,7 @@ public class odrlBuilding implements ActionListener{
         elementPanel.add(getAssetName);
         elementPanel.setBackground(Color.white);
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         rulePanels.get(rulePanelNumber).add(elementPanel);
 
     }
@@ -410,7 +447,7 @@ public class odrlBuilding implements ActionListener{
                     } else if (addDuty) {
                         Duty duty = new Duty();
                         mappingSelectToRule.get("select" + i).setDuty(duty);
-
+                        addDutyElement(i,duty);
                     }
                     visual.revalidate();
                     visual.repaint();
