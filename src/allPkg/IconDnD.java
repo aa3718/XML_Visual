@@ -42,6 +42,8 @@ public class IconDnD implements ActionListener,ChangeListener {
     private JPanel visualization;
     private JPanel bubble;
     private JPanel situational;
+    private JSlider mapLineThickness, lineThickness;
+    private JRadioButton useIcon, useWord;
 
     IconDnD() {
         stringToColor();
@@ -115,7 +117,7 @@ public class IconDnD implements ActionListener,ChangeListener {
         myMenuList = new ArrayList<JButton>();
 
         for (int i = 0 ; i < menuName.size(); i++) {
-            Icon mainMenuButtonI = new ImageIcon("/Users/Chapman/Desktop/icons/Interface/MainMenu/" + menuName + ".png");
+            Icon mainMenuButtonI = new ImageIcon("resources/icons/icons/Interface/MainMenu/" + menuName + ".png");
             JButton mainMenuButton = new JButton(mainMenuButtonI);
             mainMenuButton.setText(menuName.get(i));
             mainMenuButton.setMargin(new Insets(0,0,0,0));
@@ -198,10 +200,7 @@ public class IconDnD implements ActionListener,ChangeListener {
             colorComBox.add(boxColor);
         }
 
-        JLabel lineThicknessLabel = new JLabel("Line Thickness: ");
-        lineThicknessLabel.setForeground(Color.gray);
-
-        JSlider lineThickness = new JSlider(JSlider.HORIZONTAL,1,8,2);
+        lineThickness = new JSlider(JSlider.HORIZONTAL,1,8,2);
         lineThickness.addChangeListener(this);
         lineThickness.setForeground(Color.lightGray);
 
@@ -218,6 +217,125 @@ public class IconDnD implements ActionListener,ChangeListener {
         panelVisualMenu.add(reset);
         reset.addActionListener(this);
 
+        if (inBubble) {
+            JLabel lineThicknessLabel = new JLabel("Circle Size:: ");
+            lineThicknessLabel.setForeground(Color.gray);
+
+            JLabel mapLineThicknessLabel = new JLabel("Line Size: ");
+            mapLineThicknessLabel.setForeground(Color.gray);
+
+            mapLineThickness = new JSlider(JSlider.HORIZONTAL, 1, 8, 2);
+            mapLineThickness.addChangeListener(this);
+            mapLineThickness.setForeground(Color.lightGray);
+
+            mapLineThickness.setMajorTickSpacing(2);
+            mapLineThickness.setMinorTickSpacing(1);
+            mapLineThickness.setPaintTicks(true);
+            mapLineThickness.setPaintLabels(true);
+
+            useIcon = new JRadioButton("Use icons");
+            useIcon.setActionCommand("useIcon");
+            useIcon.addActionListener(this);
+            useIcon.setSelected(true);
+
+            useWord = new JRadioButton("Use words");
+            useWord.setActionCommand("useWord");
+            useWord.addActionListener(this);
+
+            ButtonGroup group = new ButtonGroup();
+            group.add(useWord);
+            group.add(useIcon);
+
+            layoutNewPermission.setHorizontalGroup(
+                    layoutNewPermission.createSequentialGroup()
+                            .addGroup(layoutNewPermission.createParallelGroup()
+                                    .addComponent(labels.get(0))
+                                    .addComponent(labels.get(1))
+                                    .addComponent(labels.get(2))
+                                    .addComponent(labels.get(3))
+                                    .addComponent(labels.get(4))
+                                    .addComponent(lineThicknessLabel)
+                                    .addComponent(mapLineThicknessLabel)
+                                    .addComponent(useIcon)
+                                    .addComponent(done))
+                            .addGroup(layoutNewPermission.createParallelGroup()
+                                    .addComponent(colorComBox.get(0))
+                                    .addComponent(colorComBox.get(1))
+                                    .addComponent(colorComBox.get(2))
+                                    .addComponent(colorComBox.get(3))
+                                    .addComponent(colorComBox.get(4))
+                                    .addComponent(lineThickness)
+                                    .addComponent(mapLineThickness)
+                                    .addComponent(useWord)
+                                    .addComponent(reset))
+            );
+
+            layoutNewPermission.setVerticalGroup(
+                    layoutNewPermission.createSequentialGroup()
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(0)).addComponent(colorComBox.get(0)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(1)).addComponent(colorComBox.get(1)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(2)).addComponent(colorComBox.get(2)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(3)).addComponent(colorComBox.get(3)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(4)).addComponent(colorComBox.get(4)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lineThicknessLabel).addComponent(lineThickness))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(mapLineThicknessLabel).addComponent(mapLineThickness))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(useIcon).addComponent(useWord))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(done).addComponent(reset))
+            );
+        } else if (inSituation) {
+            JLabel lineThicknessLabel = new JLabel("Line Thickness: ");
+            lineThicknessLabel.setForeground(Color.gray);
+
+            layoutNewPermission.setHorizontalGroup(
+                    layoutNewPermission.createSequentialGroup()
+                            .addGroup(layoutNewPermission.createParallelGroup()
+                                    .addComponent(labels.get(0))
+                                    .addComponent(labels.get(1))
+                                    .addComponent(labels.get(2))
+                                    .addComponent(labels.get(3))
+                                    .addComponent(labels.get(4))
+                                    .addComponent(lineThicknessLabel)
+                                    .addComponent(done))
+                            .addGroup(layoutNewPermission.createParallelGroup()
+                                    .addComponent(colorComBox.get(0))
+                                    .addComponent(colorComBox.get(1))
+                                    .addComponent(colorComBox.get(2))
+                                    .addComponent(colorComBox.get(3))
+                                    .addComponent(colorComBox.get(4))
+                                    .addComponent(lineThickness)
+                                    .addComponent(reset))
+            );
+
+            layoutNewPermission.setVerticalGroup(
+                    layoutNewPermission.createSequentialGroup()
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(0)).addComponent(colorComBox.get(0)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(1)).addComponent(colorComBox.get(1)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(2)).addComponent(colorComBox.get(2)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(3)).addComponent(colorComBox.get(3)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(labels.get(4)).addComponent(colorComBox.get(4)))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lineThicknessLabel).addComponent(lineThickness))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(done).addComponent(reset))
+            );
+
+        } else {
+            JLabel lineThicknessLabel = new JLabel("Line Thickness: ");
+            lineThicknessLabel.setForeground(Color.gray);
 
         layoutNewPermission.setHorizontalGroup(
                 layoutNewPermission.createSequentialGroup()
@@ -257,9 +375,7 @@ public class IconDnD implements ActionListener,ChangeListener {
                                 .addComponent(done).addComponent(reset))
         );
 
-        //Dimension dimension = new Dimension(210,400);
-        //panelVisualMenu.setPreferredSize(dimension);
-
+        }
         panelBoxV.add(panelVisualMenu);
     }
 
@@ -340,9 +456,10 @@ public class IconDnD implements ActionListener,ChangeListener {
                 inSituation = false;
                 inBuildArea = false;
                 geometry2Builder = new geometry2Builder();
-                if (panelVisualMenu == null) {
-                    System.out.println("IN NULL");
-                    addVisualMenu(); }
+                panelBoxV.removeAll();
+                addVisualMenu(); //}
+                panelBoxV.revalidate();
+                panelBoxV.repaint();
                 if (bubble != null) {frame.remove(bubble); }
                 if (situational != null) {frame.remove(situational); }
             }
@@ -358,7 +475,10 @@ public class IconDnD implements ActionListener,ChangeListener {
                 inGranular = false;
                 inBuildArea = false;
                 bubbleBuilder = new bubbleMapBuilder();
-                if (panelVisualMenu == null) { addVisualMenu(); }
+                panelBoxV.removeAll();
+                addVisualMenu();
+                panelBoxV.revalidate();
+                panelBoxV.repaint();
                 if (visualization != null) { frame.remove(visualization); }
                 if (situational != null) {frame.remove(situational); }
             }
@@ -374,11 +494,28 @@ public class IconDnD implements ActionListener,ChangeListener {
                 inGranular = false;
                 inBuildArea = false;
                 situationalBuilder = new situationalBuilder();
-                if (panelVisualMenu == null) { addVisualMenu(); }
+                panelBoxV.removeAll();
+                addVisualMenu();
+                panelBoxV.revalidate();
+                panelBoxV.repaint();
                 if (bubble != null) { frame.remove(bubble); }
                 if (visualization != null) { frame.remove(visualization); }
             }
             frame.setVisible(true);
+        }
+
+        if (e.getActionCommand().equals("useIcon")) {
+            useIcon.setBackground(Color.lightGray);
+            useWord.setBackground(Color.white);
+            System.out.println("Pressed USEWICONNNN");
+            bubbleBuilder.setUseIcon(true);
+        }
+
+        if (e.getActionCommand().equals("useWord")) {
+            useWord.setBackground(Color.lightGray);
+            useIcon.setBackground(Color.white);
+            System.out.println("Pressed USEWORDDDDDD");
+            bubbleBuilder.setUseIcon(false);
         }
 
         if (e.getActionCommand().equals("Done")) {
@@ -400,7 +537,6 @@ public class IconDnD implements ActionListener,ChangeListener {
 
             if (importedPolicy && inBubble || builtPolicy && inBubble) {
                 bubbleBuilder.setPolicy(policies.get(policies.size() - 1));
-                bubbleBuilder.setUseIcon(true);
                 bubble = bubbleBuilder.build();
                 bubble.setBounds(0,0,widthOfPage,heightOfPage);
                 visual.setVisible(false);
@@ -523,17 +659,24 @@ public class IconDnD implements ActionListener,ChangeListener {
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider)e.getSource();
         if (!source.getValueIsAdjusting()) {
-            int lineSize = (int)source.getValue();
-            if (inGranular) {
-                geometry2Builder.setLineThickness(lineSize);
+            if(e.getSource() == lineThickness) {
+                int lineSize = (int) source.getValue();
+                if (inGranular) {
+                    geometry2Builder.setLineThickness(lineSize);
+                }
+                if (inBubble) {
+                    bubbleBuilder.setSizeLines(lineSize);
+                }
+                if (inSituation) {
+                    situationalBuilder.setLineThickness(lineSize);
+                }
             }
-            if (inBubble) {
-                bubbleBuilder.setSizeLines(lineSize);
+            if(e.getSource() == mapLineThickness) {
+                int lineSize = (int) source.getValue();
+                if (inBubble) {
+                    bubbleBuilder.setSizeInBetweenLines(lineSize);
+                }
             }
-            if (inSituation) {
-                situationalBuilder.setLineThickness(lineSize);
-            }
-
         }
     }
 

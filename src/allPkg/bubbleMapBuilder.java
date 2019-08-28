@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class bubbleMapBuilder {
     private Policy policy;
-    private boolean useIcon = false;
+    private boolean useIcon = true;
     private Color colorPermission = Color.pink;
     private Color colorProhibition = Color.red.brighter();
     private Color colorConstraint = Color.blue.brighter();
@@ -13,6 +13,7 @@ public class bubbleMapBuilder {
     private int sizeLines = 2;
     private int width = 35;
     private int height = 35;
+    private int sizeInBetweenLines = 2;
 
     public bubbleMap build() {
         bubbleMap bubbleMap = new bubbleMap(policy);
@@ -24,6 +25,7 @@ public class bubbleMapBuilder {
         bubbleMap.addColorConstraint(colorConstraint);
         bubbleMap.addLineSize(sizeLines);
         bubbleMap.addWidthHeight(width,height);
+        bubbleMap.addSizeBetweenLines(sizeInBetweenLines);
         return bubbleMap;
     }
 
@@ -73,5 +75,9 @@ public class bubbleMapBuilder {
         return this;
     }
 
+    public bubbleMapBuilder setSizeInBetweenLines(int sizeInBetweenLines) {
+        this.sizeInBetweenLines = sizeInBetweenLines;
+        return this;
+    }
 
 }

@@ -8,7 +8,7 @@ import java.io.File;
 
 
 public class geometry2 extends JPanel {
-//Jcomponent
+
     private Policy policy;
     private int latestX = 0;
     private int latestY = 0;
@@ -198,7 +198,7 @@ public class geometry2 extends JPanel {
             // Draw Parties
             for (int j = 0; j < rule.getParty().size(); j++) {
                 String nameAttribute = rule.getParty().get(j).getFunction();
-                BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/party/" + nameAttribute + ".png"));
+                BufferedImage image = ImageIO.read(new File("resources/icons/icons/party/" + nameAttribute + ".png"));
                 g.drawImage(image, latestX, latestY, null);
                 g.drawString(rule.getParty().get(j).getFunction() + ": " + rule.getParty().get(j).getUID(), latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
                 latestY += spaceBetweenAttributes;
@@ -207,14 +207,14 @@ public class geometry2 extends JPanel {
             // Draw Actions
             for (int j = 0; j < rule.getAction().size(); j++) {
                 System.out.println(rule.getAction().get(j).getName() + " the name accept tracking");
-                g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + rule.getAction().get(j).getName() + ".png")), latestX, latestY, null);
+                g.drawImage(ImageIO.read(new File("resources/icons/icons/" + rule.getAction().get(j).getName() + ".png")), latestX, latestY, null);
                 g.drawString(rule.getAction().get(j).getName(), latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
                 latestY += spaceBetweenAttributes;
             }
 
             // Draw Assets
             for (int j = 0; j < rule.getAsset().size(); j++) {
-                g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/asset.png")), latestX, latestY, null);
+                g.drawImage(ImageIO.read(new File("resources/icons/icons/asset.png")), latestX, latestY, null);
                 g.drawString(rule.getAsset().get(j).getUID(), latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
                 latestY += spaceBetweenAttributes / 2;
             }
@@ -265,7 +265,7 @@ public class geometry2 extends JPanel {
                         }
 
                         String nameAttribute = constraint.getAttachedConstraint().get(j).getName();
-                        BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/name/" + nameAttribute + ".png"));
+                        BufferedImage image = ImageIO.read(new File("resources/icons/icons/name/" + nameAttribute + ".png"));
                         g.drawImage(image, latestX, latestY + 5, null);
                         latestY += 5;
                         g.drawString(nameAttribute, latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
@@ -273,14 +273,14 @@ public class geometry2 extends JPanel {
 
                         if (constraint.getAttachedConstraint().get(j).getLeftOperand() != null) {
                             String nameAttributeLO = constraint.getAttachedConstraint().get(j).getLeftOperand();
-                            g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + nameAttributeLO + ".png")), latestX, latestY, null);
+                            g.drawImage(ImageIO.read(new File("resources/icons/icons/" + nameAttributeLO + ".png")), latestX, latestY, null);
                             g.drawString(nameAttributeLO, latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
                             latestY += spaceBetweenAttributes;
                         }
 
                         // Draw Operator
                         String nameAttributeO = constraint.getAttachedConstraint().get(j).getOperator();
-                        g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/operator/" + nameAttributeO + ".png")), latestX + operatorSpaceFromLeft, latestY, null);
+                        g.drawImage(ImageIO.read(new File("resources/icons/icons/operator/" + nameAttributeO + ".png")), latestX + operatorSpaceFromLeft, latestY, null);
                         // g.drawString(rule.getConstraint().get(j).getOperator(),latestX,latestY);
                         latestY += spaceBetweenAttributes;
 
@@ -319,7 +319,7 @@ public class geometry2 extends JPanel {
                     latestY += 30;
                 }
                 String nameAttribute = constraint.getName();
-                BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/name/" + nameAttribute + ".png"));
+                BufferedImage image = ImageIO.read(new File("resources/icons/icons/name/" + nameAttribute + ".png"));
                 g.drawImage(image, latestX, latestY + 5, null);
                 latestY += 5;
                 g.drawString(nameAttribute, latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
@@ -327,7 +327,7 @@ public class geometry2 extends JPanel {
 
                 if (constraint.getLeftOperand() != null) {
                     String nameAttributeLO = constraint.getLeftOperand();
-                    g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + nameAttributeLO + ".png")), latestX, latestY, null);
+                    g.drawImage(ImageIO.read(new File("resources/icons/icons/" + nameAttributeLO + ".png")), latestX, latestY, null);
                     g.drawString(nameAttributeLO, latestX + spaceBetweenAttrIconAndAttrStringsX, latestY + 20);
                     latestY += spaceBetweenAttributes;
                 }
@@ -339,7 +339,7 @@ public class geometry2 extends JPanel {
                 if (!constraint.getIsLogicalConstraint()) {
                     String nameAttributeO = constraint.getOperator();
 
-                    g.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/operator/" + nameAttributeO + ".png")), latestX + operatorSpaceFromLeft, latestY, null);
+                    g.drawImage(ImageIO.read(new File("resources/icons/icons/operator/" + nameAttributeO + ".png")), latestX + operatorSpaceFromLeft, latestY, null);
                     // g.drawString(rule.getConstraint().get(j).getOperator(),latestX,latestY);
                     latestY += spaceBetweenAttributes;
                     // Draw Value

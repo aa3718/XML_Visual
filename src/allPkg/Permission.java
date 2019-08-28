@@ -56,11 +56,3 @@ public class Permission implements Rules {
     public List<Party> getParty() { return parties; }
 
 }
-
-//public void setAsset(Asset asset) { this.asset = asset;}
-
-//public void setAction(Action action) {this.action = action;}
-
-//public void setAsset(Asset asset) {
-// this.asset = asset;
-//}

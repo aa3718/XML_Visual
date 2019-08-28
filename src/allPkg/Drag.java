@@ -1,11 +1,12 @@
 package allPkg;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.io.File;
 
@@ -86,7 +87,7 @@ public class Drag
             graphicSettings.setPaint(Color.BLUE);
             graphicSettings.drawString("Permission",10,10);
             try {
-                graphicSettings.drawImage(ImageIO.read(new File("/Users/Chapman/Desktop/icons/asset.png")),15,15,null);
+                graphicSettings.drawImage(ImageIO.read(new File("resources/icons/icons/acceptTracking.png")),15,15,null);
             }catch (Exception e){
                e.printStackTrace();
             }
@@ -100,8 +101,6 @@ public class Drag
         panelBox.setBounds(0, 0, 250, 200);
         panelBox.setBackground(Color.lightGray);
         panelBox.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.blue));
-        // by doing this, we prevent Swing from resizing
-        // our nice component
         f.setLayout(null);
 
         Drag mc = new Drag();

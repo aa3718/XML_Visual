@@ -15,7 +15,6 @@ public class odrlBuilding implements ActionListener{
     private JPanel panelBoxV;
     private ArrayList<String> nameAction = new ArrayList<String>();
     private ArrayList<String> nameParty = new ArrayList<String>();
-    //private String[] nameParty= {"assigner","assignee","attributedParty","consentingParting","informedParty","compensatedParty","trackingParty"};
     private PolicyBuilder newPolicy = new PolicyBuilder();
     private ArrayList<JButton> elementMenu = new ArrayList<JButton>();
     private ArrayList<String> elementMenuName = new ArrayList<String>();

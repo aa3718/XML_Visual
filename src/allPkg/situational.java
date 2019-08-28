@@ -112,13 +112,13 @@ public class situational extends JPanel {
 
             try {
                 if (isPermission) {
-                    BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/situational/permission.png"));
+                    BufferedImage image = ImageIO.read(new File("resources/icons/icons/situational/permission.png"));
                     g.drawImage(image, edgeOuterCircle-5, (int)yYy, null);
                 }  else if (isProhibition) {
-                    BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/situational/prohibition.png"));
+                    BufferedImage image = ImageIO.read(new File("resources/icons/icons/situational/prohibition.png"));
                     g.drawImage(image, edgeOuterCircle-5, (int)yYy, null);
                 } else {
-                    BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/situational/obligation.png"));
+                    BufferedImage image = ImageIO.read(new File("resources/icons/icons/situational/obligation.png"));
                     g.drawImage(image, edgeOuterCircle-5, (int)yYy, null);
                 }
 
@@ -146,14 +146,14 @@ public class situational extends JPanel {
                 int random = randomP.nextInt(2);
 
                 if (rule.getParty().get(j).getFunction().equals("assignee")) {
-                    BufferedImage image = ImageIO.read(new File("/Users/Chapman/Desktop/icons/situational/person"+ random +".png"));
+                    BufferedImage image = ImageIO.read(new File("resources/icons/icons/situational/person"+ random +".png"));
                     g.drawImage(image, edgeInnerCircle + 15, middleY-40, null);
-                    BufferedImage rightArrow = ImageIO.read(new File("/Users/Chapman/Desktop/icons/situational/bottomArrow.png"));
+                    BufferedImage rightArrow = ImageIO.read(new File("resources/icons/icons/situational/bottomArrow.png"));
                     g.drawImage(rightArrow, edgeInnerCircle+95, middleY+15, null);
                 }
 
                 if (rule.getParty().get(j).getFunction().equals("assigner")) {
-                    BufferedImage image2 = ImageIO.read(new File("/Users/Chapman/Desktop/icons/situational/person"+ random +".png"));
+                    BufferedImage image2 = ImageIO.read(new File("resources/icons/icons/situational/person"+ random +".png"));
                     g.drawImage(image2, (edgeInnerCircle + sizeOfInnerCircle - 80), middleY-40, null);
                 }
 
@@ -168,37 +168,58 @@ public class situational extends JPanel {
         String words;
         for (int j = 0; j < rule.getAction().size(); j++) {
             try {
-                if ((j % 3 == 0) && (j != 0)) {
+                if ((j % 2 == 0) && (j != 0)) {
                     actionLineNumber++;
                 }
                 if (fromDuty) {
                     if (useIcons) {
-                        BufferedImage action = ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + rule.getAction().get(j).getName() + ".png"));
-                        g.drawImage(action, edgeInnerCircle + (25 * (j % 3)) + 45, middleY - 80 + (20 * actionLineNumber), null);
+                        BufferedImage action = ImageIO.read(new File("resources/icons/icons/" + rule.getAction().get(j).getName() + ".png"));
+                        g.drawImage(action, edgeInnerCircle + (25 * (j % 2)) + 45, middleY - 80 + (20 * actionLineNumber), null);
                     } else {
-                        if (isObligation) {
-                            words = "If not done: ";
-                        } else if (isProhibition) {
-                            words = "If done anyway: ";
+                        if (j == 0) {
+                            if (isObligation) {
+                                words = "If not done: ";
+                            } else if (isProhibition) {
+                                words = "If done anyway: ";
+                            } else {
+                                words = "Duty to ";
+                            }
                         } else {
-                            words = "Duty to ";
+                            words = ", ";
                         }
-                        g.drawString(words + rule.getAction().get(j).getName(),edgeInnerCircle + (25 * (j % 3)) + 30,middleY - 50 - (20 * actionLineNumber));
+                        int space;
+                        if (j == 1) {
+                            space = 130;
+                        } else {
+                            space = 45;
+                        }
+                        g.drawString(words + rule.getAction().get(j).getName(),edgeInnerCircle + (space * (j % 2)) + 30,middleY - 50 - (20 * actionLineNumber));
                     }
 
                 } else {
                     if (useIcons) {
-                        BufferedImage action = ImageIO.read(new File("/Users/Chapman/Desktop/icons/" + rule.getAction().get(j).getName() + ".png"));
-                        g.drawImage(action, edgeInnerCircle + (25 * (j % 3)) + 45, middleY + 50 - (10 * actionLineNumber), null);
+                        BufferedImage action = ImageIO.read(new File("resources/icons/icons/" + rule.getAction().get(j).getName() + ".png"));
+                        g.drawImage(action, edgeInnerCircle + (25 * (j % 2)) + 45, middleY + 50 - (10 * actionLineNumber), null);
                     } else {
-                        if (isObligation) {
-                            words = "Obligation to ";
-                        } else if (isProhibition) {
-                            words = "Prohibition to ";
+                        if (j == 0) {
+                            if (isObligation) {
+                                words = "Obligation to ";
+                            } else if (isProhibition) {
+                                words = "Prohibition to ";
+                            } else {
+                                words = "Permission to ";
+                            }
                         } else {
-                            words = "Permission to ";
+                            words = ",";
                         }
-                        g.drawString(words + rule.getAction().get(j).getName(),edgeInnerCircle + (25 * (j % 3)) + 30,middleY + 50 + (10 * actionLineNumber));
+
+                        int space;
+                        if (j == 1) {
+                           space = 130;
+                        } else {
+                            space = 45;
+                        }
+                            g.drawString(words + rule.getAction().get(j).getName(), edgeInnerCircle + (space * (j % 2)) + 30, middleY + 50 + (20 * actionLineNumber));
                     }
                 }
             } catch (Exception e) {
@@ -210,7 +231,7 @@ public class situational extends JPanel {
     public void drawDuties(Rules rule, Graphics g) {
         try {
             if (rule.getDuty().size() != 0) {
-                BufferedImage leftArrow = ImageIO.read(new File("/Users/Chapman/Desktop/icons/situational/topArrow.png"));
+                BufferedImage leftArrow = ImageIO.read(new File("resources/icons/icons/situational/topArrow.png"));
                 g.drawImage(leftArrow, edgeInnerCircle+95, middleY-30, null);
             }
             for (int j = 0; j < rule.getDuty().size(); j++) {
@@ -229,7 +250,7 @@ public class situational extends JPanel {
                     if (constraint.getAttachedConstraint().get(j).getIsLogicalConstraint()) {
                         drawConstraint(constraint.getAttachedConstraint().get(j), g, index);
                     } else {
-                        BufferedImage constraintImageName = ImageIO.read(new File("/Users/Chapman/Desktop/icons/name/" + constraint.getAttachedConstraint().get(j).getName() + ".png"));
+                        BufferedImage constraintImageName = ImageIO.read(new File("resources/icons/icons/name/" + constraint.getAttachedConstraint().get(j).getName() + ".png"));
                         if (index !=0 ) {
                             if (index == 1) {
                                 newChangeCX = 0 * Math.cos(0.45) - 130 * Math.sin(0.45);
@@ -253,7 +274,7 @@ public class situational extends JPanel {
                     }
                 } else {
                     System.out.println(constraint.getName() + "name constraint");
-                    BufferedImage constraintImageName = ImageIO.read(new File("/Users/Chapman/Desktop/icons/name/" + constraint.getName() + ".png"));
+                    BufferedImage constraintImageName = ImageIO.read(new File("resources/icons/icons/name/" + constraint.getName() + ".png"));
 
                     if (index !=0 ) {
                         if (index == 1) {
