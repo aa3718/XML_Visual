@@ -24,6 +24,8 @@ public class odrlBuilding implements ActionListener{
     private boolean addConstraint = false;
     private boolean addParty = false;
     private boolean addDuty = false;
+    private ArrayList<String> nameOperators = new ArrayList<String>();
+    private ArrayList<String> nameLeftOperand = new ArrayList<String>();
     private int count = 0;
     private ArrayList<Rules> allRules = new ArrayList<Rules>();
     private Hashtable<String,Rules> mappingRemoveToRule = new Hashtable<String,Rules>();
@@ -37,6 +39,8 @@ public class odrlBuilding implements ActionListener{
         this.panelBoxV = panelBoxV;
         buildAction();
         buildParty();
+        buildOperators();
+        buildLeftOperand();
     }
 
     public void addBuildMenu() {
@@ -229,6 +233,7 @@ public class odrlBuilding implements ActionListener{
         rulePanels.get(rulePanelNumber).add(elementPanel);
 
         JPanel elementPanelParty = new JPanel();
+
         JLabel partyLabel = new JLabel("Party function:");
         JComboBox partyFunction = new JComboBox(nameParty.toArray());
         partyFunction.addActionListener(new ActionListener() {
@@ -249,45 +254,73 @@ public class odrlBuilding implements ActionListener{
     }
 
     public void addConstraintElement(int rulePanelNumber, attributeHolders element) {
-        JPanel elementPanel = new JPanel();
-        elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.X_AXIS));
 
-        JTextField partyName = new JTextField();
-        partyName.setMaximumSize(new Dimension(140, 35));
-        partyName.setText("Party UID");
-        JButton getPartyName = new JButton("Set");
-        getPartyName.addActionListener(new ActionListener() {
+        JPanel elementPanel = new JPanel();
+        elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.Y_AXIS));
+
+        JPanel elementPanelConstraintName = new JPanel();
+        elementPanelConstraintName.setLayout(new BoxLayout(elementPanelConstraintName,BoxLayout.X_AXIS));
+        JLabel constraintLabelName = new JLabel("Constraint name:");
+        JComboBox constraintFunctionName = new JComboBox(nameLeftOperand.toArray());
+        constraintFunctionName.setMaximumSize(new Dimension(240, 35));
+        constraintFunctionName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                element.setFullAttribute("uid", partyName.getText());
+                element.setFullAttribute("name",(String) constraintFunctionName.getSelectedItem());
+                System.out.println((String) constraintFunctionName.getSelectedItem() + "<- Name operand");
+            }
+        });
+
+        elementPanelConstraintName.add(constraintLabelName);
+        elementPanelConstraintName.add(constraintFunctionName);
+        elementPanelConstraintName.setBackground(Color.white);
+        elementPanelConstraintName.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel elementPanelConstraintOperand = new JPanel();
+        elementPanelConstraintOperand.setLayout(new BoxLayout(elementPanelConstraintOperand,BoxLayout.X_AXIS));
+
+        JLabel constraintLabelOperand = new JLabel("Constraint operand:");
+        JComboBox constraintFunctionOperand = new JComboBox(nameOperators.toArray());
+        constraintFunctionOperand.setMaximumSize(new Dimension(140, 35));
+        constraintFunctionOperand.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                element.setFullAttribute("function",(String) constraintFunctionOperand.getSelectedItem());
+                System.out.println((String) constraintFunctionOperand.getSelectedItem() + "<- Name of action");
+            }
+        });
+
+        elementPanelConstraintOperand.add(constraintLabelOperand);
+        elementPanelConstraintOperand.add(constraintFunctionOperand);
+        elementPanelConstraintOperand.setBackground(Color.white);
+        elementPanelConstraintOperand.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel constraintRightPanel = new JPanel();
+        constraintRightPanel.setLayout(new BoxLayout(constraintRightPanel, BoxLayout.X_AXIS));
+
+        JTextField elementPanelConstraintRight = new JTextField();
+        elementPanelConstraintRight.setMaximumSize(new Dimension(140, 35));
+        elementPanelConstraintRight.setText("Constraint value");
+        JButton getConstraintRight = new JButton("Set");
+        getConstraintRight.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                element.setFullAttribute("rightOperand", elementPanelConstraintRight.getText());
                 print();
             }
         });
 
-        elementPanel.setMaximumSize(new Dimension(300, 35));
-        elementPanel.add(partyName);
-        elementPanel.add(getPartyName);
+        constraintRightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        constraintRightPanel.add(elementPanelConstraintRight);
+        constraintRightPanel.setBackground(Color.white);
+
+        elementPanel.add(elementPanelConstraintName);
+        elementPanel.add(elementPanelConstraintOperand);
+        elementPanel.add(constraintRightPanel);
         elementPanel.setBackground(Color.white);
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         rulePanels.get(rulePanelNumber).add(elementPanel);
-
-        JPanel elementPanelParty = new JPanel();
-        JLabel partyLabel = new JLabel("Party function:");
-        JComboBox partyFunction = new JComboBox(nameParty.toArray());
-        partyFunction.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                element.setFullAttribute("function",(String) partyFunction.getSelectedItem());
-                System.out.println((String) partyFunction.getSelectedItem() + "<- Name of action");
-            }
-        });
-
-        elementPanelParty.setMaximumSize(new Dimension(300, 35));
-        elementPanelParty.add(partyLabel);
-        elementPanelParty.add(partyFunction);
-        elementPanelParty.setBackground(Color.white);
-        elementPanelParty.setAlignmentX(Component.LEFT_ALIGNMENT);
-        rulePanels.get(rulePanelNumber).add(elementPanelParty);
 
     }
 
@@ -443,7 +476,7 @@ public class odrlBuilding implements ActionListener{
                     } else if (addConstraint) {
                         Constraint constraint = new Constraint();
                         mappingSelectToRule.get("select" + i).setConstraint(constraint);
-
+                        addConstraintElement(i,constraint);
                     } else if (addDuty) {
                         Duty duty = new Duty();
                         mappingSelectToRule.get("select" + i).setDuty(duty);
@@ -621,6 +654,60 @@ public class odrlBuilding implements ActionListener{
         nameParty.add("informedParty");
         nameParty.add("compensatedParty");
         nameParty.add("trackingParty");
+    }
+
+    public void buildOperators() {
+        nameOperators.add("eq");
+        nameOperators.add("gt");
+        nameOperators.add("gteq");
+        nameOperators.add("hasPart");
+        nameOperators.add("isA");
+        nameOperators.add("isAllOf");
+        nameOperators.add("isAnyOf");
+        nameOperators.add("isNoneOf");
+        nameOperators.add("isPartOf");
+        nameOperators.add("It");
+        nameOperators.add("Iteq");
+        nameOperators.add("neq");
+
+    }
+
+    public void buildLeftOperand() {
+        nameLeftOperand.add("absolutePosition");
+        nameLeftOperand.add("absoluteSize");
+        nameLeftOperand.add("absoluteSpatialPosition");
+        nameLeftOperand.add("absoluteTemporalPosition");
+        nameLeftOperand.add("count");
+        nameLeftOperand.add("dateTime");
+        nameLeftOperand.add("delayPeriod");
+        nameLeftOperand.add("deliveryChannel");
+        nameLeftOperand.add("device");
+        nameLeftOperand.add("elapsedTime");
+        nameLeftOperand.add("event");
+        nameLeftOperand.add("fileFormat");
+        nameLeftOperand.add("industry");
+        nameLeftOperand.add("language");
+        nameLeftOperand.add("media");
+        nameLeftOperand.add("meteredTime");
+        nameLeftOperand.add("payAmount");
+        nameLeftOperand.add("percentage");
+        nameLeftOperand.add("product");
+        nameLeftOperand.add("purpose");
+        nameLeftOperand.add("recipient");
+        nameLeftOperand.add("relativePosition");
+        nameLeftOperand.add("relativeSize");
+        nameLeftOperand.add("relativeSpatialPosition");
+        nameLeftOperand.add("relativeTemporalPosition");
+        nameLeftOperand.add("resolution");
+        nameLeftOperand.add("spatial");
+        nameLeftOperand.add("spatialCoordinates");
+        nameLeftOperand.add("system");
+        nameLeftOperand.add("systemDevice");
+        nameLeftOperand.add("timeInternal");
+        nameLeftOperand.add("unitOfCount");
+        nameLeftOperand.add("version");
+        nameLeftOperand.add("virtualLocation");
+
     }
 
     public Policy getPolicy() {
