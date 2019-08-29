@@ -172,8 +172,15 @@ public class odrlBuilding implements ActionListener{
         getAssetName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                getAssetName.setBackground(Color.lightGray);
                 element.setFullAttribute("uid",assetName.getText());
                 print();
+            }
+        });
+        assetName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getAssetName.setBackground(Color.white);
             }
         });
 
@@ -195,7 +202,8 @@ public class odrlBuilding implements ActionListener{
         actionName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                element.setFullAttribute("name",(String) actionName.getSelectedItem());
+                String value = "http://www.w3.org/ns/odrl/2/" + actionName.getSelectedItem();
+                element.setFullAttribute("name",value);
                 System.out.println((String) actionName.getSelectedItem() + "<- Name of action");
             }
         });
@@ -239,7 +247,8 @@ public class odrlBuilding implements ActionListener{
         partyFunction.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                element.setFullAttribute("function",(String) partyFunction.getSelectedItem());
+                String value = "http://www.w3.org/ns/odrl/2/" + partyFunction.getSelectedItem();
+                element.setFullAttribute("function",value);
                 System.out.println((String) partyFunction.getSelectedItem() + "<- Name of action");
             }
         });
@@ -266,7 +275,8 @@ public class odrlBuilding implements ActionListener{
         constraintFunctionName.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                element.setFullAttribute("name",(String) constraintFunctionName.getSelectedItem());
+                String value = "http://www.w3.org/ns/odrl/2/" + constraintFunctionName.getSelectedItem();
+                element.setFullAttribute("name",value);
                 System.out.println((String) constraintFunctionName.getSelectedItem() + "<- Name operand");
             }
         });
@@ -285,7 +295,8 @@ public class odrlBuilding implements ActionListener{
         constraintFunctionOperand.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                element.setFullAttribute("function",(String) constraintFunctionOperand.getSelectedItem());
+                String value = "http://www.w3.org/ns/odrl/2/" + constraintFunctionOperand.getSelectedItem();
+                element.setFullAttribute("operator",value);
                 System.out.println((String) constraintFunctionOperand.getSelectedItem() + "<- Name of action");
             }
         });
@@ -312,6 +323,7 @@ public class odrlBuilding implements ActionListener{
 
         constraintRightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         constraintRightPanel.add(elementPanelConstraintRight);
+        constraintRightPanel.add(getConstraintRight);
         constraintRightPanel.setBackground(Color.white);
 
         elementPanel.add(elementPanelConstraintName);

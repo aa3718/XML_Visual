@@ -40,6 +40,7 @@ public class xmlMaking {
 
             getAttributesPolicy(root,policy);
 
+            // For permissions
             for (int i = 0; i < policy.getAllPermission().size(); i++) {
                 Element permission = document.createElement("o:permission");
                 root.appendChild(permission);
@@ -47,7 +48,7 @@ public class xmlMaking {
                 getRule(policy.getAllPermission().get(i), permission);
             }
 
-
+            // For prohibitions
             for (int i = 0; i < policy.getAllProhibition().size(); i++) {
                 Element prohibition = document.createElement("o:prohibition");
                 root.appendChild(prohibition);
@@ -56,6 +57,7 @@ public class xmlMaking {
 
             }
 
+            // For obligations
             for (int i = 0; i < policy.getAllObligation().size(); i++) {
                 Element obligation = document.createElement("o:obligation");
                 root.appendChild(obligation);
@@ -80,10 +82,6 @@ public class xmlMaking {
                 StreamResult streamResult = new StreamResult(new File(fileToSave.getAbsolutePath()));
                 transf.transform(domSource, streamResult);
             }
-
-
-            // StreamResult streamResult = new StreamResult(new File("/Users/Chapman/Documents/ODRLxmlTestFile/madeFile.xml"));
-            //transf.transform(domSource, streamResult);
 
         } catch (Exception e) {
             e.printStackTrace();
