@@ -114,7 +114,7 @@ public class IconDnD implements ActionListener,ChangeListener {
         panelBoxV.setBorder(buildMenu);
 
         //visual.setBounds(0, 0, widthOfPage, heightOfPage);
-        visual.setBackground(Color.pink);
+        visual.setBackground(Color.lightGray);
         visual.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.white));
         visual.setLayout(new GridLayout(2,3,5,5));
 

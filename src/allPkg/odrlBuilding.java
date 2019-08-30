@@ -13,6 +13,7 @@ public class odrlBuilding implements ActionListener{
     private ArrayList<Policy> policies;
     private JPanel visual;
     private JPanel panelBoxV;
+    private JPanel globalRulePanel;
     private ArrayList<String> nameAction = new ArrayList<String>();
     private ArrayList<String> nameParty = new ArrayList<String>();
     private PolicyBuilder newPolicy = new PolicyBuilder();
@@ -30,7 +31,7 @@ public class odrlBuilding implements ActionListener{
     private ArrayList<Rules> allRules = new ArrayList<Rules>();
     private Hashtable<String,Rules> mappingRemoveToRule = new Hashtable<String,Rules>();
     private Hashtable<String,Rules> mappingSelectToRule = new Hashtable<String,Rules>();
-
+    private ArrayList<attributeHolders> globalAttributes = new ArrayList<attributeHolders>();
     private Hashtable<String,JPanel> mappingCountToPanel = new Hashtable<String,JPanel>();
 
     odrlBuilding(JPanel panel, JPanel panelBoxV, ArrayList<Policy> policies) {
@@ -56,7 +57,13 @@ public class odrlBuilding implements ActionListener{
         buildMenuPolicy.setTitlePosition(TitledBorder.BELOW_TOP);
         buildMenuPolicy.setTitleColor(Color.gray);
 
+        JButton globalElement = new JButton("Add");
+        globalElement.setFocusPainted(false);
+        globalElement.addActionListener(this);
+        globalElement.setActionCommand("addGlobal");
+
         panelPolicy.setBorder(buildMenuPolicy);
+        panelPolicy.add(globalElement);
         panelBoxV.add(panelPolicy);
 
         // Adding Rule Menu Element
@@ -144,20 +151,47 @@ public class odrlBuilding implements ActionListener{
 
     public void addGlobalElements() {
 
-        // Adding Policy Menu Element
-        JPanel panelPolicy = new JPanel();
-        panelPolicy.setLayout(new BoxLayout(panelPolicy,BoxLayout.Y_AXIS));
-        panelPolicy.setBounds(10,20,200,80);
-        panelPolicy.setBackground(Color.white);
+        globalRulePanel = new JPanel();
+        globalRulePanel.setBackground(Color.darkGray);
+        globalRulePanel.setBorder(BorderFactory.createLineBorder(Color.white));
+        globalRulePanel.setPreferredSize(new Dimension(350,500));
+        globalRulePanel.setLayout(new BoxLayout(globalRulePanel,BoxLayout.Y_AXIS));
 
-        TitledBorder buildMenuPolicy = new TitledBorder("Policy");
-        buildMenuPolicy.setTitlePosition(TitledBorder.CENTER);
-        buildMenuPolicy.setTitlePosition(TitledBorder.BELOW_TOP);
-        buildMenuPolicy.setTitleColor(Color.gray);
+        JLabel globalRuleLabel = new JLabel("Global Elements");
+        globalRuleLabel.setForeground(Color.white);
+        globalRuleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        globalRulePanel.add(globalRuleLabel);
 
-        panelPolicy.setBorder(buildMenuPolicy);
-        panelBoxV.add(panelPolicy);
+        JPanel editPanel = new JPanel();
+        editPanel.setLayout(new BoxLayout(editPanel,BoxLayout.X_AXIS));
+        editPanel.setBackground(Color.darkGray);
 
+        Icon selectIcon = new ImageIcon("/Users/Chapman/Desktop/icons/select.png");
+        JButton select = new JButton(selectIcon);
+        select.setBackground(Color.darkGray);
+
+        select.setActionCommand("globalS");
+        select.setMaximumSize(new Dimension(40, 40));
+        select.setFocusPainted(false);
+        select.setOpaque(true);
+        select.addActionListener(this);
+        editPanel.add(select);
+
+        Icon removeIcon = new ImageIcon("/Users/Chapman/Desktop/icons/delete.png");
+        JButton remove = new JButton(removeIcon);
+        remove.setActionCommand("globalR");
+        remove.setBackground(Color.darkGray);
+        remove.setMaximumSize(new Dimension(40, 40));
+        remove.setFocusPainted(false);
+        remove.setOpaque(true);
+        remove.addActionListener(this);
+        editPanel.add(remove);
+
+        editPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        globalRulePanel.add(editPanel);
+        visual.add(globalRulePanel);
+        visual.revalidate();
+        visual.repaint();
     }
 
     public void addDutyElement(int rulePanelNumber, attributeHolders element) {
@@ -195,13 +229,15 @@ public class odrlBuilding implements ActionListener{
 
     }
 
-    public void addAssetElement(int rulePanelNumber, attributeHolders element) {
+    public void addAssetElement(int rulePanelNumber, attributeHolders element, boolean isGlobal) {
         JPanel elementPanel = new JPanel();
         elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.X_AXIS));
 
         JTextField assetName = new JTextField();
+        assetName.setBackground(Color.white);
         assetName.setMaximumSize(new Dimension(140, 35));
         assetName.setText("Asset UID");
+
         JButton getAssetName = new JButton("Set");
         getAssetName.addActionListener(new ActionListener() {
             @Override
@@ -219,29 +255,43 @@ public class odrlBuilding implements ActionListener{
         });
 
         Icon selectIcon = new ImageIcon("/Users/Chapman/Desktop/icons/select.png");
+
         JButton select = new JButton(selectIcon);
         select.setActionCommand("select"+rulePanelNumber);
-        select.setBackground(Color.white);
         select.setMaximumSize(new Dimension(40, 40));
         select.setFocusPainted(false);
         select.setOpaque(true);
         select.addActionListener(this);
 
+        if (isGlobal) {
+            elementPanel.setBackground(Color.darkGray);
+            select.setBackground(Color.darkGray);
+            getAssetName.setBackground(Color.darkGray);
+        } else {
+            elementPanel.setBackground(Color.white);
+            select.setBackground(Color.white);
+            getAssetName.setBackground(Color.white);
+        }
+
         elementPanel.add(assetName);
         elementPanel.add(getAssetName);
         elementPanel.add(select);
-        elementPanel.setBackground(Color.white);
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        rulePanels.get(rulePanelNumber).add(elementPanel);
+        if (!isGlobal) {
+            rulePanels.get(rulePanelNumber).add(elementPanel);
+        } else {
+            globalRulePanel.add(elementPanel);
+        }
 
     }
 
-    public void addActionElement(int rulePanelNumber, attributeHolders element) {
+    public void addActionElement(int rulePanelNumber, attributeHolders element,boolean isGlobal) {
         JPanel elementPanel = new JPanel();
         elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.X_AXIS));
 
         JLabel actionLabel = new JLabel("Action type:");
+
         JComboBox actionName = new JComboBox(nameAction.toArray());
         actionName.addActionListener(new ActionListener() {
             @Override
@@ -252,22 +302,39 @@ public class odrlBuilding implements ActionListener{
             }
         });
 
+        if (isGlobal) {
+            elementPanel.setBackground(Color.darkGray);
+            actionLabel.setBackground(Color.darkGray);
+            actionName.setBackground(Color.darkGray);
+        } else {
+            elementPanel.setBackground(Color.white);
+            actionLabel.setBackground(Color.white);
+            actionName.setBackground(Color.white);
+        }
+
         elementPanel.setMaximumSize(new Dimension(300, 35));
         elementPanel.add(actionLabel);
         elementPanel.add(actionName);
-        elementPanel.setBackground(Color.white);
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        rulePanels.get(rulePanelNumber).add(elementPanel);
+
+        if (!isGlobal) {
+            rulePanels.get(rulePanelNumber).add(elementPanel);
+        } else {
+            globalRulePanel.add(elementPanel);
+        }
 
     }
 
-    public void addPartyElement(int rulePanelNumber, attributeHolders element) {
+    public void addPartyElement(int rulePanelNumber, attributeHolders element, boolean isGlobal) {
+
         JPanel elementPanel = new JPanel();
         elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.X_AXIS));
 
         JTextField partyName = new JTextField();
+        partyName.setBackground(Color.white);
         partyName.setMaximumSize(new Dimension(140, 35));
         partyName.setText("Party UID");
+
         JButton getPartyName = new JButton("Set");
         getPartyName.addActionListener(new ActionListener() {
             @Override
@@ -280,13 +347,18 @@ public class odrlBuilding implements ActionListener{
         elementPanel.setMaximumSize(new Dimension(300, 35));
         elementPanel.add(partyName);
         elementPanel.add(getPartyName);
-        elementPanel.setBackground(Color.white);
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        rulePanels.get(rulePanelNumber).add(elementPanel);
+
+        if (!isGlobal) {
+            rulePanels.get(rulePanelNumber).add(elementPanel);
+        } else {
+            globalRulePanel.add(elementPanel);
+        }
 
         JPanel elementPanelParty = new JPanel();
 
         JLabel partyLabel = new JLabel("Party function:");
+
         JComboBox partyFunction = new JComboBox(nameParty.toArray());
         partyFunction.addActionListener(new ActionListener() {
             @Override
@@ -297,23 +369,44 @@ public class odrlBuilding implements ActionListener{
             }
         });
 
+        if (isGlobal) {
+            elementPanel.setBackground(Color.darkGray);
+            getPartyName.setBackground(Color.darkGray);
+            elementPanelParty.setBackground(Color.darkGray);
+            partyLabel.setBackground(Color.darkGray);
+            partyFunction.setBackground(Color.darkGray);
+        } else {
+            elementPanel.setBackground(Color.white);
+            getPartyName.setBackground(Color.white);
+            elementPanelParty.setBackground(Color.white);
+            partyLabel.setBackground(Color.white);
+            partyFunction.setBackground(Color.white);
+        }
+
         elementPanelParty.setMaximumSize(new Dimension(300, 35));
         elementPanelParty.add(partyLabel);
         elementPanelParty.add(partyFunction);
-        elementPanelParty.setBackground(Color.white);
         elementPanelParty.setAlignmentX(Component.LEFT_ALIGNMENT);
-        rulePanels.get(rulePanelNumber).add(elementPanelParty);
+
+        if (!isGlobal) {
+            rulePanels.get(rulePanelNumber).add(elementPanelParty);
+        } else {
+            globalRulePanel.add(elementPanelParty);
+        }
 
     }
 
-    public void addConstraintElement(int rulePanelNumber, attributeHolders element) {
+    public void addConstraintElement(int rulePanelNumber, attributeHolders element, boolean isGlobal) {
 
         JPanel elementPanel = new JPanel();
         elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.Y_AXIS));
 
         JPanel elementPanelConstraintName = new JPanel();
+
         elementPanelConstraintName.setLayout(new BoxLayout(elementPanelConstraintName,BoxLayout.X_AXIS));
+
         JLabel constraintLabelName = new JLabel("Constraint name:");
+
         JComboBox constraintFunctionName = new JComboBox(nameLeftOperand.toArray());
         constraintFunctionName.setMaximumSize(new Dimension(240, 35));
         constraintFunctionName.addActionListener(new ActionListener() {
@@ -327,13 +420,13 @@ public class odrlBuilding implements ActionListener{
 
         elementPanelConstraintName.add(constraintLabelName);
         elementPanelConstraintName.add(constraintFunctionName);
-        elementPanelConstraintName.setBackground(Color.white);
         elementPanelConstraintName.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JPanel elementPanelConstraintOperand = new JPanel();
         elementPanelConstraintOperand.setLayout(new BoxLayout(elementPanelConstraintOperand,BoxLayout.X_AXIS));
 
         JLabel constraintLabelOperand = new JLabel("Constraint operand:");
+
         JComboBox constraintFunctionOperand = new JComboBox(nameOperators.toArray());
         constraintFunctionOperand.setMaximumSize(new Dimension(140, 35));
         constraintFunctionOperand.addActionListener(new ActionListener() {
@@ -347,7 +440,6 @@ public class odrlBuilding implements ActionListener{
 
         elementPanelConstraintOperand.add(constraintLabelOperand);
         elementPanelConstraintOperand.add(constraintFunctionOperand);
-        elementPanelConstraintOperand.setBackground(Color.white);
         elementPanelConstraintOperand.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JPanel constraintRightPanel = new JPanel();
@@ -357,6 +449,7 @@ public class odrlBuilding implements ActionListener{
         elementPanelConstraintRight.setMaximumSize(new Dimension(140, 35));
         elementPanelConstraintRight.setText("Constraint value");
         JButton getConstraintRight = new JButton("Set");
+        elementPanelConstraintRight.setBackground(Color.white);
         getConstraintRight.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -365,18 +458,43 @@ public class odrlBuilding implements ActionListener{
             }
         });
 
+
+        if (isGlobal) {
+            elementPanel.setBackground(Color.darkGray);
+            elementPanelConstraintName.setBackground(Color.darkGray);
+            constraintLabelName.setBackground(Color.darkGray);
+            constraintFunctionName.setBackground(Color.darkGray);
+            elementPanelConstraintOperand.setBackground(Color.darkGray);
+            constraintLabelOperand.setBackground(Color.darkGray);
+            constraintFunctionOperand.setBackground(Color.darkGray);
+            constraintRightPanel.setBackground(Color.darkGray);
+            getConstraintRight.setBackground(Color.darkGray);
+        } else {
+            elementPanel.setBackground(Color.white);
+            elementPanelConstraintName.setBackground(Color.white);
+            constraintLabelName.setBackground(Color.white);
+            constraintFunctionName.setBackground(Color.white);
+            elementPanelConstraintOperand.setBackground(Color.white);
+            constraintLabelOperand.setBackground(Color.white);
+            constraintFunctionOperand.setBackground(Color.white);
+            constraintRightPanel.setBackground(Color.white);
+            getConstraintRight.setBackground(Color.white);
+        }
+
         constraintRightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         constraintRightPanel.add(elementPanelConstraintRight);
         constraintRightPanel.add(getConstraintRight);
-        constraintRightPanel.setBackground(Color.white);
 
         elementPanel.add(elementPanelConstraintName);
         elementPanel.add(elementPanelConstraintOperand);
         elementPanel.add(constraintRightPanel);
-        elementPanel.setBackground(Color.white);
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        rulePanels.get(rulePanelNumber).add(elementPanel);
+        if (!isGlobal) {
+            rulePanels.get(rulePanelNumber).add(elementPanel);
+        } else {
+            globalRulePanel.add(elementPanel);
+        }
 
     }
 
@@ -385,7 +503,7 @@ public class odrlBuilding implements ActionListener{
         JPanel rulePanel = new JPanel();
         rulePanel.setBackground(Color.white);
         rulePanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
-        rulePanel.setPreferredSize(new Dimension(350,500));
+        rulePanel.setPreferredSize(new Dimension(350,700));
         rulePanel.setLayout(new BoxLayout(rulePanel,BoxLayout.Y_AXIS));
 
         JLabel ruleLabel;
@@ -483,24 +601,33 @@ public class odrlBuilding implements ActionListener{
                     }
                 }
             }
+            return;
+        }
+
+        if (e.getActionCommand().equals("addGlobal")) {
+            addGlobalElements();
+            return;
         }
 
         if (e.getActionCommand().equals("permission")) {
             Permission permission = new Permission();
             allRules.add(permission);
             addRule(permission);
+            return;
         }
 
         if (e.getActionCommand().equals("prohibition")) {
             Prohibition prohibition = new Prohibition();
             allRules.add(prohibition);
             addRule(prohibition);
+            return;
         }
 
         if (e.getActionCommand().equals("obligation")) {
             Obligation obligation = new Obligation();
             allRules.add(obligation);
             addRule(obligation);
+            return;
         }
 
         if (e.getActionCommand().contains("remove")) {
@@ -515,25 +642,58 @@ public class odrlBuilding implements ActionListener{
             }
         }
 
+        if (e.getActionCommand().equals("globalS")) {
+            if (addAction) {
+                Action action = new Action();
+                globalAttributes.add(action);
+                addActionElement(0, action,true);
+            } else if (addAsset) {
+                Asset asset = new Asset();
+                globalAttributes.add(asset);
+                addAssetElement(0, asset,true);
+            } else if (addParty) {
+                Party party = new Party();
+                globalAttributes.add(party);
+                addPartyElement(0, party,true);
+            } else {
+                Constraint constraint = new Constraint();
+                globalAttributes.add(constraint);
+                addConstraintElement(0, constraint,true);
+            }
+            visual.revalidate();
+            visual.repaint();
+            return;
+        }
+
+        if (e.getActionCommand().equals("globalR")) {
+            visual.remove(globalRulePanel);
+            visual.revalidate();
+            visual.repaint();
+            for (int i = 0; i < globalAttributes.size(); i++) {
+                globalAttributes.clear();
+            }
+            return;
+        }
+
         if (e.getActionCommand().contains("select")) {
             for (int i = 0; i < rulePanels.size(); i++) {
                 if (e.getActionCommand().equals("select" + i)) {
                     if(addAction) {
                         Action action = new Action();
                         mappingSelectToRule.get("select" + i).setAction(action);
-                        addActionElement(i,action);
+                        addActionElement(i,action,false);
                     } else if (addAsset) {
                         Asset asset = new Asset();
                         mappingSelectToRule.get("select" + i).setAsset(asset);
-                        addAssetElement(i,asset);
+                        addAssetElement(i,asset,false);
                     } else if (addParty) {
                         Party party = new Party();
                         mappingSelectToRule.get("select" + i).setParty(party);
-                        addPartyElement(i,party);
+                        addPartyElement(i,party,false);
                     } else if (addConstraint) {
                         Constraint constraint = new Constraint();
                         mappingSelectToRule.get("select" + i).setConstraint(constraint);
-                        addConstraintElement(i,constraint);
+                        addConstraintElement(i,constraint,false);
                     } else if (addDuty) {
                         Duty duty = new Duty();
                         mappingSelectToRule.get("select" + i).setDuty(duty);
@@ -548,6 +708,20 @@ public class odrlBuilding implements ActionListener{
 
         if (e.getActionCommand().equals("done")) {
             for (int i = 0; i < allRules.size(); i++) {
+                for (int j = 0; j < globalAttributes.size(); j++) {
+                    if (globalAttributes.get(j) instanceof Constraint) {
+                        allRules.get(i).setConstraint((Constraint) globalAttributes.get(j));
+                    }
+                    if (globalAttributes.get(j) instanceof Asset) {
+                        allRules.get(i).setAsset((Asset) globalAttributes.get(j));
+                    }
+                    if (globalAttributes.get(j) instanceof Action) {
+                        allRules.get(i).setAction((Action) globalAttributes.get(j));
+                    }
+                    if (globalAttributes.get(j) instanceof Party) {
+                        allRules.get(i).setParty((Party) globalAttributes.get(j));
+                    }
+                }
 
                 if (allRules.get(i) instanceof Permission) {
                     newPolicy.withPermission((Permission) allRules.get(i));
@@ -564,12 +738,12 @@ public class odrlBuilding implements ActionListener{
                     newPolicy.withConstraint(allRules.get(i).getConstraint().get(k));
                 }
 
-                //Asset
+                // Assets
                 for (int k = 0; k < allRules.get(i).getAsset().size(); k++) {
                     newPolicy.withAsset(allRules.get(i).getAsset().get(k));
                 }
 
-                // Party
+                // Parties
                 for (int k = 0; k < allRules.get(i).getParty().size(); k++) {
                     newPolicy.withParty(allRules.get(i).getParty().get(k));
                 }
@@ -580,14 +754,13 @@ public class odrlBuilding implements ActionListener{
                     allRules.get(i).getAction().get(j).setParentType(allRules.get(i));
                 }
 
-                // Duty
+                // Duties
                 for (int k = 0; k < allRules.get(i).getDuty().size(); k++) {
                     newPolicy.withDuty(allRules.get(i).getDuty().get(k));
                     setAllElements(allRules.get(i).getDuty().get(k));
                 }
 
             }
-
 
             policy = newPolicy.build();
 
