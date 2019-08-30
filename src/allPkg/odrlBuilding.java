@@ -19,7 +19,6 @@ public class odrlBuilding implements ActionListener{
     private PolicyBuilder newPolicy = new PolicyBuilder();
     private ArrayList<JButton> elementMenu = new ArrayList<JButton>();
     private ArrayList<String> elementMenuName = new ArrayList<String>();
-    private ArrayList<JPanel> rulePanels = new ArrayList<JPanel>();
     private boolean addAsset = false;
     private boolean addAction = false;
     private boolean addConstraint = false;
@@ -30,9 +29,13 @@ public class odrlBuilding implements ActionListener{
     private int count = 0;
     private int refinementCount = 0;
     private ArrayList<Rules> allRules = new ArrayList<Rules>();
+    private ArrayList<Constraint> refinements = new ArrayList<Constraint>();
     private ArrayList<attributeHolders> globalAttributes = new ArrayList<attributeHolders>();
     private Hashtable<String,Rules> mappingNumberToRule = new Hashtable<String,Rules>();
     private Hashtable<String,JPanel> mappingNumberToPanel = new Hashtable<String,JPanel>();
+    private Hashtable<String,attributeHolders> mappingNumberToElement = new Hashtable<String,attributeHolders>();
+    private Hashtable<String,JPanel> mappingNumberToElementPanel = new Hashtable<String,JPanel>();
+    private Hashtable<String,String> mappingRuleNumberToElementNumber = new Hashtable<String,String>();
 
 
     odrlBuilding(JPanel panel, JPanel panelBoxV, ArrayList<Policy> policies) {
@@ -80,7 +83,7 @@ public class odrlBuilding implements ActionListener{
         panelPP.setBorder(buildMenuPP);
         panelBoxV.add(panelPP);
 
-        Icon permissionI = new ImageIcon("/Users/Chapman/Downloads/permissionI.png");
+        Icon permissionI = new ImageIcon("resources/icons/icons/builder/permissionI.png");
         JButton permission = new JButton(permissionI);
         permission.setActionCommand("permission");
         permission.setPreferredSize(new Dimension(35, 35));
@@ -88,7 +91,7 @@ public class odrlBuilding implements ActionListener{
         panelPP.add(permission);
         permission.addActionListener(this);
 
-        Icon prohibitionI = new ImageIcon("/Users/Chapman/Downloads/error.png");
+        Icon prohibitionI = new ImageIcon("resources/icons/icons/builder/error.png");
         JButton prohibition = new JButton(prohibitionI);
         prohibition.setActionCommand("prohibition");
         prohibition.setPreferredSize(new Dimension(35, 35));
@@ -96,7 +99,7 @@ public class odrlBuilding implements ActionListener{
         panelPP.add(prohibition);
         prohibition.addActionListener(this);
 
-        Icon obligationI = new ImageIcon("/Users/Chapman/Desktop/icons/obligationI.png");
+        Icon obligationI = new ImageIcon("resources/icons/icons/builder/obligationI.png");
         JButton obligation = new JButton(obligationI);
         obligation.setActionCommand("obligation");
         obligation.setPreferredSize(new Dimension(35, 35));
@@ -167,26 +170,8 @@ public class odrlBuilding implements ActionListener{
         editPanel.setLayout(new BoxLayout(editPanel,BoxLayout.X_AXIS));
         editPanel.setBackground(Color.darkGray);
 
-        Icon selectIcon = new ImageIcon("/Users/Chapman/Desktop/icons/select.png");
-        JButton select = new JButton(selectIcon);
-        select.setBackground(Color.darkGray);
-
-        select.setActionCommand("globalS");
-        select.setMaximumSize(new Dimension(40, 40));
-        select.setFocusPainted(false);
-        select.setOpaque(true);
-        select.addActionListener(this);
-        editPanel.add(select);
-
-        Icon removeIcon = new ImageIcon("/Users/Chapman/Desktop/icons/delete.png");
-        JButton remove = new JButton(removeIcon);
-        remove.setActionCommand("globalR");
-        remove.setBackground(Color.darkGray);
-        remove.setMaximumSize(new Dimension(40, 40));
-        remove.setFocusPainted(false);
-        remove.setOpaque(true);
-        remove.addActionListener(this);
-        editPanel.add(remove);
+        editPanel.add(returnButtonSelect("globalS", true));
+        editPanel.add(returnButtonSelect("globalR", false));
 
         editPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         globalRulePanel.add(editPanel);
@@ -209,32 +194,25 @@ public class odrlBuilding implements ActionListener{
 
         JPanel editPanel = new JPanel();
         editPanel.setLayout(new BoxLayout(editPanel,BoxLayout.X_AXIS));
-
-        Icon selectIcon = new ImageIcon("/Users/Chapman/Desktop/icons/select.png");
-        JButton select = new JButton(selectIcon);
-        select.setActionCommand("select"+count);
-        select.setBackground(Color.white);
-        select.setMaximumSize(new Dimension(40, 40));
-        select.setFocusPainted(false);
-        select.setOpaque(true);
-        select.addActionListener(this);
-        editPanel.add(select);
+        editPanel.add(returnButtonSelect("select"+count, true));
 
         mappingNumberToPanel.get(number).add(rulePanel);
         mappingNumberToRule.put(Integer.toString(count),(Duty) element);
         mappingNumberToPanel.put(Integer.toString(count),rulePanel);
 
-        //mappingSelectToRule.put("select"+count,(Duty) element);
-
         editPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         rulePanel.add(editPanel);
-        //rulePanels.add(rulePanel);
 
         count++;
     }
 
     public void addAssetElement(String number, attributeHolders element, boolean isGlobal) {
+        JPanel basePanel = new JPanel();
+        basePanel.setBackground(Color.white);
+        basePanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+        basePanel.setLayout(new BoxLayout(basePanel,BoxLayout.Y_AXIS));
+
         JPanel elementPanel = new JPanel();
         elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.X_AXIS));
 
@@ -249,7 +227,11 @@ public class odrlBuilding implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 getAssetName.setBackground(Color.lightGray);
                 element.setFullAttribute("uid",assetName.getText());
-                print();
+                if(!element.getConstraint().isEmpty()) {
+                    for (int i = 0; i < element.getConstraint().size(); i++) {
+                        element.getConstraint().get(i).setConstraintOn(((Asset)element).getUID());
+                    }
+                }
             }
         });
         assetName.addActionListener(new ActionListener() {
@@ -259,16 +241,6 @@ public class odrlBuilding implements ActionListener{
             }
         });
 
-        Icon selectIcon = new ImageIcon("/Users/Chapman/Desktop/icons/select.png");
-
-        /*
-        JButton select = new JButton(selectIcon);
-        select.setActionCommand("select"+rulePanelNumber);
-        select.setMaximumSize(new Dimension(40, 40));
-        select.setFocusPainted(false);
-        select.setOpaque(true);
-        select.addActionListener(this);
-*/
         if (isGlobal) {
             elementPanel.setBackground(Color.darkGray);
             //select.setBackground(Color.darkGray);
@@ -281,20 +253,30 @@ public class odrlBuilding implements ActionListener{
 
         elementPanel.add(assetName);
         elementPanel.add(getAssetName);
-        //elementPanel.add(select);
+        elementPanel.add(returnButtonSelect("refinement"+refinementCount, true));
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        basePanel.add(elementPanel);
+
         if (!isGlobal) {
-            mappingNumberToPanel.get(number).add(elementPanel);
+            mappingNumberToPanel.get(number).add(basePanel);
         } else {
-            globalRulePanel.add(elementPanel);
+            globalRulePanel.add(basePanel);
         }
 
-        //mappingSelectToElement.put("selRefinement"+refinementCount,element);
-        //refinementCount++;
+        mappingNumberToElement.put(Integer.toString(refinementCount),element);
+        mappingNumberToElementPanel.put(Integer.toString(refinementCount),basePanel);
+        mappingRuleNumberToElementNumber.put(number,Integer.toString(refinementCount));
+
+        refinementCount++;
     }
 
     public void addActionElement(String number, attributeHolders element,boolean isGlobal) {
+        JPanel basePanel = new JPanel();
+        basePanel.setBackground(Color.white);
+        basePanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+        basePanel.setLayout(new BoxLayout(basePanel,BoxLayout.Y_AXIS));
+
         JPanel elementPanel = new JPanel();
         elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.X_AXIS));
 
@@ -306,6 +288,11 @@ public class odrlBuilding implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 String value = "http://www.w3.org/ns/odrl/2/" + actionName.getSelectedItem();
                 element.setFullAttribute("name",value);
+                if(!element.getConstraint().isEmpty()) {
+                    for (int i = 0; i < element.getConstraint().size(); i++) {
+                        element.getConstraint().get(i).setConstraintOn(((Action)element).getName());
+                    }
+                }
                 System.out.println((String) actionName.getSelectedItem() + "<- Name of action");
             }
         });
@@ -323,19 +310,29 @@ public class odrlBuilding implements ActionListener{
         elementPanel.setMaximumSize(new Dimension(300, 35));
         elementPanel.add(actionLabel);
         elementPanel.add(actionName);
+        elementPanel.add(returnButtonSelect("refinement"+refinementCount, true));
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        basePanel.add(elementPanel);
+
         if (!isGlobal) {
-            mappingNumberToPanel.get(number).add(elementPanel);
+            mappingNumberToPanel.get(number).add(basePanel);
         } else {
-            globalRulePanel.add(elementPanel);
+            globalRulePanel.add(basePanel);
         }
 
-        //mappingSelectToElement.put("selRefinement"+refinementCount,element);
-        //refinementCount++;
+        mappingNumberToElement.put(Integer.toString(refinementCount),element);
+        mappingNumberToElementPanel.put(Integer.toString(refinementCount),basePanel);
+        mappingRuleNumberToElementNumber.put(number,Integer.toString(refinementCount));
+
+        refinementCount++;
     }
 
     public void addPartyElement(String number, attributeHolders element, boolean isGlobal) {
+        JPanel basePanel = new JPanel();
+        basePanel.setBackground(Color.white);
+        basePanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+        basePanel.setLayout(new BoxLayout(basePanel,BoxLayout.Y_AXIS));
 
         JPanel elementPanel = new JPanel();
         elementPanel.setLayout(new BoxLayout(elementPanel,BoxLayout.X_AXIS));
@@ -350,7 +347,11 @@ public class odrlBuilding implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 element.setFullAttribute("uid", partyName.getText());
-                print();
+                if(!element.getConstraint().isEmpty()) {
+                    for (int i = 0; i < element.getConstraint().size(); i++) {
+                        element.getConstraint().get(i).setConstraintOn(((Party)element).getFunction());
+                    }
+                }
             }
         });
 
@@ -390,18 +391,23 @@ public class odrlBuilding implements ActionListener{
         elementPanelParty.setMaximumSize(new Dimension(300, 35));
         elementPanelParty.add(partyLabel);
         elementPanelParty.add(partyFunction);
+        elementPanel.add(returnButtonSelect("refinement"+refinementCount, true));
         elementPanelParty.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        basePanel.add(elementPanel);
+        basePanel.add(elementPanelParty);
+
         if (!isGlobal) {
-            mappingNumberToPanel.get(number).add(elementPanel);
-            mappingNumberToPanel.get(number).add(elementPanelParty);
+            mappingNumberToPanel.get(number).add(basePanel);
         } else {
-            globalRulePanel.add(elementPanel);
-            globalRulePanel.add(elementPanelParty);
+            globalRulePanel.add(basePanel);
         }
 
-        //mappingSelectToElement.put("selRefinement"+refinementCount,element);
-        //refinementCount++;
+        mappingNumberToElement.put(Integer.toString(refinementCount),element);
+        mappingNumberToElementPanel.put(Integer.toString(refinementCount),basePanel);
+        mappingRuleNumberToElementNumber.put(number,Integer.toString(refinementCount));
+
+        refinementCount++;
     }
 
     public void addConstraintElement(String number, attributeHolders element, boolean isGlobal, boolean isRefinement) {
@@ -462,7 +468,6 @@ public class odrlBuilding implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 element.setFullAttribute("rightOperand", elementPanelConstraintRight.getText());
-                print();
             }
         });
 
@@ -497,12 +502,15 @@ public class odrlBuilding implements ActionListener{
         elementPanel.add(constraintRightPanel);
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        if (!isGlobal) {
-            mappingNumberToPanel.get(number).add(elementPanel);
+        if (isRefinement) {
+            mappingNumberToElementPanel.get(number).add(elementPanel);
         } else {
-            globalRulePanel.add(elementPanel);
+            if (!isGlobal) {
+                mappingNumberToPanel.get(number).add(elementPanel);
+            } else {
+                globalRulePanel.add(elementPanel);
+            }
         }
-
     }
 
     public void addRule(Rules rule) {
@@ -529,29 +537,11 @@ public class odrlBuilding implements ActionListener{
         JPanel editPanel = new JPanel();
         editPanel.setLayout(new BoxLayout(editPanel,BoxLayout.X_AXIS));
 
-        Icon selectIcon = new ImageIcon("/Users/Chapman/Desktop/icons/select.png");
-        JButton select = new JButton(selectIcon);
-        select.setActionCommand("select"+count);
-        select.setBackground(Color.white);
-        select.setMaximumSize(new Dimension(40, 40));
-        select.setFocusPainted(false);
-        select.setOpaque(true);
-        select.addActionListener(this);
-        editPanel.add(select);
-
-        Icon removeIcon = new ImageIcon("/Users/Chapman/Desktop/icons/delete.png");
-        JButton remove = new JButton(removeIcon);
-        remove.setActionCommand("remove"+count);
-        remove.setBackground(Color.white);
-        remove.setMaximumSize(new Dimension(40, 40));
-        remove.setFocusPainted(false);
-        remove.setOpaque(true);
-        remove.addActionListener(this);
-        editPanel.add(remove);
+        editPanel.add(returnButtonSelect("select"+count, true));
+        editPanel.add(returnButtonSelect("remove"+count, false));
 
         mappingNumberToPanel.put(Integer.toString(count),rulePanel);
         mappingNumberToRule.put(Integer.toString(count),rule);
-
 
         editPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -563,8 +553,24 @@ public class odrlBuilding implements ActionListener{
         count++;
     }
 
-    public void print() {
-        //System.out.println(mappingSelectToRule.get("select" + 0).getAsset().get(0).getUID());
+
+    public JButton returnButtonSelect(String nameOfButton, Boolean isSelect) {
+
+        Icon icon;
+        if (isSelect) {
+            icon = new ImageIcon("resources/icons/icons/select.png");
+        } else {
+           icon = new ImageIcon("resources/icons/icons/delete.png");
+        }
+
+        JButton button = new JButton(icon);
+        button.setActionCommand(nameOfButton);
+        button.setBackground(Color.white);
+        button.setMaximumSize(new Dimension(40, 40));
+        button.setFocusPainted(false);
+        button.setOpaque(true);
+        button.addActionListener(this);
+        return button;
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -712,6 +718,30 @@ public class odrlBuilding implements ActionListener{
             return;
         }
 
+        if (e.getActionCommand().contains("refinement")) {
+            if (addConstraint) {
+                String number = e.getActionCommand().substring(10);
+                Constraint constraint = new Constraint();
+                if (mappingNumberToElement.get(number) instanceof Asset) {
+                    constraint.setConstraintOn(((Asset) mappingNumberToElement.get(number)).getUID());
+                }
+                if (mappingNumberToElement.get(number) instanceof Action) {
+                    constraint.setConstraintOn(((Action) mappingNumberToElement.get(number)).getName());
+                }
+                if (mappingNumberToElement.get(number) instanceof Party) {
+                    constraint.setConstraintOn(((Party) mappingNumberToElement.get(number)).getFunction());
+                }
+
+                mappingNumberToElement.get(number).setConstraint(constraint);
+                mappingNumberToRule.get(mappingRuleNumberToElementNumber.get(number)).setConstraint(constraint);
+                addConstraintElement(number, constraint, false, true);
+                refinements.add(constraint);
+                visual.revalidate();
+                visual.repaint();
+            }
+            return;
+        }
+
         if (e.getActionCommand().equals("done")) {
             for (int i = 0; i < allRules.size(); i++) {
                 for (int j = 0; j < globalAttributes.size(); j++) {
@@ -747,17 +777,26 @@ public class odrlBuilding implements ActionListener{
                 // Assets
                 for (int k = 0; k < allRules.get(i).getAsset().size(); k++) {
                     newPolicy.withAsset(allRules.get(i).getAsset().get(k));
+                    for (int j= 0 ; j < allRules.get(i).getAsset().get(k).getConstraint().size(); j++) {
+                        newPolicy.withConstraint(allRules.get(i).getAsset().get(k).getConstraint().get(j));
+                    }
                 }
 
                 // Parties
                 for (int k = 0; k < allRules.get(i).getParty().size(); k++) {
                     newPolicy.withParty(allRules.get(i).getParty().get(k));
+                    for (int j= 0 ; j < allRules.get(i).getParty().get(k).getConstraint().size(); j++) {
+                        newPolicy.withConstraint(allRules.get(i).getParty().get(k).getConstraint().get(j));
+                    }
                 }
 
                 // Actions
-                for (int j = 0; j < allRules.get(i).getAction().size(); j++) {
-                    newPolicy.withAction(allRules.get(i).getAction().get(j));
-                    allRules.get(i).getAction().get(j).setParentType(allRules.get(i));
+                for (int k = 0; k < allRules.get(i).getAction().size(); k++) {
+                    newPolicy.withAction(allRules.get(i).getAction().get(k));
+                    allRules.get(i).getAction().get(k).setParentType(allRules.get(i));
+                    for (int j= 0 ; j < allRules.get(i).getAction().get(k).getConstraint().size(); j++) {
+                        newPolicy.withConstraint(allRules.get(i).getAction().get(k).getConstraint().get(j));
+                    }
                 }
 
                 // Duties
@@ -769,9 +808,6 @@ public class odrlBuilding implements ActionListener{
             }
 
             policy = newPolicy.build();
-
-            //System.out.println(policy.getObligation(0).getAction() + "<-obligation action there");
-
             policies.add(policy);
             visual.removeAll();
             visual.revalidate();
@@ -790,17 +826,26 @@ public class odrlBuilding implements ActionListener{
         //Asset
         for (int k = 0; k < rule.getAsset().size(); k++) {
             newPolicy.withAsset(rule.getAsset().get(k));
+            for (int j= 0 ; j < rule.getAsset().get(k).getConstraint().size(); j++) {
+                newPolicy.withConstraint(rule.getAsset().get(k).getConstraint().get(j));
+            }
         }
 
         // Party
         for (int k = 0; k < rule.getParty().size(); k++) {
             newPolicy.withParty(rule.getParty().get(k));
+            for (int j= 0 ; j < rule.getParty().get(k).getConstraint().size(); j++) {
+                newPolicy.withConstraint(rule.getParty().get(k).getConstraint().get(j));
+            }
         }
 
         // Actions
-        for (int j = 0; j < rule.getAction().size(); j++) {
-            newPolicy.withAction(rule.getAction().get(j));
-            rule.getAction().get(j).setParentType(rule);
+        for (int k = 0; k < rule.getAction().size(); k++) {
+            newPolicy.withAction(rule.getAction().get(k));
+            rule.getAction().get(k).setParentType(rule);
+            for (int j= 0 ; j < rule.getAction().get(k).getConstraint().size(); j++) {
+                newPolicy.withConstraint(rule.getAction().get(k).getConstraint().get(j));
+            }
         }
 
         // Duty

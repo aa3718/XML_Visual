@@ -115,10 +115,12 @@ public class xmlMaking {
             }
 
             for (int j =0; j < rules.getConstraint().size(); j++) {
-                rules.getConstraint().get(j);
-                Element constraint = documents.createElement("o:constraint");
-                getAttributesConstraint(constraint,rules.getConstraint().get(j));
-                root.appendChild(constraint);
+                if(rules.getConstraint().get(j).getOn() == null) {
+                    rules.getConstraint().get(j);
+                    Element constraint = documents.createElement("o:constraint");
+                    getAttributesConstraint(constraint, rules.getConstraint().get(j));
+                    root.appendChild(constraint);
+                }
             }
 
             for (int j =0; j < rules.getDuty().size(); j++) {
