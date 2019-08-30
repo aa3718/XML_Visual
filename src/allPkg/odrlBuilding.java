@@ -45,8 +45,23 @@ public class odrlBuilding implements ActionListener{
 
     public void addBuildMenu() {
 
+        // Adding Policy Menu Element
+        JPanel panelPolicy = new JPanel();
+        panelPolicy.setLayout(new BoxLayout(panelPolicy,BoxLayout.Y_AXIS));
+        panelPolicy.setBounds(10,20,200,80);
+        panelPolicy.setBackground(Color.white);
+
+        TitledBorder buildMenuPolicy = new TitledBorder("Global Elements");
+        buildMenuPolicy.setTitlePosition(TitledBorder.CENTER);
+        buildMenuPolicy.setTitlePosition(TitledBorder.BELOW_TOP);
+        buildMenuPolicy.setTitleColor(Color.gray);
+
+        panelPolicy.setBorder(buildMenuPolicy);
+        panelBoxV.add(panelPolicy);
+
+        // Adding Rule Menu Element
         JPanel panelPP = new JPanel();
-        panelPP.setBounds(10,20,200,80);
+        panelPP.setBounds(10,130,200,80);
         panelPP.setBackground(Color.white);
 
         TitledBorder buildMenuPP = new TitledBorder("Rule");
@@ -81,8 +96,9 @@ public class odrlBuilding implements ActionListener{
         panelPP.add(obligation);
         obligation.addActionListener(this);
 
+        // Adding Element Menu Element
         JPanel panelAttr = new JPanel();
-        panelAttr.setBounds(10,120,200,300);
+        panelAttr.setBounds(10,240,200,200);
 
         panelAttr.setLayout(new BoxLayout(panelAttr,BoxLayout.Y_AXIS));
         panelAttr.setBackground(Color.white);
@@ -113,7 +129,7 @@ public class odrlBuilding implements ActionListener{
         }
 
         JPanel panelDone = new JPanel();
-        panelDone.setBounds(10,435,200,150);
+        panelDone.setBounds(10,490,200,150);
         panelDone.setBackground(Color.white);
 
         JButton done = new JButton("Done");
@@ -124,6 +140,24 @@ public class odrlBuilding implements ActionListener{
 
         panelDone.add(done);
         panelBoxV.add(panelDone);
+    }
+
+    public void addGlobalElements() {
+
+        // Adding Policy Menu Element
+        JPanel panelPolicy = new JPanel();
+        panelPolicy.setLayout(new BoxLayout(panelPolicy,BoxLayout.Y_AXIS));
+        panelPolicy.setBounds(10,20,200,80);
+        panelPolicy.setBackground(Color.white);
+
+        TitledBorder buildMenuPolicy = new TitledBorder("Policy");
+        buildMenuPolicy.setTitlePosition(TitledBorder.CENTER);
+        buildMenuPolicy.setTitlePosition(TitledBorder.BELOW_TOP);
+        buildMenuPolicy.setTitleColor(Color.gray);
+
+        panelPolicy.setBorder(buildMenuPolicy);
+        panelBoxV.add(panelPolicy);
+
     }
 
     public void addDutyElement(int rulePanelNumber, attributeHolders element) {
@@ -184,8 +218,18 @@ public class odrlBuilding implements ActionListener{
             }
         });
 
+        Icon selectIcon = new ImageIcon("/Users/Chapman/Desktop/icons/select.png");
+        JButton select = new JButton(selectIcon);
+        select.setActionCommand("select"+rulePanelNumber);
+        select.setBackground(Color.white);
+        select.setMaximumSize(new Dimension(40, 40));
+        select.setFocusPainted(false);
+        select.setOpaque(true);
+        select.addActionListener(this);
+
         elementPanel.add(assetName);
         elementPanel.add(getAssetName);
+        elementPanel.add(select);
         elementPanel.setBackground(Color.white);
         elementPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -341,6 +385,7 @@ public class odrlBuilding implements ActionListener{
         JPanel rulePanel = new JPanel();
         rulePanel.setBackground(Color.white);
         rulePanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+        rulePanel.setPreferredSize(new Dimension(350,500));
         rulePanel.setLayout(new BoxLayout(rulePanel,BoxLayout.Y_AXIS));
 
         JLabel ruleLabel;
@@ -543,7 +588,11 @@ public class odrlBuilding implements ActionListener{
 
             }
 
+
             policy = newPolicy.build();
+
+            //System.out.println(policy.getObligation(0).getAction() + "<-obligation action there");
+
             policies.add(policy);
             visual.removeAll();
             visual.revalidate();

@@ -157,14 +157,15 @@ public class geometry2 extends JPanel {
             g2.setStroke(new BasicStroke(lineThickness));
 
             if (isPermission) {
-                g.setColor(colorPermission);
+                g2.setColor(colorPermission);
             } else if (isProhibition) {
-                g.setColor(colorProhibition);
+                g2.setColor(colorProhibition);
             } else if (isObligation) {
-                g.setColor(colorObligation);
+                g2.setColor(colorObligation);
             }
             g.drawRect((285 + (205 * (i % numberElementPerLine))), baseYForLine, prefferedRuleBoxSizeW, (latestY - baseYForLine) + bottomPadding);
             g.setColor(Color.black);
+            g2.setColor(Color.black);
             g2.setStroke(new BasicStroke(1));
 
             if (((latestY - baseYForLine) + bottomPadding) > maxYBoxOnLine) {
@@ -236,15 +237,16 @@ public class geometry2 extends JPanel {
 
             // Draw Rule box after depending on last points
             if (isDuty == false) {
-                g.setColor(colorPass);
+                g2.setColor(colorPass);
                 g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
             } else {
                 if (rule.getConstraint().isEmpty()) {
-                    g.setColor(colorDuty);
+                    g2.setColor(colorDuty);
                     g.drawRoundRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY, arcWDuty, arcHDuty);
                 }
                 theYforDutyWithConstraint = startBoxY;
             }
+            g2.setColor(Color.black);
             g.setColor(Color.black);
             g2.setStroke(new BasicStroke(1));
             startBoxY = latestY;
@@ -264,8 +266,11 @@ public class geometry2 extends JPanel {
                         //if(constraint.getAttachedConstraint().get(j).getOptionalLogicalOperand() != null && j!=0) {
                             g.drawString(constraint.getAttachedConstraint().get(j).getOptionalLogicalOperand(), startBoxX + (sizeOfInnerBoxesW/2)+((sizeOfInnerBoxesW/2)/2), startBoxY + 9);
                         //}
-                        g.setColor(colorConstraint);
+                        Graphics2D g2 = (Graphics2D) g;
+                        g2.setStroke(new BasicStroke(lineThickness));
+                        g2.setColor(colorConstraint);
                         g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, widenessOfConstraintLines);
+                        g2.setColor(Color.black);
                         g.setColor(Color.black);
                         latestY += widenessOfConstraintLines;
                         startBoxY += widenessOfConstraintLines;
@@ -302,16 +307,16 @@ public class geometry2 extends JPanel {
                         g.drawString(constraint.getAttachedConstraint().get(j).getRightOperand(), latestX, latestY);
                         latestY += spaceAtBottomOfBoxes;
 
-                        Graphics2D g2 = (Graphics2D) g;
                         g2.setStroke(new BasicStroke(lineThickness));
 
                         if (isDuty == false) {
-                            g.setColor(colorConstraint);
+                            g2.setColor(colorConstraint);
                             g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
                         } else {
-                            g.setColor(colorDuty);
+                            g2.setColor(colorDuty);
                             g.drawRoundRect(startBoxX, theYforDutyWithConstraint, sizeOfInnerBoxesW, latestY - theYforDutyWithConstraint, arcWDuty, arcHDuty);
                         }
+                        g2.setColor(Color.black);
                         g.setColor(Color.black);
                         g2.setStroke(new BasicStroke(1));
                         startBoxY = latestY;
@@ -322,9 +327,12 @@ public class geometry2 extends JPanel {
                 }
                 track = 0;
             } else {
-                g.setColor(colorConstraint);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setStroke(new BasicStroke(lineThickness));
+                g2.setColor(colorConstraint);
                 g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, widenessOfConstraintLines);
                 g.setColor(Color.black);
+                g2.setColor(Color.black);
                 latestY += widenessOfConstraintLines;
                 startBoxY += widenessOfConstraintLines;
                 System.out.println(constraint.getOn());
@@ -365,19 +373,19 @@ public class geometry2 extends JPanel {
                     latestY += spaceAtBottomOfBoxes;
                 }
 
-                Graphics2D g2 = (Graphics2D) g;
                 g2.setStroke(new BasicStroke(lineThickness));
 
                 if (isDuty == false) {
-                    g.setColor(colorConstraint);
+                    g2.setColor(colorConstraint);
                     g.drawRect(startBoxX, startBoxY, sizeOfInnerBoxesW, latestY - startBoxY);
                 } else {
-                    g.setColor(colorDuty);
+                    g2.setColor(colorDuty);
                     g.drawRoundRect(startBoxX, theYforDutyWithConstraint, sizeOfInnerBoxesW, latestY - theYforDutyWithConstraint, arcWDuty, arcHDuty);
                 }
 
                 g2.setStroke(new BasicStroke(1));
                 g.setColor(Color.black);
+                g2.setColor(Color.black);
                 startBoxY = latestY;
                 track++;
             }

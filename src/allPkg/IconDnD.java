@@ -25,10 +25,12 @@ public class IconDnD implements ActionListener,ChangeListener {
     private JFrame frame;
     private TitledBorder menu;
     private JPanel visual;
+    private JPanel visualVisual;
     private JPanel panelBoxV;
     private JPanel panel;
     private JPanel panelBox;
     private JPanel panelVisualMenu;
+    private JScrollPane scrollVisualPane;
     private ArrayList<JButton> myMenuList;
     private ArrayList<JComboBox> colorComBox;
     private ArrayList<String> menuName;
@@ -94,13 +96,14 @@ public class IconDnD implements ActionListener,ChangeListener {
         panel = new JPanel();
         panelBoxV = new JPanel();
         visual = new JPanel();
+        visualVisual = new JPanel();
 
         panelBox.setBounds(0, 0, 250, 200);
         panelBox.setBackground(Color.white);
         panelBox.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
         panelBox.setBorder(menu);
 
-        panelBoxV.setBounds(0, 200, 250, (heightOfPage-200));
+        panelBoxV.setBounds(0, 200, 250, heightOfPage);
         panelBoxV.setBackground(Color.white);
         panelBoxV.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.lightGray));
         panelBoxV.setLayout(null);
@@ -110,14 +113,26 @@ public class IconDnD implements ActionListener,ChangeListener {
         buildMenu.setTitleColor(Color.lightGray);
         panelBoxV.setBorder(buildMenu);
 
-        visual.setBounds(250, 0, (widthOfPage-250), heightOfPage);
-        visual.setBackground(Color.white);
-        visual.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.gray));
+        //visual.setBounds(0, 0, widthOfPage, heightOfPage);
+        visual.setBackground(Color.pink);
+        visual.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.white));
         visual.setLayout(new GridLayout(2,3,5,5));
+
+        scrollVisualPane = new JScrollPane(visual);
+        scrollVisualPane.setBounds(0, 0, widthOfPage-250, heightOfPage);
+        scrollVisualPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.white));
+        scrollVisualPane.setBackground(Color.white);
+
+        visualVisual.setBounds(250, 0, widthOfPage-250, heightOfPage);
+        visualVisual.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.white));
+        visualVisual.setBackground(Color.white);
+        visualVisual.add(scrollVisualPane);
+        visualVisual.setAutoscrolls(true);
+        visualVisual.setLayout(null);
 
         frame.add(panelBoxV);
         frame.add(panelBox);
-        frame.add(visual);
+        frame.add(visualVisual);
 
         myMenuList = new ArrayList<JButton>();
 
@@ -165,6 +180,7 @@ public class IconDnD implements ActionListener,ChangeListener {
     }
 
     public void addBuildMenu() {
+        visualVisual.setVisible(true);
         odrlBuilding build = new odrlBuilding(visual,panelBoxV,policies);
         build.addBuildMenu();
         panelBoxV.revalidate();
@@ -550,8 +566,6 @@ public class IconDnD implements ActionListener,ChangeListener {
             bubbleBuilder.setBubbleWithLines(true);
         }
 
-        //https://stackoverflow.com/questions/26923282/getting-high-resolution-image-from-jpanel
-
         if (e.getActionCommand().equals("exportImage")) {
             JPanel panelBeingCopied;
             if (inGranular) {
@@ -598,7 +612,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                 geometry2Builder.setPolicy(policies.get(policies.size() - 1));
                 visualization = geometry2Builder.build();
                 visualization.setBounds(0,0,widthOfPage,heightOfPage);
-                visual.setVisible(false);
+                visualVisual.setVisible(false);
+                //visual.setVisible(false);
                 frame.add(visualization);
             }
 
@@ -606,7 +621,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                 situationalBuilder.setPolicy(policies.get(policies.size() - 1));
                 situational = situationalBuilder.build();
                 situational.setBounds(0,0,widthOfPage,heightOfPage);
-                visual.setVisible(false);
+                visualVisual.setVisible(false);
+                //visual.setVisible(false);
                 frame.add(situational);
             }
 
@@ -614,9 +630,12 @@ public class IconDnD implements ActionListener,ChangeListener {
                 bubbleBuilder.setPolicy(policies.get(policies.size() - 1));
                 bubble = bubbleBuilder.build();
                 bubble.setBounds(0,0,widthOfPage,heightOfPage);
-                visual.setVisible(false);
+                visualVisual.setVisible(false);
+                //visual.setVisible(false);
                 frame.add(bubble);
             }
+            frame.revalidate();
+            frame.repaint();
             frame.setVisible(true);
         }
 
@@ -637,11 +656,14 @@ public class IconDnD implements ActionListener,ChangeListener {
                 System.out.println("InSituationReset");
             }
 
+            frame.revalidate();
+            frame.repaint();
+
             for (int i = 0; i < colorComBox.size(); i++) {
                 colorComBox.get(i).setSelectedIndex(0);
             }
 
-            visual.setVisible(true);
+            visualVisual.setVisible(true);
         }
 
         if (e.getActionCommand().contains("boxColor")) {

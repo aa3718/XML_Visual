@@ -80,6 +80,13 @@ public class situational extends JPanel {
 
             Graphics2D g2 = (Graphics2D) g;
             g2.setStroke(new BasicStroke(lineThickness));
+            if(isPermission) {
+                g2.setColor(colorPermission);
+            } else if (isProhibition) {
+                g2.setColor(colorProhibition);
+            } else {
+                g2.setColor(colorObligation);
+            }
 
             // Draw Outer Circle
             g2.drawOval(280 + ((sizeOfCircles + 10) * (i % numberElementPerLine)), (lineNumber * (sizeOfCircles + 10)) + 10, sizeOfCircles, sizeOfCircles);
@@ -95,6 +102,8 @@ public class situational extends JPanel {
 
             // Draw line
             g2.setStroke(new BasicStroke(1));
+            g2.setColor(Color.black);
+            g.setColor(Color.black);
             g.drawLine(edgeInnerCircle, middleY, edgeInnerCircle + sizeOfInnerCircle, middleY);
 
             System.out.println(sizeOfCircles*(0.75) + "<--__ YEs");
