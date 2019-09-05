@@ -22,8 +22,6 @@ public class Drag
     static Graphics2D graphicSettings;
     static Shape drawLine;
 
-
-
     public Drag() {
         System.out.println("Drawing..");
         drawLine = new Line2D.Float(480, 480, 0, 0);
