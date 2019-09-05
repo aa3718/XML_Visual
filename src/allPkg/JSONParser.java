@@ -1,16 +1,11 @@
 package allPkg;
 
-import javax.json.stream.*;
-import javax.json.*;
-import java.io.StringReader;
-import java.io.InputStream;
+import javax.json.Json;
+import javax.json.stream.JsonParser;
 import java.io.FileInputStream;
-import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.util.ArrayList;
 
+
+// Attempt at beginning to parse JSON
 
 public class JSONParser {
     Policy policy = null;

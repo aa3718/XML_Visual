@@ -42,10 +42,12 @@ public class IconDnD implements ActionListener,ChangeListener {
     private boolean inGranular = false;
     private boolean inSituation = false;
     private boolean inBuildArea = false;
+    private int set = 0;
 
     private geometry2Builder geometry2Builder;
     private situationalBuilder situationalBuilder;
     private bubbleMapBuilder bubbleBuilder;
+    //private bubbleMapLinesBuilder bubbleBuilderLine;
     private JPanel visualization;
     private JPanel bubble;
     private JPanel situational;
@@ -233,7 +235,6 @@ public class IconDnD implements ActionListener,ChangeListener {
         JButton includingString = new JButton("Color Text");
         includingString.setActionCommand("includingString");
 
-
         JButton done = new JButton("Done");
         panelVisualMenu.add(done);
         done.addActionListener(this);
@@ -339,6 +340,13 @@ public class IconDnD implements ActionListener,ChangeListener {
             JLabel lineThicknessLabel = new JLabel("Line Thickness: ");
             lineThicknessLabel.setForeground(Color.gray);
 
+
+            JRadioButton putName = new JRadioButton("Add party UID");
+            putName.setActionCommand("includeName");
+            putName.addActionListener(this);
+            putName.setSelected(false);
+
+
             layoutNewPermission.setHorizontalGroup(
                     layoutNewPermission.createSequentialGroup()
                             .addGroup(layoutNewPermission.createParallelGroup()
@@ -348,6 +356,7 @@ public class IconDnD implements ActionListener,ChangeListener {
                                     .addComponent(labels.get(3))
                                     .addComponent(labels.get(4))
                                     .addComponent(lineThicknessLabel)
+                                    .addComponent(putName)
                                     .addComponent(done)
                                     .addComponent(exportImage))
                             .addGroup(layoutNewPermission.createParallelGroup()
@@ -374,6 +383,8 @@ public class IconDnD implements ActionListener,ChangeListener {
                                     .addComponent(labels.get(4)).addComponent(colorComBox.get(4)))
                             .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(lineThicknessLabel).addComponent(lineThickness))
+                            .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(putName))
                             .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(done).addComponent(reset))
                             .addGroup(layoutNewPermission.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -525,6 +536,9 @@ public class IconDnD implements ActionListener,ChangeListener {
                 inGranular = false;
                 inBuildArea = false;
                 bubbleBuilder = new bubbleMapBuilder();
+
+                //bubbleBuilderLine = new bubbleMapLinesBuilder();
+
                 panelBoxV.removeAll();
                 addVisualMenu();
                 panelBoxV.revalidate();
@@ -564,6 +578,16 @@ public class IconDnD implements ActionListener,ChangeListener {
 
         if (e.getActionCommand().equals("useLines")) {
             bubbleBuilder.setBubbleWithLines(true);
+        }
+
+        if (e.getActionCommand().equals("includeName")) {
+            if (set == 0) {
+                situationalBuilder.setIncludeNames(true);
+                set = 1;
+            } else {
+                situationalBuilder.setIncludeNames(false);
+                set = 0;
+            }
         }
 
         if (e.getActionCommand().equals("exportImage")) {
@@ -627,12 +651,20 @@ public class IconDnD implements ActionListener,ChangeListener {
             }
 
             if (importedPolicy && inBubble || builtPolicy && inBubble) {
+                /*
+                bubbleBuilderLine.setPolicy(policies.get(policies.size() - 1));
+                bubble = bubbleBuilderLine.build();
+                bubble.setBounds(0,0,widthOfPage,heightOfPage);
+                visualVisual.setVisible(false);
+                frame.add(bubble);
+                */
                 bubbleBuilder.setPolicy(policies.get(policies.size() - 1));
                 bubble = bubbleBuilder.build();
                 bubble.setBounds(0,0,widthOfPage,heightOfPage);
                 visualVisual.setVisible(false);
                 //visual.setVisible(false);
                 frame.add(bubble);
+
             }
             frame.revalidate();
             frame.repaint();

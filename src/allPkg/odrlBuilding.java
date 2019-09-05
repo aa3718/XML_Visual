@@ -266,7 +266,7 @@ public class odrlBuilding implements ActionListener{
 
         mappingNumberToElement.put(Integer.toString(refinementCount),element);
         mappingNumberToElementPanel.put(Integer.toString(refinementCount),basePanel);
-        mappingRuleNumberToElementNumber.put(number,Integer.toString(refinementCount));
+        mappingRuleNumberToElementNumber.put(Integer.toString(refinementCount),number);
 
         refinementCount++;
     }
@@ -323,7 +323,7 @@ public class odrlBuilding implements ActionListener{
 
         mappingNumberToElement.put(Integer.toString(refinementCount),element);
         mappingNumberToElementPanel.put(Integer.toString(refinementCount),basePanel);
-        mappingRuleNumberToElementNumber.put(number,Integer.toString(refinementCount));
+        mappingRuleNumberToElementNumber.put(Integer.toString(refinementCount),number);
 
         refinementCount++;
     }
@@ -405,7 +405,7 @@ public class odrlBuilding implements ActionListener{
 
         mappingNumberToElement.put(Integer.toString(refinementCount),element);
         mappingNumberToElementPanel.put(Integer.toString(refinementCount),basePanel);
-        mappingRuleNumberToElementNumber.put(number,Integer.toString(refinementCount));
+        mappingRuleNumberToElementNumber.put(Integer.toString(refinementCount),number);
 
         refinementCount++;
     }

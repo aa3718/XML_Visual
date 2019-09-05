@@ -34,6 +34,7 @@ public class situational extends JPanel {
     private boolean isProhibition;
     private boolean isObligation;
     private boolean useIcons;
+    private boolean includeNames;
 
 
     situational(Policy policy) {
@@ -159,11 +160,22 @@ public class situational extends JPanel {
                     g.drawImage(image, edgeInnerCircle + 15, middleY-40, null);
                     BufferedImage rightArrow = ImageIO.read(new File("resources/icons/icons/situational/bottomArrow.png"));
                     g.drawImage(rightArrow, edgeInnerCircle+95, middleY+15, null);
+                    if (includeNames) {
+                        g.setColor(Color.lightGray);
+                        g.drawString(rule.getParty().get(j).getUID(), edgeInnerCircle + 15, middleY + 15);
+                        g.setColor(Color.black);
+                    }
                 }
 
                 if (rule.getParty().get(j).getFunction().equals("assigner")) {
                     BufferedImage image2 = ImageIO.read(new File("resources/icons/icons/situational/person"+ random +".png"));
                     g.drawImage(image2, (edgeInnerCircle + sizeOfInnerCircle - 80), middleY-40, null);
+
+                    if (includeNames) {
+                        g.setColor(Color.lightGray);
+                        g.drawString(rule.getParty().get(j).getUID(), (edgeInnerCircle + sizeOfInnerCircle - 80), middleY + 15);
+                        g.setColor(Color.black);
+                    }
                 }
 
             } catch (Exception e) {
@@ -340,6 +352,10 @@ public class situational extends JPanel {
 
     public void addUseIcons(boolean useIcons) {
         this.useIcons = useIcons;
+    }
+
+    public void addIncludeNames(boolean includeNames) {
+        this.includeNames = includeNames;
     }
 
 /*

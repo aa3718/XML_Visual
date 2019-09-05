@@ -10,6 +10,7 @@ public class situationalBuilder {
     private Color colorDuty = Color.black;
     private  Color colorObligation = Color.black;
     private boolean useIcons = false;
+    private boolean includeNames = false;
     private int lineThickness = 2;
     private int numberElementPerLine = 3;
 
@@ -24,6 +25,7 @@ public class situationalBuilder {
         situational.addNumberElementPerLine(numberElementPerLine);
         situational.addUseIcons(useIcons);
         situational.addLineThickness(lineThickness);
+        situational.addIncludeNames(includeNames);
         return situational;
     }
 
@@ -59,6 +61,11 @@ public class situationalBuilder {
 
     public situationalBuilder setUseIcons(Boolean useIcons) {
         this.useIcons = useIcons;
+        return this;
+    }
+
+    public situationalBuilder setIncludeNames(Boolean includeNames) {
+        this.includeNames = includeNames;
         return this;
     }
 

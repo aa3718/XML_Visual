@@ -10,6 +10,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Line2D;
 import java.io.File;
 
+// Testing Drag and Drop functionality for future implementation
+
 public class Drag
         extends JComponent {
 
